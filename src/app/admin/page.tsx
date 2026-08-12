@@ -53,6 +53,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [leaderboardCountdown, setLeaderboardCountdown] = useState<number | null>(null);
+  const [playerSearchFilter, setPlayerSearchFilter] = useState("");
 
   useEffect(() => {
     setLocalQCount(settings.questionCount);
@@ -85,6 +86,10 @@ export default function AdminPage() {
 
   const connectedPlayers = players.filter((player) => player.isConnected);
   const hasPlayers = connectedPlayers.length > 0;
+
+  const filteredPlayers = connectedPlayers.filter((player) =>
+    player.nickname.toLowerCase().includes(playerSearchFilter.toLowerCase())
+  );
 
   const normalizeSettings = (questionCount: number, questionTime: number) => ({
     questionCount: Math.min(50, Math.max(5, Number.isFinite(questionCount) ? questionCount : 10)),
@@ -448,31 +453,44 @@ export default function AdminPage() {
                   {connectedPlayers.length === 0 ? (
                     <p className="text-sm text-gray-400">Aucun joueur pour l’instant.</p>
                   ) : (
-                    <ul className="space-y-3">
-                      {connectedPlayers.map((player) => (
-                        <li key={player.id} className="rounded-2xl border border-cyber-border p-4 bg-cyber-surface/80">
-                          <div className="flex items-center justify-between gap-4">
-                            <div>
-                              <p className="truncate text-sm font-semibold">{player.nickname}</p>
-                              <p className="text-xs text-gray-500">{player.score} pts</p>
-                            </div>
-                            <div className="flex items-center gap-2 flex-shrink-0">
-                              <span className="rounded-full bg-cyber-neon-blue/10 px-2 py-1 text-xs text-cyber-neon-blue">
-                                {player.isConnected ? "✓" : "✗"}
-                              </span>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => hostKickPlayer(player.id)}
-                                className="h-8 w-8 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                              >
-                                <X className="w-4 h-4" aria-hidden="true" />
-                              </Button>
-                            </div>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
+                    <div className="space-y-4">
+                      <Input
+                        type="text"
+                        placeholder="Rechercher un joueur..."
+                        value={playerSearchFilter}
+                        onChange={(e) => setPlayerSearchFilter(e.target.value)}
+                        className="rounded-2xl border border-cyber-border bg-cyber-surface/80 px-4 py-2 text-sm text-white placeholder-gray-500"
+                      />
+                      <ul className="space-y-3 max-h-80 overflow-y-auto pr-2">
+                        {filteredPlayers.length === 0 ? (
+                          <li className="text-sm text-gray-400 text-center py-4">Aucun joueur ne correspond à votre recherche.</li>
+                        ) : (
+                          filteredPlayers.map((player) => (
+                            <li key={player.id} className="rounded-2xl border border-cyber-border p-4 bg-cyber-surface/80">
+                              <div className="flex items-center justify-between gap-4">
+                                <div>
+                                  <p className="truncate text-sm font-semibold">{player.nickname}</p>
+                                  <p className="text-xs text-gray-500">{player.score} pts</p>
+                                </div>
+                                <div className="flex items-center gap-2 flex-shrink-0">
+                                  <span className="rounded-full bg-cyber-neon-blue/10 px-2 py-1 text-xs text-cyber-neon-blue">
+                                    {player.isConnected ? "✓" : "✗"}
+                                  </span>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => hostKickPlayer(player.id)}
+                                    className="h-8 w-8 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                                  >
+                                    <X className="w-4 h-4" aria-hidden="true" />
+                                  </Button>
+                                </div>
+                              </div>
+                            </li>
+                          ))
+                        )}
+                      </ul>
+                    </div>
                   )}
                 </CardContent>
               </Card>
