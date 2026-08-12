@@ -17,6 +17,7 @@ import {
   hostNextQuestion,
   hostStartGame,
   hostUpdateSettings,
+  hostEndGame,
   useSocket,
 } from "@/lib/socket-client";
 
@@ -197,6 +198,13 @@ export default function AdminPage() {
           <p className="text-sm uppercase text-gray-400 tracking-[0.2em]">Question en cours</p>
           <p className="mt-4 text-2xl font-semibold">{question?.text || "Chargement..."}</p>
           <p className="mt-3 text-sm text-gray-400">Temps restant : {timeRemaining}s</p>
+          <Button 
+            className="mt-6 w-full" 
+            variant="destructive" 
+            onClick={() => hostEndGame()}
+          >
+            Terminer la partie
+          </Button>
         </div>
       );
     }
@@ -217,6 +225,14 @@ export default function AdminPage() {
                 : "Le classement s'affiche maintenant"}
             </p>
           </div>
+
+          <Button 
+            className="mt-6 w-full" 
+            variant="destructive" 
+            onClick={() => hostEndGame()}
+          >
+            Terminer la partie
+          </Button>
         </div>
       );
     }
@@ -235,10 +251,15 @@ export default function AdminPage() {
             <div className="mt-5">
               <Leaderboard entries={leaderboard} compact />
             </div>
-            <Button className="mt-6 w-full" onClick={() => hostNextQuestion()}>
-              <ArrowRight className="w-4 h-4" aria-hidden="true" />
-              Question suivante
-            </Button>
+            <div className="mt-6 space-y-3">
+              <Button className="w-full" onClick={() => hostNextQuestion()}>
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                Question suivante
+              </Button>
+              <Button className="w-full" variant="destructive" onClick={() => hostEndGame()}>
+                Terminer la partie
+              </Button>
+            </div>
           </div>
         </div>
       );
