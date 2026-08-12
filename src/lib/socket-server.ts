@@ -25,7 +25,7 @@ import {
 } from "./game-manager";
 
 const adminCredentials = {
-  email: (process.env.ADMIN_EMAIL || "admin@cyberlearn.local").toLowerCase()
+  email: (process.env.ADMIN_EMAIL || "admin@cyberlearn.local").toLowerCase(),
   password: process.env.ADMIN_PASSWORD || "admin123",
 };
 
