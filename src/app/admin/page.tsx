@@ -307,7 +307,7 @@ export default function AdminPage() {
             <div className="space-y-3">
               <p className="text-sm uppercase tracking-[0.3em] text-gray-400">Espace Hôte</p>
               <h1 className="text-4xl font-bold tracking-tight">
-                Gérer votre partie <span className="neon-text">CyberQuiz</span>
+                Gérer votre partie <span className="neon-text">CyberLearn</span>
               </h1>
               <p className="max-w-2xl text-gray-400">
                 Créez, rejoignez et pilotez votre session en direct. Affichez les joueurs, lancez le quiz et faites progresser les questions.

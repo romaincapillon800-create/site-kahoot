@@ -19,6 +19,6 @@ app.prepare().then(() => {
   initSocketServer(httpServer);
 
   httpServer.listen(port, () => {
-    console.log(`> CyberQuiz ready on http://${hostname}:${port}`);
+    console.log(`> CyberLearn ready on http://${hostname}:${port}`);
   });
 });

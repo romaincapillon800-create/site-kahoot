@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Shield, Zap, Users, Lock } from "lucide-react";
+import { BookOpen, Zap, Users, Lock } from "lucide-react";
 import { AnimatedBackground } from "@/components/ui/animated-background";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,10 +48,10 @@ export default function HomePage() {
         <header className="w-full px-6 py-6 flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-neon-gradient flex items-center justify-center shadow-neon">
-              <Shield className="w-5 h-5 text-white" aria-hidden="true" />
+              <BookOpen className="w-5 h-5 text-white" aria-hidden="true" />
             </div>
             <span className="text-xl font-bold tracking-tight">
-              Cyber<span className="neon-text">Quiz</span>
+              Cyber<span className="neon-text">Learn</span>
             </span>
           </div>
           <nav aria-label="Navigation principale">
@@ -75,7 +75,7 @@ export default function HomePage() {
             className="text-center mb-12 max-w-3xl"
           >
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-6 text-balance">
-              Quiz{" "}
+              Apprentissage{" "}
               <span className="neon-text">Cybersécurité</span>
               <br />
               Multijoueur
@@ -183,7 +183,7 @@ export default function HomePage() {
         </section>
 
         <footer className="text-center py-6 text-xs text-gray-600">
-          CyberQuiz — Plateforme de quiz cybersécurité premium
+          CyberLearn — Plateforme de quiz cybersécurité premium
         </footer>
       </main>
     </>

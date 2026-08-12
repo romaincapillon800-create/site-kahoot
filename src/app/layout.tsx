@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CyberQuiz — Quiz Cybersécurité Multijoueur",
+  title: "CyberLearn — Quiz Cybersécurité Multijoueur",
   description:
     "Plateforme premium de quiz cybersécurité en temps réel. Rejoignez une partie avec un code et un pseudo.",
   keywords: ["cybersécurité", "quiz", "multijoueur", "kahoot", "pentest"],
