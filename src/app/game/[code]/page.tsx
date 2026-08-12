@@ -59,6 +59,11 @@ export default function GameRoomPage() {
     [reveal, playerId]
   );
 
+  const playerRank = useMemo(
+    () => leaderboard.find((entry) => entry.id === playerId)?.rank ?? null,
+    [leaderboard, playerId]
+  );
+
   const handleOptionSelect = (optionId: string) => {
     if (!question || hasAnswered) return;
     submitAnswer(question.id, optionId);
@@ -245,6 +250,10 @@ export default function GameRoomPage() {
                         <div className="rounded-3xl border border-cyber-border bg-cyber-surface/80 p-5">
                           <p className="text-xs uppercase tracking-[0.2em] text-gray-400">Score</p>
                           <p className="mt-2 text-xl font-semibold">{currentPlayer?.score ?? 0}</p>
+                        </div>
+                        <div className="rounded-3xl border border-cyber-border bg-cyber-surface/80 p-5">
+                          <p className="text-xs uppercase tracking-[0.2em] text-gray-400">Classement</p>
+                          <p className="mt-2 text-xl font-semibold">{playerRank ? `#${playerRank}` : "-"}</p>
                         </div>
                         <div className="rounded-3xl border border-cyber-border bg-cyber-surface/80 p-5">
                           <p className="text-xs uppercase tracking-[0.2em] text-gray-400">Connectés</p>
