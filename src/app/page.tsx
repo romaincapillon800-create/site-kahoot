@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { BookOpen, Zap, Users, Lock } from "lucide-react";
+import { BookOpen, Zap, Users, Lock, Trophy } from "lucide-react";
 import { AnimatedBackground } from "@/components/ui/animated-background";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -164,7 +164,7 @@ export default function HomePage() {
           >
             {[
               { icon: Zap, title: "Temps réel", desc: "Socket.IO ultra-rapide" },
-              { icon: Shield, title: "Expert", desc: "50 questions difficiles" },
+              { icon: Trophy, title: "Expert", desc: "50 questions difficiles" },
               { icon: Users, title: "Multijoueur", desc: "Jusqu'à 50 joueurs" },
             ].map(({ icon: Icon, title, desc }, i) => (
               <div
