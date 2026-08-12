@@ -11,15 +11,15 @@ const config: Config = {
     extend: {
       colors: {
         cyber: {
-          bg: "#050510",
-          surface: "#0a0a1a",
-          card: "rgba(15, 15, 35, 0.6)",
-          border: "rgba(99, 102, 241, 0.2)",
+          bg: "#000000",
+          surface: "#1a1a1a",
+          card: "rgba(10, 10, 10, 0.6)",
+          border: "rgba(200, 200, 200, 0.2)",
           neon: {
-            blue: "#00d4ff",
-            purple: "#a855f7",
-            pink: "#ec4899",
-            green: "#10b981",
+            blue: "#ffffff",
+            purple: "#cccccc",
+            pink: "#999999",
+            green: "#666666",
           },
         },
       },
@@ -48,14 +48,14 @@ const config: Config = {
       },
       backgroundImage: {
         "cyber-gradient":
-          "linear-gradient(135deg, #050510 0%, #0f0f2e 50%, #1a0a2e 100%)",
+          "linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #1a1a1a 100%)",
         "neon-gradient":
-          "linear-gradient(135deg, #00d4ff 0%, #a855f7 50%, #ec4899 100%)",
+          "linear-gradient(135deg, #ffffff 0%, #cccccc 50%, #999999 100%)",
       },
       boxShadow: {
-        neon: "0 0 20px rgba(0, 212, 255, 0.3), 0 0 40px rgba(168, 85, 247, 0.2)",
+        neon: "0 0 20px rgba(255, 255, 255, 0.1), 0 0 40px rgba(200, 200, 200, 0.05)",
         "neon-lg":
-          "0 0 30px rgba(0, 212, 255, 0.4), 0 0 60px rgba(168, 85, 247, 0.3)",
+          "0 0 30px rgba(255, 255, 255, 0.15), 0 0 60px rgba(200, 200, 200, 0.1)",
       },
     },
   },
