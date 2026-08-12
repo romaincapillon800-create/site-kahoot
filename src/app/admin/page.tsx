@@ -444,7 +444,7 @@ export default function AdminPage() {
 
               </div>
 
-              <Card className="p-0 overflow-hidden">
+              <Card className="p-0 overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10">
                 <CardHeader>
                   <CardTitle>Joueurs connectés</CardTitle>
                   <CardDescription>Voir les pseudos, scores et présence.</CardDescription>
@@ -459,14 +459,14 @@ export default function AdminPage() {
                         placeholder="Rechercher un joueur..."
                         value={playerSearchFilter}
                         onChange={(e) => setPlayerSearchFilter(e.target.value)}
-                        className="rounded-2xl border border-cyber-border bg-cyber-surface/80 px-4 py-2 text-sm text-white placeholder-gray-500"
+                        className="rounded-2xl border border-cyber-border bg-cyber-surface/80 px-4 py-2 text-sm text-white placeholder-gray-500 transition-all duration-300 focus:border-cyber-neon-blue/50 focus:bg-cyber-surface focus:shadow-lg focus:shadow-cyber-neon-blue/20"
                       />
                       <ul className="space-y-3 max-h-screen overflow-y-auto pr-2">
                         {filteredPlayers.length === 0 ? (
                           <li className="text-sm text-gray-400 text-center py-4">Aucun joueur ne correspond à votre recherche.</li>
                         ) : (
                           filteredPlayers.map((player) => (
-                            <li key={player.id} className="rounded-2xl border border-cyber-border p-4 bg-cyber-surface/80">
+                            <li key={player.id} className="rounded-2xl border border-cyber-border p-4 bg-cyber-surface/80 transition-all duration-300 hover:bg-cyber-surface hover:border-cyber-neon-blue/50 hover:shadow-lg hover:shadow-cyber-neon-blue/10">
                               <div className="flex items-center justify-between gap-4">
                                 <div>
                                   <p className="truncate text-sm font-semibold">{player.nickname}</p>
@@ -480,7 +480,7 @@ export default function AdminPage() {
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => hostKickPlayer(player.id)}
-                                    className="h-8 w-8 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                                    className="h-8 w-8 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-300"
                                   >
                                     <X className="w-4 h-4" aria-hidden="true" />
                                   </Button>
