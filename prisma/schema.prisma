@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum GameStatus {
+  WAITING
+  STARTING
+  IN_PROGRESS
+  FINISHED
+}
+
+enum GamePhase {
+  LOBBY
+  COUNTDOWN
+  QUESTION
+  REVEAL
+  LEADERBOARD
+  FINISHED
+}
+
+model Game {
+  id              String     @id @default(cuid())
+  code            String     @unique
+  status          GameStatus @default(WAITING)
+  phase           GamePhase  @default(LOBBY)
+  questionCount   Int        @default(10)
+  questionTime    Int        @default(20)
+  currentQuestion Int        @default(0)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  startedAt       DateTime?
+  finishedAt      DateTime?
+
+  players    Player[]
+  gameQuestions GameQuestion[]
+  statistics Statistics?
+
+  @@index([code])
+  @@index([status])
+}
+
+model Player {
+  id           String   @id @default(cuid())
+  gameId       String
+  socketId     String?
+  nickname     String
+  score        Int      @default(0)
+  streak       Int      @default(0)
+  maxStreak    Int      @default(0)
+  correctCount Int      @default(0)
+  joinedAt     DateTime @default(now())
+  isConnected  Boolean  @default(true)
+
+  game    Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  answers Answer[]
+  scores  Score[]
+
+  @@unique([gameId, nickname])
+  @@index([gameId])
+}
+
+model Question {
+  id          String   @id @default(cuid())
+  text        String
+  explanation String
+  category    String
+  difficulty  String   @default("expert")
+  createdAt   DateTime @default(now())
+
+  options       QuestionOption[]
+  gameQuestions GameQuestion[]
+  answers       Answer[]
+}
+
+model QuestionOption {
+  id         String  @id @default(cuid())
+  questionId String
+  text       String
+  isCorrect  Boolean @default(false)
+  order      Int
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  answers  Answer[]
+
+  @@index([questionId])
+}
+
+model GameQuestion {
+  id         String @id @default(cuid())
+  gameId     String
+  questionId String
+  order      Int
+
+  game     Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([gameId, order])
+  @@index([gameId])
+}
+
+model Answer {
+  id               String   @id @default(cuid())
+  playerId         String
+  questionId       String
+  selectedOptionId String
+  isCorrect        Boolean
+  timeRemaining    Int
+  pointsEarned     Int      @default(0)
+  streakAtAnswer   Int      @default(0)
+  answeredAt       DateTime @default(now())
+
+  player         Player         @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  question       Question       @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  selectedOption QuestionOption @relation(fields: [selectedOptionId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, questionId])
+  @@index([playerId])
+  @@index([questionId])
+}
+
+model Score {
+  id         String   @id @default(cuid())
+  playerId   String
+  questionId String
+  points     Int
+  bonus      String?
+  createdAt  DateTime @default(now())
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([playerId])
+}
+
+model Statistics {
+  id                String   @id @default(cuid())
+  gameId            String   @unique
+  totalPlayers      Int      @default(0)
+  totalQuestions    Int      @default(0)
+  averageScore      Float    @default(0)
+  averageCorrect    Float    @default(0)
+  fastestAnswer     Int?
+  highestScore      Int      @default(0)
+  perfectStreaks    Int      @default(0)
+  categoryBreakdown Json?
+  createdAt         DateTime @default(now())
+
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+}

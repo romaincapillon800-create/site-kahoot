@@ -1,0 +1,629 @@
+import { prisma } from "./prisma";
+import { generateGameCode, calculatePoints } from "./utils";
+import type {
+  GamePhase,
+  PlayerState,
+  QuestionState,
+  LeaderboardEntry,
+  RevealState,
+  GameSettings,
+} from "@/types/game";
+
+interface ActiveGame {
+  id: string;
+  code: string;
+  phase: GamePhase;
+  settings: GameSettings;
+  players: Map<string, PlayerState & { socketId: string | null; streak: number }>;
+  questionIds: string[];
+  currentQuestionIndex: number;
+  timer: NodeJS.Timeout | null;
+  timeRemaining: number;
+  questionStartTime: number;
+  answers: Map<string, Map<string, { optionId: string; timeRemaining: number }>>;
+  hostSocketId: string | null;
+}
+
+const activeGames = new Map<string, ActiveGame>();
+
+export function getActiveGame(gameId: string): ActiveGame | undefined {
+  return activeGames.get(gameId);
+}
+
+export function getActiveGameByCode(code: string): ActiveGame | undefined {
+  for (const game of activeGames.values()) {
+    if (game.code === code.toUpperCase()) return game;
+  }
+  return undefined;
+}
+
+function toPlayerState(player: ActiveGame["players"] extends Map<string, infer V> ? V : never): PlayerState {
+  return {
+    id: player.id,
+    nickname: player.nickname,
+    score: player.score,
+    streak: player.streak,
+    maxStreak: player.maxStreak,
+    correctCount: player.correctCount,
+    isConnected: player.isConnected,
+  };
+}
+
+function getLeaderboard(game: ActiveGame): LeaderboardEntry[] {
+  return Array.from(game.players.values())
+    .sort((a, b) => b.score - a.score)
+    .map((p, index) => ({
+      id: p.id,
+      nickname: p.nickname,
+      score: p.score,
+      rank: index + 1,
+    }));
+}
+
+export async function createGame(
+  settings: GameSettings,
+  hostSocketId: string
+): Promise<{ gameId: string; code: string }> {
+  let code = generateGameCode();
+  let attempts = 0;
+
+  while (attempts < 10) {
+    const existing = await prisma.game.findUnique({ where: { code } });
+    if (!existing && !getActiveGameByCode(code)) break;
+    code = generateGameCode();
+    attempts++;
+  }
+
+  const allQuestions = await prisma.question.findMany({ select: { id: true } });
+  const shuffled = allQuestions.sort(() => Math.random() - 0.5);
+  const selected = shuffled.slice(0, Math.min(settings.questionCount, shuffled.length));
+
+  const game = await prisma.game.create({
+    data: {
+      code,
+      questionCount: settings.questionCount,
+      questionTime: settings.questionTime,
+      gameQuestions: {
+        create: selected.map((q, index) => ({
+          questionId: q.id,
+          order: index,
+        })),
+      },
+    },
+  });
+
+  const activeGame: ActiveGame = {
+    id: game.id,
+    code,
+    phase: "lobby",
+    settings,
+    players: new Map(),
+    questionIds: selected.map((q) => q.id),
+    currentQuestionIndex: -1,
+    timer: null,
+    timeRemaining: settings.questionTime,
+    questionStartTime: 0,
+    answers: new Map(),
+    hostSocketId,
+  };
+
+  activeGames.set(game.id, activeGame);
+  return { gameId: game.id, code };
+}
+
+export async function joinGameAsHost(
+  code: string,
+  hostSocketId: string
+): Promise<{ gameId: string } | null> {
+  const game = await prisma.game.findUnique({
+    where: { code: code.toUpperCase() },
+    include: { players: true },
+  });
+
+  if (!game) return null;
+
+  let activeGame = activeGames.get(game.id);
+
+  if (!activeGame) {
+    activeGame = {
+      id: game.id,
+      code: game.code,
+      phase: mapDbPhaseToGamePhase(game.phase),
+      settings: {
+        questionCount: game.questionCount,
+        questionTime: game.questionTime,
+      },
+      players: new Map(),
+      questionIds: [],
+      currentQuestionIndex: game.currentQuestion - 1,
+      timer: null,
+      timeRemaining: game.questionTime,
+      questionStartTime: 0,
+      answers: new Map(),
+      hostSocketId,
+    };
+
+    const gameQuestions = await prisma.gameQuestion.findMany({
+      where: { gameId: game.id },
+      orderBy: { order: "asc" },
+    });
+    activeGame.questionIds = gameQuestions.map((gq) => gq.questionId);
+
+    for (const p of game.players) {
+      activeGame.players.set(p.id, {
+        id: p.id,
+        nickname: p.nickname,
+        score: p.score,
+        streak: p.streak,
+        maxStreak: p.maxStreak,
+        correctCount: p.correctCount,
+        isConnected: p.isConnected,
+        socketId: p.socketId,
+      });
+    }
+
+    activeGames.set(game.id, activeGame);
+  } else {
+    activeGame.hostSocketId = hostSocketId;
+  }
+
+  return { gameId: game.id };
+}
+
+function mapDbPhaseToGamePhase(phase: string): GamePhase {
+  const map: Record<string, GamePhase> = {
+    LOBBY: "lobby",
+    COUNTDOWN: "countdown",
+    QUESTION: "question",
+    REVEAL: "reveal",
+    LEADERBOARD: "leaderboard",
+    FINISHED: "finished",
+  };
+  return map[phase] || "lobby";
+}
+
+export async function joinGameAsPlayer(
+  code: string,
+  nickname: string,
+  socketId: string
+): Promise<{ playerId: string; gameId: string } | { error: string }> {
+  const activeGame = getActiveGameByCode(code);
+
+  if (!activeGame) {
+    const dbGame = await prisma.game.findUnique({
+      where: { code: code.toUpperCase() },
+    });
+    if (!dbGame) return { error: "Partie introuvable. Vérifiez le code." };
+    if (dbGame.status === "FINISHED") return { error: "Cette partie est terminée." };
+    return { error: "La partie n'est pas active. Demandez à l'hôte de relancer." };
+  }
+
+  if (activeGame.phase !== "lobby" && activeGame.phase !== "countdown") {
+    return { error: "La partie a déjà commencé." };
+  }
+
+  const trimmedNick = nickname.trim().slice(0, 20);
+  if (trimmedNick.length < 2) {
+    return { error: "Le pseudo doit contenir au moins 2 caractères." };
+  }
+
+  for (const p of activeGame.players.values()) {
+    if (p.nickname.toLowerCase() === trimmedNick.toLowerCase()) {
+      return { error: "Ce pseudo est déjà pris." };
+    }
+  }
+
+  if (activeGame.players.size >= 50) {
+    return { error: "La partie est complète (50 joueurs max)." };
+  }
+
+  const player = await prisma.player.create({
+    data: {
+      gameId: activeGame.id,
+      nickname: trimmedNick,
+      socketId,
+    },
+  });
+
+  activeGame.players.set(player.id, {
+    id: player.id,
+    nickname: trimmedNick,
+    score: 0,
+    streak: 0,
+    maxStreak: 0,
+    correctCount: 0,
+    isConnected: true,
+    socketId,
+  });
+
+  return { playerId: player.id, gameId: activeGame.id };
+}
+
+export function kickPlayer(gameId: string, playerId: string): boolean {
+  const game = activeGames.get(gameId);
+  if (!game) return false;
+
+  const player = game.players.get(playerId);
+  if (!player) return false;
+
+  game.players.delete(playerId);
+  prisma.player.delete({ where: { id: playerId } }).catch(console.error);
+  return true;
+}
+
+export function updateGameSettings(
+  gameId: string,
+  settings: Partial<GameSettings>
+): boolean {
+  const game = activeGames.get(gameId);
+  if (!game || game.phase !== "lobby") return false;
+
+  if (settings.questionCount !== undefined) {
+    game.settings.questionCount = Math.min(50, Math.max(5, settings.questionCount));
+  }
+  if (settings.questionTime !== undefined) {
+    game.settings.questionTime = Math.min(60, Math.max(10, settings.questionTime));
+  }
+
+  prisma.game.update({
+    where: { id: gameId },
+    data: {
+      questionCount: game.settings.questionCount,
+      questionTime: game.settings.questionTime,
+    },
+  }).catch(console.error);
+
+  return true;
+}
+
+export async function getQuestionState(
+  gameId: string,
+  index: number
+): Promise<QuestionState | null> {
+  const game = activeGames.get(gameId);
+  if (!game || index < 0 || index >= game.questionIds.length) return null;
+
+  const questionId = game.questionIds[index];
+  const question = await prisma.question.findUnique({
+    where: { id: questionId },
+    include: { options: { orderBy: { order: "asc" } } },
+  });
+
+  if (!question) return null;
+
+  return {
+    id: question.id,
+    text: question.text,
+    category: question.category,
+    order: index + 1,
+    totalQuestions: game.questionIds.length,
+    options: question.options.map((o) => ({ id: o.id, text: o.text })),
+  };
+}
+
+export function clearGameTimer(game: ActiveGame): void {
+  if (game.timer) {
+    clearInterval(game.timer);
+    game.timer = null;
+  }
+}
+
+export async function startGameCountdown(
+  gameId: string,
+  onTick: (seconds: number) => void,
+  onComplete: () => void
+): Promise<boolean> {
+  const game = activeGames.get(gameId);
+  if (!game || game.players.size === 0) return false;
+
+  game.phase = "countdown";
+  let seconds = 5;
+
+  await prisma.game.update({
+    where: { id: gameId },
+    data: { status: "STARTING", phase: "COUNTDOWN" },
+  });
+
+  onTick(seconds);
+
+  const interval = setInterval(() => {
+    seconds--;
+    if (seconds > 0) {
+      onTick(seconds);
+    } else {
+      clearInterval(interval);
+      onComplete();
+    }
+  }, 1000);
+
+  return true;
+}
+
+export async function startQuestion(
+  gameId: string,
+  onTick: (timeRemaining: number) => void,
+  onComplete: () => Promise<void>
+): Promise<QuestionState | null> {
+  const game = activeGames.get(gameId);
+  if (!game) return null;
+
+  clearGameTimer(game);
+  game.currentQuestionIndex++;
+  game.answers.set(game.questionIds[game.currentQuestionIndex], new Map());
+  game.timeRemaining = game.settings.questionTime;
+  game.questionStartTime = Date.now();
+  game.phase = "question";
+
+  const question = await getQuestionState(gameId, game.currentQuestionIndex);
+  if (!question) return null;
+
+  await prisma.game.update({
+    where: { id: gameId },
+    data: {
+      status: "IN_PROGRESS",
+      phase: "QUESTION",
+      currentQuestion: game.currentQuestionIndex + 1,
+      startedAt: game.currentQuestionIndex === 0 ? new Date() : undefined,
+    },
+  });
+
+  onTick(game.timeRemaining);
+
+  game.timer = setInterval(() => {
+    game.timeRemaining--;
+    onTick(game.timeRemaining);
+
+    if (game.timeRemaining <= 0) {
+      clearGameTimer(game);
+      onComplete();
+    }
+  }, 1000);
+
+  return question;
+}
+
+export async function submitAnswer(
+  gameId: string,
+  playerId: string,
+  questionId: string,
+  optionId: string
+): Promise<boolean> {
+  const game = activeGames.get(gameId);
+  if (!game || game.phase !== "question") return false;
+
+  const currentQId = game.questionIds[game.currentQuestionIndex];
+  if (currentQId !== questionId) return false;
+
+  const questionAnswers = game.answers.get(questionId);
+  if (!questionAnswers || questionAnswers.has(playerId)) return false;
+
+  questionAnswers.set(playerId, {
+    optionId,
+    timeRemaining: game.timeRemaining,
+  });
+
+  return true;
+}
+
+export async function revealQuestion(
+  gameId: string
+): Promise<RevealState | null> {
+  const game = activeGames.get(gameId);
+  if (!game) return null;
+
+  clearGameTimer(game);
+  game.phase = "reveal";
+
+  const questionId = game.questionIds[game.currentQuestionIndex];
+  const question = await prisma.question.findUnique({
+    where: { id: questionId },
+    include: { options: true },
+  });
+
+  if (!question) return null;
+
+  const correctOption = question.options.find((o) => o.isCorrect);
+  if (!correctOption) return null;
+
+  const questionAnswers = game.answers.get(questionId) || new Map();
+  const playerResults: RevealState["playerResults"] = [];
+
+  for (const [playerId, player] of game.players) {
+    const answer = questionAnswers.get(playerId);
+    let isCorrect = false;
+    let pointsEarned = 0;
+    let bonus: string | null = null;
+
+    if (answer) {
+      isCorrect = answer.optionId === correctOption.id;
+
+      if (isCorrect) {
+        player.streak++;
+        player.maxStreak = Math.max(player.maxStreak, player.streak);
+        player.correctCount++;
+        const result = calculatePoints(
+          true,
+          answer.timeRemaining,
+          game.settings.questionTime,
+          player.streak
+        );
+        pointsEarned = result.points;
+        bonus = result.bonus;
+        player.score += pointsEarned;
+      } else {
+        player.streak = 0;
+      }
+
+      await prisma.answer.create({
+        data: {
+          playerId,
+          questionId,
+          selectedOptionId: answer.optionId,
+          isCorrect,
+          timeRemaining: answer.timeRemaining,
+          pointsEarned,
+          streakAtAnswer: player.streak,
+        },
+      });
+
+      if (pointsEarned > 0) {
+        await prisma.score.create({
+          data: {
+            playerId,
+            questionId,
+            points: pointsEarned,
+            bonus,
+          },
+        });
+      }
+
+      await prisma.player.update({
+        where: { id: playerId },
+        data: {
+          score: player.score,
+          streak: player.streak,
+          maxStreak: player.maxStreak,
+          correctCount: player.correctCount,
+        },
+      });
+    }
+
+    playerResults.push({
+      playerId,
+      nickname: player.nickname,
+      isCorrect,
+      pointsEarned,
+      bonus,
+      newScore: player.score,
+    });
+  }
+
+  await prisma.game.update({
+    where: { id: gameId },
+    data: { phase: "REVEAL" },
+  });
+
+  return {
+    correctOptionId: correctOption.id,
+    explanation: question.explanation,
+    playerResults,
+  };
+}
+
+export function getGameState(gameId: string) {
+  const game = activeGames.get(gameId);
+  if (!game) return null;
+
+  return {
+    phase: game.phase,
+    code: game.code,
+    players: Array.from(game.players.values()).map(toPlayerState),
+    settings: game.settings,
+    leaderboard: getLeaderboard(game),
+  };
+}
+
+export async function finishGame(gameId: string) {
+  const game = activeGames.get(gameId);
+  if (!game) return null;
+
+  clearGameTimer(game);
+  game.phase = "finished";
+
+  const players = Array.from(game.players.values());
+  const avgScore =
+    players.length > 0
+      ? players.reduce((sum, p) => sum + p.score, 0) / players.length
+      : 0;
+  const avgCorrect =
+    players.length > 0
+      ? players.reduce((sum, p) => sum + p.correctCount, 0) / players.length
+      : 0;
+
+  await prisma.statistics.create({
+    data: {
+      gameId,
+      totalPlayers: players.length,
+      totalQuestions: game.currentQuestionIndex + 1,
+      averageScore: avgScore,
+      averageCorrect: avgCorrect,
+      highestScore: Math.max(...players.map((p) => p.score), 0),
+      perfectStreaks: players.filter((p) => p.maxStreak >= 5).length,
+    },
+  });
+
+  await prisma.game.update({
+    where: { id: gameId },
+    data: {
+      status: "FINISHED",
+      phase: "FINISHED",
+      finishedAt: new Date(),
+    },
+  });
+
+  const leaderboard = getLeaderboard(game);
+  activeGames.delete(gameId);
+
+  return {
+    leaderboard,
+    statistics: {
+      totalPlayers: players.length,
+      averageScore: Math.round(avgScore),
+      averageCorrect: Math.round(avgCorrect * 10) / 10,
+      highestScore: Math.max(...players.map((p) => p.score), 0),
+    },
+  };
+}
+
+export function disconnectPlayer(socketId: string): {
+  gameId: string;
+  playerId: string;
+} | null {
+  for (const game of activeGames.values()) {
+    for (const [playerId, player] of game.players) {
+      if (player.socketId === socketId) {
+        player.isConnected = false;
+        player.socketId = null;
+        prisma.player.update({
+          where: { id: playerId },
+          data: { isConnected: false, socketId: null },
+        }).catch(console.error);
+        return { gameId: game.id, playerId };
+      }
+    }
+  }
+  return null;
+}
+
+export function reconnectPlayer(
+  gameId: string,
+  playerId: string,
+  socketId: string
+): boolean {
+  const game = activeGames.get(gameId);
+  if (!game) return false;
+
+  const player = game.players.get(playerId);
+  if (!player) return false;
+
+  player.isConnected = true;
+  player.socketId = socketId;
+
+  prisma.player.update({
+    where: { id: playerId },
+    data: { isConnected: true, socketId },
+  }).catch(console.error);
+
+  return true;
+}
+
+export async function loadQuestionsForGame(gameId: string): Promise<void> {
+  const game = activeGames.get(gameId);
+  if (!game || game.questionIds.length > 0) return;
+
+  const gameQuestions = await prisma.gameQuestion.findMany({
+    where: { gameId },
+    orderBy: { order: "asc" },
+  });
+  game.questionIds = gameQuestions.map((gq) => gq.questionId);
+}

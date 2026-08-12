@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-cyber-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-cyber-bg text-white overflow-x-hidden;
+  }
+
+  ::selection {
+    @apply bg-cyber-neon-purple/40 text-white;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-cyber-card backdrop-blur-xl border border-cyber-border rounded-2xl;
+    box-shadow:
+      0 0 0 1px rgba(99, 102, 241, 0.05),
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .neon-text {
+    @apply bg-clip-text text-transparent bg-neon-gradient;
+  }
+
+  .neon-border {
+    @apply border border-cyber-neon-blue/30;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.15);
+  }
+
+  .cyber-input {
+    @apply w-full px-4 py-3 rounded-xl bg-cyber-surface/80 border border-cyber-border
+           text-white placeholder:text-gray-500 focus:outline-none focus:border-cyber-neon-blue/50
+           focus:ring-2 focus:ring-cyber-neon-blue/20 transition-all duration-300;
+  }
+
+  .cyber-btn {
+    @apply relative px-8 py-4 rounded-xl font-semibold text-white overflow-hidden
+           transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100;
+    background: linear-gradient(135deg, #00d4ff 0%, #a855f7 50%, #ec4899 100%);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3), 0 0 40px rgba(168, 85, 247, 0.2);
+  }
+
+  .cyber-btn:hover:not(:disabled) {
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.5), 0 0 60px rgba(168, 85, 247, 0.3);
+  }
+
+  .cyber-btn-secondary {
+    @apply px-6 py-3 rounded-xl font-medium border border-cyber-border bg-cyber-surface/50
+           text-gray-300 hover:text-white hover:border-cyber-neon-purple/50 transition-all duration-300;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Animated background grid */
+.cyber-grid {
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-move 20s linear infinite;
+}
+
+@keyframes grid-move {
+  0% { background-position: 0 0; }
+  100% { background-position: 50px 50px; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a1a;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 85, 247, 0.5);
+}
