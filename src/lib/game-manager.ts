@@ -492,13 +492,27 @@ export async function loadQuestionsForGame(gameId: string): Promise<void> {
   const game = activeGames.get(gameId);
   if (!game || game.questionIds.length > 0) return;
 
+  // Mapping des catégories globales aux sous-catégories
+  const categoryMap: Record<string, string[]> = {
+    "reseau-infra": ["Kerberos", "Active Directory", "Windows Internals", "Linux", "Cloud AWS", "Azure", "GCP", "Docker", "Kubernetes"],
+    "web-apis": ["OWASP", "OAuth", "JWT", "XXE", "SSRF", "CSRF", "LDAP Injection", "SQL Injection"],
+    "crypto": ["Cryptography", "PKI", "TLS"],
+    "malware-re": ["Malwares", "Rootkits", "YARA", "Sigma", "Reverse Engineering"],
+    "incident-response": ["Forensics", "SIEM", "Threat Hunting"],
+    "attaques": ["RCE", "Buffer Overflow", "Privilege Escalation", "MITRE ATT&CK", "Race Conditions"],
+    "securite-donnees": ["Cryptography", "PKI"],
+  };
+
   let availableQuestions = questionCatalog;
   
   // Filtrer par catégorie si spécifiée
   if (game.settings.category && game.settings.category !== "global") {
-    availableQuestions = questionCatalog.filter(
-      (q) => q.category === game.settings.category
-    );
+    const selectedCategories = categoryMap[game.settings.category] || [];
+    if (selectedCategories.length > 0) {
+      availableQuestions = questionCatalog.filter(
+        (q) => selectedCategories.includes(q.category)
+      );
+    }
   }
 
   const selectedQuestions = shuffle(availableQuestions).slice(
