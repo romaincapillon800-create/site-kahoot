@@ -24,10 +24,18 @@ import {
   loadQuestionsForGame,
 } from "./game-manager";
 
+// Admin credentials from environment variables (never use defaults)
 const adminCredentials = {
-  email: (process.env.ADMIN_EMAIL || "admin@cyberquiz.local").toLowerCase(),
-  password: process.env.ADMIN_PASSWORD || "admin123",
+  email: (process.env.ADMIN_EMAIL || "").toLowerCase(),
+  password: process.env.ADMIN_PASSWORD || "",
 };
+
+// Validate that credentials are configured
+if (!adminCredentials.email || !adminCredentials.password) {
+  console.warn(
+    "[Socket] ⚠️  WARNING: Admin credentials not configured. Set ADMIN_EMAIL and ADMIN_PASSWORD environment variables."
+  );
+}
 
 export function initSocketServer(httpServer: HTTPServer) {
   const io = new SocketIOServer<
