@@ -169,10 +169,10 @@ export default function HomePage() {
             ].map(({ icon: Icon, title, desc }, i) => (
               <div
                 key={title}
-                className="glass-card p-5 text-center hover:border-cyber-neon-blue/30 transition-colors"
+                className="glass-card p-5 text-center hover:border-white/30 transition-colors"
               >
                 <Icon
-                  className="w-6 h-6 mx-auto mb-3 text-cyber-neon-blue"
+                  className="w-6 h-6 mx-auto mb-3 text-white"
                   aria-hidden="true"
                 />
                 <h2 className="font-semibold mb-1">{title}</h2>

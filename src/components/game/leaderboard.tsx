@@ -59,12 +59,12 @@ export function Leaderboard({
             <span
               className={cn(
                 "flex-1 font-medium truncate",
-                isCurrent && "text-cyber-neon-blue"
+                isCurrent && "text-white"
               )}
             >
               {entry.nickname}
             </span>
-            <span className="font-mono font-bold text-cyber-neon-blue">
+            <span className="font-mono font-bold text-white">
               {formatScore(entry.score)}
             </span>
           </motion.li>

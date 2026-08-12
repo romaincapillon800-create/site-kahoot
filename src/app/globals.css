@@ -34,7 +34,7 @@
   }
 
   .neon-border {
-    @apply border border-cyber-neon-blue/30;
+    @apply border border-white/30;
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
   }
 

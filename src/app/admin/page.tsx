@@ -165,7 +165,7 @@ export default function AdminPage() {
             <div className="mb-4 flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm uppercase text-gray-400 tracking-[0.2em]">Code de la partie</p>
-                <p className="mt-2 text-4xl font-semibold tracking-[0.4em] text-cyber-neon-blue">
+                <p className="mt-2 text-4xl font-semibold tracking-[0.4em] text-white">
                   {code || "------"}
                 </p>
               </div>
@@ -192,7 +192,7 @@ export default function AdminPage() {
       return (
         <div className="rounded-3xl border border-cyber-border bg-cyber-surface/70 p-6 text-center">
           <p className="text-sm uppercase text-gray-400 tracking-[0.2em]">Départ</p>
-          <p className="mt-4 text-6xl font-bold text-cyber-neon-blue">{countdown ?? 0}s</p>
+          <p className="mt-4 text-6xl font-bold text-white">{countdown ?? 0}s</p>
           <p className="mt-3 text-gray-400">La partie commence bientôt.</p>
         </div>
       );
@@ -220,12 +220,12 @@ export default function AdminPage() {
         <div className="rounded-3xl border border-cyber-border bg-cyber-surface/70 p-6">
           <p className="text-sm uppercase text-gray-400 tracking-[0.2em]">Révélation</p>
           <p className="mt-4 text-xl font-semibold">Réponse correcte</p>
-          <p className="mt-2 text-2xl text-cyber-neon-blue">{reveal?.correctOptionText || "-"}</p>
+          <p className="mt-2 text-2xl text-white">{reveal?.correctOptionText || "-"}</p>
           <p className="mt-3 text-gray-400">{reveal?.explanation || "Aucune explication disponible."}</p>
 
           <div className="mt-6 rounded-2xl border border-cyber-border bg-cyber-surface/80 p-4 text-center">
             <p className="text-sm uppercase tracking-[0.2em] text-gray-400">Classement</p>
-            <p className="mt-2 text-lg font-semibold text-cyber-neon-blue">
+            <p className="mt-2 text-lg font-semibold text-white">
               {leaderboardCountdown !== null && leaderboardCountdown > 0
                 ? `Le classement s'affiche dans ${leaderboardCountdown}s`
                 : "Le classement s'affiche maintenant"}
@@ -323,7 +323,7 @@ export default function AdminPage() {
             <>
               <div className="mx-auto max-w-xl text-center">
                 <h1 className="text-4xl font-bold tracking-tight">
-                  Cyber<span className="neon-text">Quiz</span>
+                  Cyber<span className="neon-text">Learn</span>
                 </h1>
                 <p className="mt-3 text-gray-400">
                   Créez une session en direct. Affichez les joueurs, lancez le quiz et gérez la partie en temps réel.
@@ -459,21 +459,21 @@ export default function AdminPage() {
                         placeholder="Rechercher un joueur..."
                         value={playerSearchFilter}
                         onChange={(e) => setPlayerSearchFilter(e.target.value)}
-                        className="rounded-2xl border border-cyber-border bg-cyber-surface/80 px-4 py-2 text-sm text-white placeholder-gray-500 transition-all duration-300 focus:border-cyber-neon-blue/50 focus:bg-cyber-surface focus:shadow-lg focus:shadow-cyber-neon-blue/20"
+                        className="rounded-2xl border border-cyber-border bg-cyber-surface/80 px-4 py-2 text-sm text-white placeholder-gray-500 transition-all duration-300 focus:border-white/50 focus:bg-cyber-surface focus:shadow-lg focus:shadow-white/20"
                       />
                       <ul className="space-y-3 max-h-96 overflow-y-auto pr-2">
                         {filteredPlayers.length === 0 ? (
                           <li className="text-sm text-gray-400 text-center py-4">Aucun joueur ne correspond à votre recherche.</li>
                         ) : (
                           filteredPlayers.map((player) => (
-                            <li key={player.id} className="rounded-2xl border border-cyber-border p-4 bg-cyber-surface/80 transition-all duration-300 hover:bg-cyber-surface hover:border-cyber-neon-blue/50 hover:shadow-lg hover:shadow-cyber-neon-blue/10">
+                            <li key={player.id} className="rounded-2xl border border-cyber-border p-4 bg-cyber-surface/80 transition-all duration-300 hover:bg-cyber-surface hover:border-white/50 hover:shadow-lg hover:shadow-white/10">
                               <div className="flex items-center justify-between gap-4">
                                 <div>
                                   <p className="truncate text-sm font-semibold">{player.nickname}</p>
                                   <p className="text-xs text-gray-500">{player.score} pts</p>
                                 </div>
                                 <div className="flex items-center gap-2 flex-shrink-0">
-                                  <span className="rounded-full bg-cyber-neon-blue/10 px-2 py-1 text-xs text-cyber-neon-blue">
+                                  <span className="rounded-full bg-white/10 px-2 py-1 text-xs text-white">
                                     {player.isConnected ? "✓" : "✗"}
                                   </span>
                                   <Button

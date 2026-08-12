@@ -135,7 +135,7 @@ export default function GameRoomPage() {
                         </p>
                         <ul className="space-y-2">
                           {connectedPlayers.map((player) => (
-                            <li key={player.id} className="flex items-center justify-between rounded-2xl border border-cyber-border p-4 bg-cyber-surface/80 transition-all duration-300 hover:bg-cyber-surface hover:border-cyber-neon-blue/30">
+                            <li key={player.id} className="flex items-center justify-between rounded-2xl border border-cyber-border p-4 bg-cyber-surface/80 transition-all duration-300 hover:bg-cyber-surface hover:border-white/30">
                               <span className="transition-colors duration-300">{player.nickname}</span>
                               <span className="text-xs uppercase tracking-[0.25em] text-gray-500">
                                 {player.isConnected ? "Connecté" : "Hors ligne"}
@@ -147,8 +147,8 @@ export default function GameRoomPage() {
                     )}
 
                     {phase === "countdown" && (
-                      <div className="rounded-3xl border border-cyber-neon-blue/20 bg-cyber-surface/80 p-8 text-center">
-                        <p className="text-6xl font-bold text-cyber-neon-blue">{timeRemaining}s</p>
+                      <div className="rounded-3xl border border-white/20 bg-cyber-surface/80 p-8 text-center">
+                        <p className="text-6xl font-bold text-white">{timeRemaining}s</p>
                         <p className="mt-3 text-gray-400">Préparez-vous.</p>
                       </div>
                     )}
@@ -170,12 +170,12 @@ export default function GameRoomPage() {
                                 disabled={hasAnswered}
                                 className={`w-full rounded-3xl border p-5 text-left transition-all duration-300 ${
                                   selected
-                                    ? "border-cyber-neon-blue bg-cyber-neon-blue/10"
-                                    : "border-cyber-border bg-cyber-surface/80 hover:border-cyber-neon-blue/50"
+                                    ? "border-white bg-white/10"
+                                    : "border-cyber-border bg-cyber-surface/80 hover:border-white/50"
                                 }`}
                               >
                                 <span className="font-semibold">{option.text}</span>
-                                {selected && <span className="mt-2 block text-sm text-cyber-neon-blue">Réponse enregistrée</span>}
+                                {selected && <span className="mt-2 block text-sm text-white">Réponse enregistrée</span>}
                               </button>
                             );
                           })}
@@ -187,7 +187,7 @@ export default function GameRoomPage() {
                       <div className="space-y-6">
                         <div className="rounded-3xl border border-cyber-border bg-cyber-surface/80 p-6 transition-all duration-300\">
                           <p className="text-sm uppercase tracking-[0.2em] text-gray-400">Bonne réponse</p>
-                          <p className="mt-3 text-2xl font-semibold text-cyber-neon-blue">{reveal.correctOptionText}</p>
+                          <p className="mt-3 text-2xl font-semibold text-white">{reveal.correctOptionText}</p>
                           <p className="mt-3 text-gray-400">{reveal.explanation}</p>
                         </div>
                         <div className="grid gap-4 rounded-3xl border border-cyber-border bg-cyber-surface/80 p-6">
@@ -247,15 +247,15 @@ export default function GameRoomPage() {
                         <p className="mt-2 text-xl font-semibold">{currentPlayer?.nickname || "-"}</p>
                       </div>
                       <div className="grid gap-3">
-                        <div className="rounded-3xl border border-cyber-border bg-cyber-surface/80 p-5 transition-all duration-300 hover:bg-cyber-surface hover:border-cyber-neon-blue/20">
+                        <div className="rounded-3xl border border-cyber-border bg-cyber-surface/80 p-5 transition-all duration-300 hover:bg-cyber-surface hover:border-white/20">
                           <p className="text-xs uppercase tracking-[0.2em] text-gray-400">Score</p>
                           <p className="mt-2 text-xl font-semibold">{currentPlayer?.score ?? 0}</p>
                         </div>
-                        <div className="rounded-3xl border border-cyber-border bg-cyber-surface/80 p-5 transition-all duration-300 hover:bg-cyber-surface hover:border-cyber-neon-blue/20">
+                        <div className="rounded-3xl border border-cyber-border bg-cyber-surface/80 p-5 transition-all duration-300 hover:bg-cyber-surface hover:border-white/20">
                           <p className="text-xs uppercase tracking-[0.2em] text-gray-400">Classement</p>
                           <p className="mt-2 text-xl font-semibold">{playerRank ? `#${playerRank}` : "-"}</p>
                         </div>
-                        <div className="rounded-3xl border border-cyber-border bg-cyber-surface/80 p-5 transition-all duration-300 hover:bg-cyber-surface hover:border-cyber-neon-blue/20">
+                        <div className="rounded-3xl border border-cyber-border bg-cyber-surface/80 p-5 transition-all duration-300 hover:bg-cyber-surface hover:border-white/20">
                           <p className="text-xs uppercase tracking-[0.2em] text-gray-400">Connectés</p>
                           <p className="mt-2 text-xl font-semibold">{connectedPlayers.length}</p>
                         </div>
