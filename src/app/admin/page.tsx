@@ -200,7 +200,7 @@ export default function AdminPage() {
           <p className="mt-3 text-sm text-gray-400">Temps restant : {timeRemaining}s</p>
           <Button 
             className="mt-6 w-full" 
-            variant="destructive" 
+            variant="danger" 
             onClick={() => hostEndGame()}
           >
             Terminer la partie
@@ -228,7 +228,7 @@ export default function AdminPage() {
 
           <Button 
             className="mt-6 w-full" 
-            variant="destructive" 
+            variant="danger" 
             onClick={() => hostEndGame()}
           >
             Terminer la partie
@@ -256,7 +256,7 @@ export default function AdminPage() {
                 <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 Question suivante
               </Button>
-              <Button className="w-full" variant="destructive" onClick={() => hostEndGame()}>
+              <Button className="w-full" variant="danger" onClick={() => hostEndGame()}>
                 Terminer la partie
               </Button>
             </div>
