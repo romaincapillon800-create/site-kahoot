@@ -226,7 +226,7 @@ export function updateGameSettings(
   const previousQuestionCount = game.settings.questionCount;
 
   if (settings.questionCount !== undefined) {
-    game.settings.questionCount = Math.min(50, Math.max(5, settings.questionCount));
+    game.settings.questionCount = Math.min(100, Math.max(5, settings.questionCount));
   }
   if (settings.questionTime !== undefined) {
     game.settings.questionTime = Math.min(60, Math.max(10, settings.questionTime));

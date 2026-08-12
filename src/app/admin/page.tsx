@@ -92,7 +92,7 @@ export default function AdminPage() {
   );
 
   const normalizeSettings = (questionCount: number, questionTime: number) => ({
-    questionCount: Math.min(50, Math.max(5, Number.isFinite(questionCount) ? questionCount : 10)),
+    questionCount: Math.min(100, Math.max(5, Number.isFinite(questionCount) ? questionCount : 10)),
     questionTime: Math.min(60, Math.max(10, Number.isFinite(questionTime) ? questionTime : 20)),
   });
 
@@ -379,7 +379,7 @@ export default function AdminPage() {
                           id="create-question-count"
                           type="number"
                           min={5}
-                          max={50}
+                          max={100}
                           value={localQCount}
                           onChange={(event) => setLocalQCount(Number(event.target.value))}
                         />
