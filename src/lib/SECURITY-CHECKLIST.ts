@@ -22,6 +22,7 @@ export async function verifyAndSaveScore(
   // Fetch question from database (never from client)
   const question = await prisma.question.findUnique({
     where: { id: questionId },
+    include: { options: true }, // ✅ SECURITY: Include options for validation
   });
 
   if (!question) {
