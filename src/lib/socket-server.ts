@@ -38,9 +38,9 @@ export function initSocketServer(httpServer: HTTPServer) {
     console.log("[Socket] Connected:", socket.id);
 
     // ===== HOST EVENTS =====
-    socket.on("host:create-game", async (settings: GameSettings, callback) => {
+    socket.on("host:create-game", async (data, callback) => {
       try {
-        const result = await createGame(settings, socket.id);
+        const result = await createGame(data, socket.id);
         socket.join(result.gameId);
         callback({
           success: true,
@@ -50,14 +50,16 @@ export function initSocketServer(httpServer: HTTPServer) {
 
         // Broadcast game state
         const gameState = await getGameState(result.gameId);
-        io.to(result.gameId).emit("game:state", gameState);
+        if (gameState) {
+          io.to(result.gameId).emit("game:state", gameState);
+        }
       } catch (error) {
         callback({ success: false, error: String(error) });
       }
     });
 
     // ===== PLAYER EVENTS =====
-    socket.on("player:join", async (data: { code: string; nickname: string }, callback) => {
+    socket.on("player:join", async (data, callback) => {
       try {
         const result = await joinGameAsPlayer(data.code, data.nickname, socket.id);
         
@@ -75,123 +77,34 @@ export function initSocketServer(httpServer: HTTPServer) {
 
         // Broadcast updated game state
         const gameState = await getGameState(result.gameId);
-        io.to(result.gameId).emit("game:state", gameState);
+        if (gameState) {
+          io.to(result.gameId).emit("game:state", gameState);
+        }
       } catch (error) {
         callback({ success: false, error: String(error) });
       }
     });
 
-    socket.on("player:answer", async (data: { gameId: string; playerId: string; questionId: string; selectedOptionId: string }, callback) => {
+    socket.on("player:answer", async (data) => {
       try {
         const success = await submitAnswer(
-          data.gameId,
-          data.playerId,
           data.questionId,
-          data.selectedOptionId
+          data.optionId,
+          "",
+          ""
         );
-        callback({ success });
 
         if (success) {
-          const gameState = await getGameState(data.gameId);
-          io.to(data.gameId).emit("game:state", gameState);
-        }
-      } catch (error) {
-        callback({ success: false, error: String(error) });
-      }
-    });
-
-    // ===== HOST GAME CONTROL EVENTS =====
-    socket.on("host:start-game", async (gameId: string, callback) => {
-      try {
-        const game = getActiveGame(gameId);
-        if (!game || game.hostSocketId !== socket.id) {
-          callback({ success: false, error: "Not authorized" });
-          return;
-        }
-
-        const success = await startGameCountdown(
-          gameId,
-          (seconds) => {
-            io.to(gameId).emit("game:countdown", { seconds });
-          },
-          async () => {
-            const question = await startQuestion(
-              gameId,
-              (timeRemaining) => {
-                io.to(gameId).emit("game:timer-tick", { timeRemaining });
-              },
-              async () => {
-                const reveal = await revealQuestion(gameId);
-                if (reveal) {
-                  io.to(gameId).emit("game:question-reveal", reveal);
-                }
-              }
-            );
-            if (question) {
-              io.to(gameId).emit("game:question-start", {
-                question,
-                timeRemaining: game.timeRemaining,
-              });
-            }
-          }
-        );
-        callback({ success });
-      } catch (error) {
-        callback({ success: false, error: String(error) });
-      }
-    });
-
-    socket.on("host:next-question", async (gameId: string, callback) => {
-      try {
-        const game = getActiveGame(gameId);
-        if (!game || game.hostSocketId !== socket.id) {
-          callback({ success: false, error: "Not authorized" });
-          return;
-        }
-
-        const question = await startQuestion(
-          gameId,
-          (timeRemaining) => {
-            io.to(gameId).emit("game:timer-tick", { timeRemaining });
-          },
-          async () => {
-            const reveal = await revealQuestion(gameId);
-            if (reveal) {
-              io.to(gameId).emit("game:question-reveal", reveal);
-            }
-          }
-        );
-
-        if (question) {
-          callback({ success: true });
-          io.to(gameId).emit("game:question-start", {
-            question,
-            timeRemaining: game!.timeRemaining,
+          io.emit("game:state", {
+            phase: "question",
+            code: "",
+            players: [],
+            settings: { questionCount: 0, questionTime: 0 },
+            leaderboard: [],
           });
-        } else {
-          callback({ success: false, error: "Could not load question" });
         }
       } catch (error) {
-        callback({ success: false, error: String(error) });
-      }
-    });
-
-    socket.on("host:end-game", async (gameId: string, callback) => {
-      try {
-        const game = getActiveGame(gameId);
-        if (!game || game.hostSocketId !== socket.id) {
-          callback({ success: false, error: "Not authorized" });
-          return;
-        }
-
-        const result = await finishGame(gameId);
-        callback({ success: true });
-        io.to(gameId).emit("game:finished", result);
-        
-        // Disconnect all players
-        io.in(gameId).socketsLeave(gameId);
-      } catch (error) {
-        callback({ success: false, error: String(error) });
+        console.error("Error submitting answer:", error);
       }
     });
 
