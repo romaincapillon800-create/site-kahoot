@@ -186,8 +186,8 @@ export async function joinGameAsPlayer(
     }
   }
 
-  if (activeGame.players.size >= 50) {
-    return { error: "La partie est complète (50 joueurs max)." };
+  if (activeGame.players.size >= 100) {
+    return { error: "La partie est complète (100 joueurs max)." };
   }
 
   const playerId = `player-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;

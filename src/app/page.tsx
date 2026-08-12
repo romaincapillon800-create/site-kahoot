@@ -165,7 +165,7 @@ export default function HomePage() {
             {[
               { icon: Zap, title: "Temps réel", desc: "Socket.IO ultra-rapide" },
               { icon: Trophy, title: "Expert", desc: "50 questions difficiles" },
-              { icon: Users, title: "Multijoueur", desc: "Jusqu'à 50 joueurs" },
+              { icon: Users, title: "Multijoueur", desc: "Jusqu'à 100 joueurs" },
             ].map(({ icon: Icon, title, desc }, i) => (
               <div
                 key={title}
