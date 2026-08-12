@@ -371,12 +371,13 @@ export default function AdminPage() {
           ) : !isHost ? (
             <>
               <div className="grid gap-6 lg:grid-cols-2">
-                <Card className="p-0 overflow-hidden">
-                  <CardHeader>
-                    <CardTitle>Créer une nouvelle partie</CardTitle>
-                    <CardDescription>Choisissez le nombre de questions et le temps par question.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
+                {tab === "create" && (
+                  <Card className="p-0 overflow-hidden">
+                    <CardHeader>
+                      <CardTitle>Créer une nouvelle partie</CardTitle>
+                      <CardDescription>Choisissez le nombre de questions et le temps par question.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
                     <form onSubmit={handleCreate} className="space-y-5">
                       <div>
                         <Label htmlFor="create-question-count">Nombre de questions</Label>
@@ -425,32 +426,35 @@ export default function AdminPage() {
                     </form>
                   </CardContent>
                 </Card>
+                )}
 
-                <Card className="p-0 overflow-hidden">
-                  <CardHeader>
-                    <CardTitle>Rejoindre une partie existante</CardTitle>
-                    <CardDescription>Utilisez un code de partie pour prendre la main.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <form onSubmit={handleJoin} className="space-y-5">
-                      <div>
-                        <Label htmlFor="host-code">Code de la partie</Label>
-                        <Input
-                          id="host-code"
-                          type="text"
-                          maxLength={6}
-                          value={joinCode}
-                          onChange={(event) => setJoinCode(event.target.value.toUpperCase())}
-                          placeholder="Ex: A8KD9P"
-                        />
-                      </div>
-                      {actionError && <p className="text-sm text-red-400">{actionError}</p>}
-                      <Button type="submit" disabled={loading || !joinCode.trim()}>
-                        {loading ? "Connexion..." : "Rejoindre la partie"}
-                      </Button>
-                    </form>
-                  </CardContent>
-                </Card>
+                {tab === "join" && (
+                  <Card className="p-0 overflow-hidden">
+                    <CardHeader>
+                      <CardTitle>Rejoindre une partie existante</CardTitle>
+                      <CardDescription>Utilisez un code de partie pour prendre la main.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <form onSubmit={handleJoin} className="space-y-5">
+                        <div>
+                          <Label htmlFor="host-code">Code de la partie</Label>
+                          <Input
+                            id="host-code"
+                            type="text"
+                            maxLength={6}
+                            value={joinCode}
+                            onChange={(event) => setJoinCode(event.target.value.toUpperCase())}
+                            placeholder="Ex: A8KD9P"
+                          />
+                        </div>
+                        {actionError && <p className="text-sm text-red-400">{actionError}</p>}
+                        <Button type="submit" disabled={loading || !joinCode.trim()}>
+                          {loading ? "Connexion..." : "Rejoindre la partie"}
+                        </Button>
+                      </form>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             </>
           ) : (
