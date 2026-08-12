@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Lock, Play, Settings2, Shield, Users } from "lucide-react";
+import { ArrowRight, Lock, Play, Settings2, Shield, Users, X } from "lucide-react";
 import { AnimatedBackground } from "@/components/ui/animated-background";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,6 +18,7 @@ import {
   hostStartGame,
   hostUpdateSettings,
   hostEndGame,
+  hostKickPlayer,
   useSocket,
 } from "@/lib/socket-client";
 
@@ -455,9 +456,19 @@ export default function AdminPage() {
                               <p className="truncate text-sm font-semibold">{player.nickname}</p>
                               <p className="text-xs text-gray-500">{player.score} pts</p>
                             </div>
-                            <span className="rounded-full bg-cyber-neon-blue/10 px-2 py-1 text-xs text-cyber-neon-blue flex-shrink-0">
-                              {player.isConnected ? "✓" : "✗"}
-                            </span>
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                              <span className="rounded-full bg-cyber-neon-blue/10 px-2 py-1 text-xs text-cyber-neon-blue">
+                                {player.isConnected ? "✓" : "✗"}
+                              </span>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => hostKickPlayer(player.id)}
+                                className="h-8 w-8 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                              >
+                                <X className="w-4 h-4" aria-hidden="true" />
+                              </Button>
+                            </div>
                           </div>
                         </li>
                       ))}
