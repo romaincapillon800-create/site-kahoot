@@ -170,7 +170,7 @@ export default function GameRoomPage() {
                                 disabled={hasAnswered}
                                 className={`w-full rounded-3xl border p-5 text-left transition-all duration-300 ${
                                   selected
-                                    ? "border-white bg-white/10"
+                                    ? "border-white bg-white/25"
                                     : "border-cyber-border bg-cyber-surface/80 hover:border-white/50"
                                 }`}
                               >
