@@ -28,9 +28,23 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files
+# ===== SECRETS & ENVIRONMENT =====
 .env
 .env*.local
+.env.production
+.env.production.local
+.env.*.local
+secrets.json
+credentials.json
+private-key.pem
+*.backup
+*.bak
+
+# IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+.idea
 
 # vercel
 .vercel
@@ -41,3 +55,13 @@ next-env.d.ts
 
 # prisma
 prisma/*.db
+prisma/*.sqlite
+
+# logs
+logs/
+*.log
+
+# temporary
+.tmp/
+temp/
+

@@ -10,7 +10,9 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "security:audit": "npm audit --audit-level=moderate",
+    "security:check": "npm audit --fix"
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
