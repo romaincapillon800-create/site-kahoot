@@ -50,6 +50,7 @@ export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [localQCount, setLocalQCount] = useState(settings.questionCount);
   const [localQTime, setLocalQTime] = useState(settings.questionTime);
+  const [selectedCategory, setSelectedCategory] = useState<string>("global");
   const [loading, setLoading] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [leaderboardCountdown, setLeaderboardCountdown] = useState<number | null>(null);
@@ -121,7 +122,7 @@ export default function AdminPage() {
     setLocalQCount(nextSettings.questionCount);
     setLocalQTime(nextSettings.questionTime);
 
-    const result = await createGame(nextSettings);
+    const result = await createGame({ ...nextSettings, category: selectedCategory });
 
     setLoading(false);
 
@@ -394,6 +395,50 @@ export default function AdminPage() {
                           value={localQTime}
                           onChange={(event) => setLocalQTime(Number(event.target.value))}
                         />
+                      </div>
+                      <div>
+                        <Label htmlFor="create-category">Catégorie</Label>
+                        <select
+                          id="create-category"
+                          value={selectedCategory}
+                          onChange={(event) => setSelectedCategory(event.target.value)}
+                          className="w-full rounded-xl border border-cyber-border bg-cyber-surface/80 px-4 py-3 text-white transition-all duration-300 focus:outline-none focus:border-white/50 focus:ring-2 focus:ring-white/20"
+                        >
+                          <option value="global">Global (toutes les catégories)</option>
+                          <option value="Kerberos">Kerberos</option>
+                          <option value="Active Directory">Active Directory</option>
+                          <option value="MITRE ATT&CK">MITRE ATT&CK</option>
+                          <option value="Windows Internals">Windows Internals</option>
+                          <option value="Linux">Linux</option>
+                          <option value="Forensics">Forensics</option>
+                          <option value="YARA">YARA</option>
+                          <option value="Sigma">Sigma</option>
+                          <option value="Cryptography">Cryptography</option>
+                          <option value="PKI">PKI</option>
+                          <option value="TLS">TLS</option>
+                          <option value="OAuth">OAuth</option>
+                          <option value="JWT">JWT</option>
+                          <option value="OWASP">OWASP</option>
+                          <option value="RCE">RCE</option>
+                          <option value="XXE">XXE</option>
+                          <option value="SSRF">SSRF</option>
+                          <option value="CSRF">CSRF</option>
+                          <option value="LDAP Injection">LDAP Injection</option>
+                          <option value="SQL Injection">SQL Injection</option>
+                          <option value="Buffer Overflow">Buffer Overflow</option>
+                          <option value="Race Conditions">Race Conditions</option>
+                          <option value="Privilege Escalation">Privilege Escalation</option>
+                          <option value="Reverse Engineering">Reverse Engineering</option>
+                          <option value="Malwares">Malwares</option>
+                          <option value="Rootkits">Rootkits</option>
+                          <option value="Cloud AWS">Cloud AWS</option>
+                          <option value="Azure">Azure</option>
+                          <option value="GCP">GCP</option>
+                          <option value="Docker">Docker</option>
+                          <option value="Kubernetes">Kubernetes</option>
+                          <option value="SIEM">SIEM</option>
+                          <option value="Threat Hunting">Threat Hunting</option>
+                        </select>
                       </div>
                       {actionError && <p className="text-sm text-red-400">{actionError}</p>}
                       <Button type="submit" disabled={loading}>

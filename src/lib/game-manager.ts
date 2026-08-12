@@ -492,9 +492,18 @@ export async function loadQuestionsForGame(gameId: string): Promise<void> {
   const game = activeGames.get(gameId);
   if (!game || game.questionIds.length > 0) return;
 
-  const selectedQuestions = shuffle(questionCatalog).slice(
+  let availableQuestions = questionCatalog;
+  
+  // Filtrer par catégorie si spécifiée
+  if (game.settings.category && game.settings.category !== "global") {
+    availableQuestions = questionCatalog.filter(
+      (q) => q.category === game.settings.category
+    );
+  }
+
+  const selectedQuestions = shuffle(availableQuestions).slice(
     0,
-    Math.min(game.settings.questionCount, questionCatalog.length)
+    Math.min(game.settings.questionCount, availableQuestions.length)
   );
   game.questionIds = selectedQuestions.map((question) => question.id);
 }
