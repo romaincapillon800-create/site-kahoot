@@ -461,7 +461,7 @@ export default function AdminPage() {
                         onChange={(e) => setPlayerSearchFilter(e.target.value)}
                         className="rounded-2xl border border-cyber-border bg-cyber-surface/80 px-4 py-2 text-sm text-white placeholder-gray-500"
                       />
-                      <ul className="space-y-3 max-h-80 overflow-y-auto pr-2">
+                      <ul className="space-y-3 max-h-screen overflow-y-auto pr-2">
                         {filteredPlayers.length === 0 ? (
                           <li className="text-sm text-gray-400 text-center py-4">Aucun joueur ne correspond à votre recherche.</li>
                         ) : (
