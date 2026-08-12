@@ -125,7 +125,7 @@ export function initSocketServer(httpServer: HTTPServer) {
     socket.on("host:create-game", async (settings, callback) => {
       try {
         if (!socket.data.isAdmin) {
-          callback({ success: false, error: "Connectez-vous en tant qu’administrateur." });
+          callback({ success: false, error: "Connectez-vous en tant qu'administrateur." });
           return;
         }
 
@@ -152,7 +152,7 @@ export function initSocketServer(httpServer: HTTPServer) {
     socket.on("host:join-game", async ({ code }, callback) => {
       try {
         if (!socket.data.isAdmin) {
-          callback({ success: false, error: "Connectez-vous en tant qu’administrateur." });
+          callback({ success: false, error: "Connectez-vous en tant qu'administrateur." });
           return;
         }
 
