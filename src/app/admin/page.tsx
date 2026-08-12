@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Leaderboard } from "@/components/game/leaderboard";
 import { useGameStore } from "@/store/game-store";
+import type { GameSettings } from "@/types/game";
 import {
   adminLogin,
   createGame,
@@ -92,7 +93,7 @@ export default function AdminPage() {
     player.nickname.toLowerCase().includes(playerSearchFilter.toLowerCase())
   );
 
-  const normalizeSettings = (questionCount: number, questionTime: number) => ({
+  const normalizeSettings = (questionCount: number, questionTime: number): GameSettings => ({
     questionCount: Math.min(100, Math.max(5, Number.isFinite(questionCount) ? questionCount : 10)),
     questionTime: Math.min(60, Math.max(10, Number.isFinite(questionTime) ? questionTime : 20)),
   });
@@ -118,11 +119,14 @@ export default function AdminPage() {
     setActionError(null);
     setLoading(true);
 
-    const nextSettings = normalizeSettings(localQCount, localQTime);
+    const nextSettings: GameSettings = {
+      ...normalizeSettings(localQCount, localQTime),
+      category: selectedCategory,
+    };
     setLocalQCount(nextSettings.questionCount);
     setLocalQTime(nextSettings.questionTime);
 
-    const result = await createGame({ ...nextSettings, category: selectedCategory });
+    const result = await createGame(nextSettings);
 
     setLoading(false);
 
