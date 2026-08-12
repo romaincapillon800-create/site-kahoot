@@ -44,6 +44,7 @@ export default function AdminPage() {
   const reveal = useGameStore((state) => state.reveal);
   const leaderboard = useGameStore((state) => state.leaderboard);
   const error = useGameStore((state) => state.error);
+  const resetGame = useGameStore((state) => state.reset);
 
   const [tab, setTab] = useState<"create" | "join">("create");
   const [joinCode, setJoinCode] = useState("");
@@ -290,6 +291,13 @@ export default function AdminPage() {
             <div className="mt-5">
               <Leaderboard entries={leaderboard} compact />
             </div>
+            <Button 
+              className="mt-6 w-full" 
+              onClick={() => resetGame()}
+            >
+              <Play className="w-4 h-4" aria-hidden="true" />
+              Relancer une partie
+            </Button>
           </div>
         </div>
       );
@@ -370,7 +378,7 @@ export default function AdminPage() {
             </>
           ) : !isHost ? (
             <>
-              <div className="grid gap-6 lg:grid-cols-2">
+              <div className="mx-auto max-w-xl">
                 {tab === "create" && (
                   <Card className="p-0 overflow-hidden">
                     <CardHeader>
