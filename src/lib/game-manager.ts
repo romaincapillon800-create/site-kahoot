@@ -323,13 +323,13 @@ export async function startQuestion(
 
   onTick(game.timeRemaining);
 
-  game.timer = setInterval(() => {
+  game.timer = setInterval(async () => {
     game.timeRemaining--;
     onTick(game.timeRemaining);
 
     if (game.timeRemaining <= 0) {
       clearGameTimer(game);
-      void onComplete();
+      await onComplete();
     }
   }, 1000);
 
