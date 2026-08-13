@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Leaderboard } from "@/components/game/leaderboard";
+import { CategorySelector } from "@/components/category-selector";
 import { useGameStore } from "@/store/game-store";
 import type { GameSettings } from "@/types/game";
 import {
@@ -410,22 +411,11 @@ export default function AdminPage() {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="create-category">Catégorie</Label>
-                        <select
-                          id="create-category"
+                        <Label htmlFor="create-category" className="mb-3 block">Catégorie</Label>
+                        <CategorySelector
                           value={selectedCategory}
-                          onChange={(event) => setSelectedCategory(event.target.value)}
-                          className="w-full rounded-xl border border-cyber-border bg-cyber-surface/80 px-4 py-3 text-white transition-all duration-300 focus:outline-none focus:border-white/50 focus:ring-2 focus:ring-white/20"
-                        >
-                          <option value="global">Global (toutes les catégories)</option>
-                          <option value="reseau-infra">Réseau & Infrastructure</option>
-                          <option value="web-apis">Web & APIs</option>
-                          <option value="crypto">Cryptographie</option>
-                          <option value="malware-re">Malware & Reverse Engineering</option>
-                          <option value="incident-response">Incident Response</option>
-                          <option value="attaques">Attaques</option>
-                          <option value="securite-donnees">Sécurité des données</option>
-                        </select>
+                          onChange={setSelectedCategory}
+                        />
                       </div>
                       {actionError && <p className="text-sm text-red-400">{actionError}</p>}
                       <Button type="submit" disabled={loading}>
