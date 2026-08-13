@@ -245,26 +245,26 @@ export function CategorySelector({
   onChange: (value: string) => void;
 }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Global Option */}
       <motion.button
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         onClick={() => onChange("global")}
         className={cn(
-          "w-full rounded-2xl border-2 transition-all duration-300 p-4 text-left",
+          "w-full rounded-lg border transition-all duration-300 p-2.5 text-left text-sm",
           value === "global"
             ? "border-white bg-white/10 shadow-lg shadow-white/20"
             : "border-cyber-border hover:border-white/30 bg-cyber-surface/30"
         )}
       >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-            <Globe className="w-5 h-5 text-white" />
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
+            <Globe className="w-4 h-4 text-white" />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="font-semibold text-white">Toutes les catégories</p>
-            <p className="text-sm text-gray-400">50 questions variées</p>
+            <p className="text-xs text-gray-400">50 questions variées</p>
           </div>
         </div>
       </motion.button>
@@ -272,38 +272,38 @@ export function CategorySelector({
       {/* Category Groups */}
       {Object.entries(CATEGORY_GROUPS).map((group, groupIdx) => (
         <div key={group[0]}>
-          <p className="px-2 mb-3 text-xs uppercase tracking-[0.2em] text-gray-500 font-semibold">
+          <p className="px-2 mb-2 text-xs uppercase tracking-[0.15em] text-gray-600 font-semibold">
             {group[0]}
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {group[1].map((category, catIdx) => (
               <motion.button
                 key={category.id}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: (groupIdx * 3 + catIdx) * 0.05 }}
+                transition={{ delay: (groupIdx * 3 + catIdx) * 0.02 }}
                 onClick={() => onChange(category.id)}
                 className={cn(
-                  "rounded-xl border transition-all duration-300 p-4 text-left group",
+                  "rounded-lg border transition-all duration-300 p-2.5 text-left group",
                   value === category.id
                     ? "border-white bg-white/10 shadow-lg shadow-white/20"
                     : "border-cyber-border hover:border-white/30 bg-cyber-surface/30 hover:bg-cyber-surface/50"
                 )}
               >
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-2">
                   <div
                     className={cn(
-                      "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300",
+                      "w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300",
                       value === category.id
                         ? "bg-white/20 text-white"
                         : "bg-white/5 text-gray-400 group-hover:bg-white/10"
                     )}
                   >
-                    {category.icon}
+                    {category.icon && <span className="w-4 h-4">{category.icon}</span>}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-white text-sm">{category.label}</p>
-                    <p className="text-xs text-gray-400 mt-1 line-clamp-2">
+                    <p className="font-semibold text-white text-xs">{category.label}</p>
+                    <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">
                       {category.description}
                     </p>
                   </div>
