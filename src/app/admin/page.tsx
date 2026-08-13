@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { ArrowRight, Lock, Play, Settings2, Shield, Users, X } from "lucide-react";
 import { AnimatedBackground } from "@/components/ui/animated-background";
 import { Button } from "@/components/ui/button";
@@ -58,6 +59,7 @@ export default function AdminPage() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [leaderboardCountdown, setLeaderboardCountdown] = useState<number | null>(null);
   const [playerSearchFilter, setPlayerSearchFilter] = useState("");
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
 
   useEffect(() => {
     setLocalQCount(settings.questionCount);
@@ -94,6 +96,49 @@ export default function AdminPage() {
   const filteredPlayers = connectedPlayers.filter((player) =>
     player.nickname.toLowerCase().includes(playerSearchFilter.toLowerCase())
   );
+
+  const getSelectedCategoryLabel = () => {
+    if (selectedCategory === "global") return "Toutes les catégories";
+    
+    // Map to find the label for a category ID
+    const categoryMap: Record<string, string> = {
+      "kerberos": "Kerberos",
+      "active-directory": "Active Directory",
+      "windows": "Windows Internals",
+      "linux": "Linux Internals",
+      "aws": "AWS",
+      "azure": "Azure",
+      "gcp": "GCP",
+      "docker": "Docker",
+      "kubernetes": "Kubernetes",
+      "oauth": "OAuth",
+      "jwt": "JWT",
+      "owasp": "OWASP",
+      "sql-injection": "SQL Injection",
+      "xxe": "XXE",
+      "ssrf": "SSRF",
+      "csrf": "CSRF",
+      "ldap-injection": "LDAP Injection",
+      "crypto": "Cryptographie",
+      "pki": "PKI",
+      "tls": "TLS",
+      "malwares": "Malwares",
+      "rootkits": "Rootkits",
+      "reverse-engineering": "Reverse Engineering",
+      "yara": "YARA",
+      "sigma": "Sigma",
+      "forensics": "Forensics",
+      "siem": "SIEM",
+      "rce": "RCE",
+      "buffer-overflow": "Buffer Overflow",
+      "privilege-escalation": "Privilege Escalation",
+      "race-conditions": "Race Conditions",
+      "mitre-attack": "MITRE ATT&CK",
+      "threat-hunting": "Threat Hunting",
+    };
+    
+    return categoryMap[selectedCategory] || selectedCategory;
+  };
 
   const normalizeSettings = (questionCount: number, questionTime: number): GameSettings => ({
     questionCount: Math.min(100, Math.max(5, Number.isFinite(questionCount) ? questionCount : 10)),
@@ -412,10 +457,15 @@ export default function AdminPage() {
                       </div>
                       <div>
                         <Label htmlFor="create-category" className="mb-3 block">Catégorie</Label>
-                        <CategorySelector
-                          value={selectedCategory}
-                          onChange={setSelectedCategory}
-                        />
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          onClick={() => setShowCategoryModal(true)}
+                          className="w-full justify-between"
+                        >
+                          <span>{getSelectedCategoryLabel()}</span>
+                          <span className="text-xs">Modifier</span>
+                        </Button>
                       </div>
                       {actionError && <p className="text-sm text-red-400">{actionError}</p>}
                       <Button type="submit" disabled={loading}>
@@ -523,6 +573,33 @@ export default function AdminPage() {
           )}
         </div>
       </main>
+
+      {/* Category Selection Modal */}
+      {showCategoryModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.2 }}
+            className="w-full max-w-2xl max-h-96 overflow-y-auto rounded-3xl border border-cyber-border bg-cyber-surface/95 p-6"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-white">Sélectionner une catégorie</h2>
+              <button
+                onClick={() => setShowCategoryModal(false)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <CategorySelector
+              value={selectedCategory}
+              onChange={setSelectedCategory}
+              onClose={() => setShowCategoryModal(false)}
+            />
+          </motion.div>
+        </div>
+      )}
     </>
   );
 }
