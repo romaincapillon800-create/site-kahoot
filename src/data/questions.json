@@ -1,497 +1,299 @@
 [
   {
-    "text": "Dans Kerberos, quel type de ticket permet à un service d'authentifier un utilisateur auprès d'un autre service (delegation) ?",
-    "category": "Kerberos",
-    "explanation": "Le TGT (Ticket Granting Ticket) avec le flag forwardable permet la délégation via S4U2self/S4U2proxy.",
+    "text": "Quel composant Kerberos délivre le ticket ?",
+    "category": "kerberos",
+    "explanation": "La bonne réponse est : TGT",
     "options": [
-      { "text": "Ticket Granting Ticket (TGT) avec flag forwardable", "isCorrect": true },
-      { "text": "Service Ticket (ST) standard sans delegation", "isCorrect": false },
-      { "text": "Pre-authentication ticket (PA-TGS-REQ)", "isCorrect": false },
-      { "text": "Silver Ticket forgé offline", "isCorrect": false }
+      { "text": "TGT", "isCorrect": true },
+      { "text": "ST", "isCorrect": false },
+      { "text": "PAC", "isCorrect": false },
+      { "text": "KDC", "isCorrect": false }
     ]
   },
   {
-    "text": "Quelle attaque Kerberos exploite l'absence de validation du PAC dans un Silver Ticket ?",
-    "category": "Kerberos",
-    "explanation": "Un Silver Ticket forgé avec le hash NT du service permet d'injecter des SIDs arbitraires si le PAC n'est pas validé auprès du KDC.",
+    "text": "Qu'est-ce qu'un TGT ?",
+    "category": "kerberos",
+    "explanation": "La bonne réponse est : Un ticket pour obtenir un ST",
     "options": [
-      { "text": "Injection de SID arbitraires via PAC non validé", "isCorrect": true },
-      { "text": "AS-REP Roasting avec preauth disabled", "isCorrect": false },
-      { "text": "Pass-the-Hash sur le TGT", "isCorrect": false },
-      { "text": "Golden Ticket via krbtgt hash", "isCorrect": false }
+      { "text": "Un ticket pour obtenir un ST", "isCorrect": true },
+      { "text": "Un mot de passe", "isCorrect": false },
+      { "text": "Une clé", "isCorrect": false },
+      { "text": "Un cert", "isCorrect": false }
     ]
   },
   {
-    "text": "En Active Directory, quel attribut LDAP indique qu'un compte peut être cible de Kerberoasting ?",
-    "category": "Active Directory",
-    "explanation": "Les comptes avec un SPN (Service Principal Name) enregistré sont vulnérables au Kerberoasting.",
+    "text": "Qu'est-ce qu'un Golden Ticket ?",
+    "category": "kerberos",
+    "explanation": "La bonne réponse est : Un TGT forgé avec le hash KRBTGT",
     "options": [
-      { "text": "servicePrincipalName (SPN)", "isCorrect": true },
-      { "text": "userPrincipalName (UPN)", "isCorrect": false },
-      { "text": "distinguishedName (DN)", "isCorrect": false },
-      { "text": "objectSid uniquement", "isCorrect": false }
+      { "text": "Un TGT forgé avec le hash KRBTGT", "isCorrect": true },
+      { "text": "Un certificat", "isCorrect": false },
+      { "text": "Un mot de passe", "isCorrect": false },
+      { "text": "Un hash", "isCorrect": false }
     ]
   },
   {
-    "text": "Quelle technique MITRE ATT&CK correspond au cracking offline de tickets Kerberos ?",
-    "category": "MITRE ATT&CK",
-    "explanation": "T1558.003 - Kerberoasting : extraction et cracking offline du chiffrement RC4/AES des tickets de service.",
+    "text": "Qu'est-ce qu'un SID ?",
+    "category": "active-directory",
+    "explanation": "La bonne réponse est : Un identifiant unique d'un objet AD",
     "options": [
-      { "text": "T1558.003 - Kerberoasting", "isCorrect": true },
-      { "text": "T1558.001 - Golden Ticket", "isCorrect": false },
-      { "text": "T1550.002 - Pass the Hash", "isCorrect": false },
-      { "text": "T1003.006 - DCSync", "isCorrect": false }
+      { "text": "Un identifiant unique d'un objet AD", "isCorrect": true },
+      { "text": "Un mot de passe", "isCorrect": false },
+      { "text": "Un hash", "isCorrect": false },
+      { "text": "Un cert", "isCorrect": false }
     ]
   },
   {
-    "text": "Sur Windows, quel mécanisme associe un token d'accès à un processus lors de la création ?",
-    "category": "Windows Internals",
-    "explanation": "Le kernel duplique le token du processus parent (Primary Token) lors de CreateProcess, contenant SIDs et privilèges.",
+    "text": "Quel attribut LDAP identifie un utilisateur ?",
+    "category": "active-directory",
+    "explanation": "La bonne réponse est : samAccountName",
     "options": [
-      { "text": "Duplication du Primary Token via SeAssignPrimaryTokenPrivilege", "isCorrect": true },
-      { "text": "Injection directe dans le PEB sans token", "isCorrect": false },
-      { "text": "Création d'un thread token permanent uniquement", "isCorrect": false },
-      { "text": "Mapping GDI object handle to token", "isCorrect": false }
+      { "text": "samAccountName", "isCorrect": true },
+      { "text": "SID", "isCorrect": false },
+      { "text": "SPN", "isCorrect": false },
+      { "text": "GUID", "isCorrect": false }
     ]
   },
   {
-    "text": "Quelle syscall Linux x86_64 remplace l'ancienne interface int 0x80 pour les appels système ?",
-    "category": "Linux",
-    "explanation": "Sur x86_64, SYSCALL/SYSRET remplacent int 0x80, avec le numéro de syscall dans RAX et les arguments dans RDI, RSI, RDX, R10, R8, R9.",
+    "text": "Quel objet peut contenir des groupes ?",
+    "category": "active-directory",
+    "explanation": "La bonne réponse est : Le domaine",
     "options": [
-      { "text": "syscall (instruction x86_64)", "isCorrect": true },
-      { "text": "int 0x80 (legacy x86)", "isCorrect": false },
-      { "text": "sysenter uniquement", "isCorrect": false },
-      { "text": "callgate via IDT segment", "isCorrect": false }
+      { "text": "Le domaine", "isCorrect": true },
+      { "text": "Le service web", "isCorrect": false },
+      { "text": "Le patch", "isCorrect": false },
+      { "text": "Le noyau", "isCorrect": false }
     ]
   },
   {
-    "text": "En forensics Linux, quel artefact persiste les commandes exécutées dans bash ?",
-    "category": "Forensics",
-    "explanation": "~/.bash_history stocke les commandes limitées par HISTSIZE. Les attaquants effacent les traces avec unset HISTFILE ou history -c.",
+    "text": "Quel protocole TCP/IP est au niveau couche 4 ?",
+    "category": "reseau",
+    "explanation": "La bonne réponse est : TCP",
     "options": [
-      { "text": "~/.bash_history (fichier d'historique utilisateur)", "isCorrect": true },
-      { "text": "/var/log/auth.log uniquement", "isCorrect": false },
-      { "text": "/proc/sys/kernel/core_pattern", "isCorrect": false },
-      { "text": "/etc/shadow", "isCorrect": false }
+      { "text": "TCP", "isCorrect": true },
+      { "text": "IP", "isCorrect": false },
+      { "text": "HTTP", "isCorrect": false },
+      { "text": "DNS", "isCorrect": false }
     ]
   },
   {
-    "text": "Quelle règle YARA permet de détecter des chaînes ASCII et wide (UTF-16) simultanément ?",
-    "category": "YARA",
-    "explanation": "Le modificateur 'wide ascii' sur une string rule détecte les deux encodages : $s = \"malware\" wide ascii.",
+    "text": "Quel modèle défini les 7 couches réseau ?",
+    "category": "reseau",
+    "explanation": "La bonne réponse est : OSI",
     "options": [
-      { "text": "Modificateur 'wide ascii' sur une string rule", "isCorrect": true },
-      { "text": "Directive 'include' uniquement", "isCorrect": false },
-      { "text": "Meta section 'encoding'", "isCorrect": false },
-      { "text": "Condition 'pe.imports'", "isCorrect": false }
+      { "text": "OSI", "isCorrect": true },
+      { "text": "TCP/IP", "isCorrect": false },
+      { "text": "HTTP", "isCorrect": false },
+      { "text": "DHCP", "isCorrect": false }
     ]
   },
   {
-    "text": "En Sigma, quel champ indique le produit SIEM cible pour la conversion de règle ?",
-    "category": "Sigma",
-    "explanation": "Le champ 'logsource' définit product (ex: windows, aws), service (ex: security, sysmon) et category pour adapter la règle au backend.",
+    "text": "Quel port est utilisé par SSH par défaut ?",
+    "category": "reseau",
+    "explanation": "La bonne réponse est : 22",
     "options": [
-      { "text": "logsource (product, service, category)", "isCorrect": true },
-      { "text": "detection.level uniquement", "isCorrect": false },
-      { "text": "tags.mitre uniquement", "isCorrect": false },
-      { "text": "falsepositives array", "isCorrect": false }
+      { "text": "22", "isCorrect": true },
+      { "text": "23", "isCorrect": false },
+      { "text": "80", "isCorrect": false },
+      { "text": "443", "isCorrect": false }
     ]
   },
   {
-    "text": "Quelle propriété cryptographique garantit qu'un message chiffré ne révèle aucune information sur le plaintext ?",
-    "category": "Cryptography",
-    "explanation": "IND-CPA (Indistinguishability under Chosen Plaintext Attack) : AES-GCM et ChaCha20-Poly1305 satisfont cette propriété.",
+    "text": "Qu'est-ce qu'une adresse IP privée ?",
+    "category": "reseau",
+    "explanation": "La bonne réponse est : 192.168.x.x, 10.x.x.x",
     "options": [
-      { "text": "IND-CPA (Indistinguishability under Chosen Plaintext Attack)", "isCorrect": true },
-      { "text": "Collision resistance du hash uniquement", "isCorrect": false },
-      { "text": "Compression sans perte", "isCorrect": false },
-      { "text": "Entropie Shannon > 7 bits", "isCorrect": false }
+      { "text": "192.168.x.x, 10.x.x.x", "isCorrect": true },
+      { "text": "8.8.8.8", "isCorrect": false },
+      { "text": "1.1.1.1", "isCorrect": false },
+      { "text": "google.com", "isCorrect": false }
     ]
   },
   {
-    "text": "En PKI, quelle extension X.509 indique les usages autorisés d'un certificat ?",
-    "category": "PKI",
-    "explanation": "Extended Key Usage (EKU) OID spécifie serverAuth, clientAuth, codeSigning, etc. Key Usage définit les opérations cryptographiques de base.",
+    "text": "Quel protocole sécurise le trafic HTTP ?",
+    "category": "reseau",
+    "explanation": "La bonne réponse est : HTTPS",
     "options": [
-      { "text": "Extended Key Usage (EKU) + Key Usage (KU)", "isCorrect": true },
-      { "text": "Subject Alternative Name uniquement", "isCorrect": false },
-      { "text": "Authority Key Identifier pour serverAuth", "isCorrect": false },
-      { "text": "CRL Distribution Points pour chiffrement", "isCorrect": false }
+      { "text": "HTTPS", "isCorrect": true },
+      { "text": "HTTPs", "isCorrect": false },
+      { "text": "HTTP2", "isCorrect": false },
+      { "text": "SSL seul", "isCorrect": false }
     ]
   },
   {
-    "text": "En TLS 1.3, quelle amélioration élimine le support des cipher suites CBC vulnérables ?",
-    "category": "TLS",
-    "explanation": "TLS 1.3 supprime CBC mode et impose AEAD cipher suites (AES-GCM, ChaCha20-Poly1305) avec forward secrecy obligatoire.",
+    "text": "Qu'est-ce qu'un virus ?",
+    "category": "malware",
+    "explanation": "La bonne réponse est : Logiciel qui se propage en se reproduisant",
     "options": [
-      { "text": "AEAD-only cipher suites (AES-GCM, ChaCha20-Poly1305)", "isCorrect": true },
-      { "text": "Support TLS 1.0 fallback", "isCorrect": false },
-      { "text": "Renegotiation indiscriminée", "isCorrect": false },
-      { "text": "RSA key transport sans forward secrecy", "isCorrect": false }
+      { "text": "Logiciel qui se propage en se reproduisant", "isCorrect": true },
+      { "text": "Un patch", "isCorrect": false },
+      { "text": "Un cert", "isCorrect": false },
+      { "text": "Le noyau", "isCorrect": false }
     ]
   },
   {
-    "text": "Dans OAuth 2.0, quelle faille survient si le redirect_uri n'est pas strictement validé ?",
-    "category": "OAuth",
-    "explanation": "Open Redirect : un attaquant modifie redirect_uri pour intercepter le code d'autorisation et l'échanger contre un access token.",
+    "text": "Qu'est-ce qu'un ver ?",
+    "category": "malware",
+    "explanation": "La bonne réponse est : Malware auto-réplicatif sur le réseau",
     "options": [
-      { "text": "Authorization Code Interception via redirect_uri non strict", "isCorrect": true },
-      { "text": "JWT signature bypass automatique", "isCorrect": false },
-      { "text": "Refresh token rotation obligatoire", "isCorrect": false },
-      { "text": "PKCE rend redirect_uri validation inutile", "isCorrect": false }
+      { "text": "Malware auto-réplicatif sur le réseau", "isCorrect": true },
+      { "text": "Un script JS", "isCorrect": false },
+      { "text": "Un scanner", "isCorrect": false },
+      { "text": "Un JWT", "isCorrect": false }
     ]
   },
   {
-    "text": "Quelle attaque JWT exploite l'alg=none ou une clé publique RSA utilisée comme secret HMAC ?",
-    "category": "JWT",
-    "explanation": "Algorithm confusion : forcer alg=HS256 et signer avec la clé publique RSA comme secret HMAC permet de forger des tokens.",
+    "text": "Qu'est-ce qu'un Trojan ?",
+    "category": "malware",
+    "explanation": "La bonne réponse est : Logiciel apparemment inoffensif mais malveillant",
     "options": [
-      { "text": "Algorithm confusion (RS256 public key as HS256 secret)", "isCorrect": true },
-      { "text": "XSS dans le header typ uniquement", "isCorrect": false },
-      { "text": "Expiration exp trop courte", "isCorrect": false },
-      { "text": "Base64 padding incorrect", "isCorrect": false }
+      { "text": "Logiciel apparemment inoffensif mais malveillant", "isCorrect": true },
+      { "text": "Un GPO", "isCorrect": false },
+      { "text": "Un SIEM", "isCorrect": false },
+      { "text": "Une règle", "isCorrect": false }
     ]
   },
   {
-    "text": "Quelle catégorie OWASP Top 10 2021 couvre les failles de contrôle d'accès (IDOR, privilege escalation) ?",
-    "category": "OWASP",
-    "explanation": "A01:2021 - Broken Access Control remplace A5:2017 et inclut IDOR, missing function level access control, CORS misconfiguration.",
+    "text": "Que fait un botnet ?",
+    "category": "malware",
+    "explanation": "La bonne réponse est : Regroupe des machines contrôlées à distance",
     "options": [
-      { "text": "A01:2021 - Broken Access Control", "isCorrect": true },
-      { "text": "A03:2021 - Injection", "isCorrect": false },
-      { "text": "A07:2021 - Identification and Authentication Failures", "isCorrect": false },
-      { "text": "A10:2021 - SSRF", "isCorrect": false }
+      { "text": "Regroupe des machines contrôlées à distance", "isCorrect": true },
+      { "text": "Bloque le CPU", "isCorrect": false },
+      { "text": "Chiffre", "isCorrect": false },
+      { "text": "Supprime", "isCorrect": false }
     ]
   },
   {
-    "text": "Quelle technique d'exploitation RCE utilise des gadgets dans la chaîne de désérialisation Java ?",
-    "category": "RCE",
-    "explanation": "Deserialization gadget chains : Commons Collections exploitent readObject() pour exécuter du code via Runtime.exec() sans injection directe.",
+    "text": "Qu'est-ce qu'un bucket S3 public ?",
+    "category": "cloud-aws",
+    "explanation": "La bonne réponse est : Un stockage exposé publiquement",
     "options": [
-      { "text": "Deserialization gadget chains (Commons Collections)", "isCorrect": true },
-      { "text": "SQL UNION SELECT uniquement", "isCorrect": false },
-      { "text": "CSRF token bypass", "isCorrect": false },
-      { "text": "Directory listing Apache", "isCorrect": false }
+      { "text": "Un stockage exposé publiquement", "isCorrect": true },
+      { "text": "Un conteneur", "isCorrect": false },
+      { "text": "Un groupe", "isCorrect": false },
+      { "text": "Un service", "isCorrect": false }
     ]
   },
   {
-    "text": "En XXE, quel type d'entité externe permet la lecture de fichiers locaux ?",
-    "category": "XXE",
-    "explanation": "External Entity Injection : <!ENTITY xxe SYSTEM \"file:///etc/passwd\"> permet de lire des fichiers locaux. Blind XXE utilise out-of-band exfiltration.",
+    "text": "Quel service AWS sert aux calculs ?",
+    "category": "cloud-aws",
+    "explanation": "La bonne réponse est : EC2",
     "options": [
-      { "text": "External Entity (SYSTEM \"file:///path\")", "isCorrect": true },
-      { "text": "Internal DTD subset uniquement", "isCorrect": false },
-      { "text": "CDATA section sans entity", "isCorrect": false },
-      { "text": "XML namespace declaration", "isCorrect": false }
+      { "text": "EC2", "isCorrect": true },
+      { "text": "Lambda", "isCorrect": false },
+      { "text": "S3", "isCorrect": false },
+      { "text": "IAM", "isCorrect": false }
     ]
   },
   {
-    "text": "Pour exploiter SSRF vers AWS, quelle URL metadata permet d'obtenir des credentials IAM ?",
-    "category": "SSRF",
-    "explanation": "http://169.254.169.254/latest/meta-data/iam/security-credentials/{role-name} retourne AccessKeyId, SecretAccessKey et Token.",
+    "text": "Que permet une IAM policy trop permissive ?",
+    "category": "cloud-aws",
+    "explanation": "La bonne réponse est : Accès excessif à un service",
     "options": [
-      { "text": "http://169.254.169.254/latest/meta-data/iam/security-credentials/", "isCorrect": true },
-      { "text": "http://localhost:6379/INFO", "isCorrect": false },
-      { "text": "file:///etc/passwd via SSRF", "isCorrect": false },
-      { "text": "http://metadata.google.internal/computeMetadata/v1/", "isCorrect": false }
+      { "text": "Accès excessif à un service", "isCorrect": true },
+      { "text": "Diminuer le CPU", "isCorrect": false },
+      { "text": "Bloquer DNS", "isCorrect": false },
+      { "text": "Créer cert", "isCorrect": false }
     ]
   },
   {
-    "text": "Quelle protection CSRF utilise un token synchronisé stocké en session ?",
-    "category": "CSRF",
-    "explanation": "Synchronizer Token Pattern : token aléatoire en session + champ hidden. SameSite cookies complètent mais ne remplacent pas le token.",
+    "text": "Quel service Azure stocke les secrets ?",
+    "category": "azure",
+    "explanation": "La bonne réponse est : Key Vault",
     "options": [
-      { "text": "Synchronizer Token Pattern + SameSite cookies", "isCorrect": true },
-      { "text": "CORS Allow-Origin: * uniquement", "isCorrect": false },
-      { "text": "Referer check seul sans token", "isCorrect": false },
-      { "text": "HTTP Basic Auth pour GET requests", "isCorrect": false }
+      { "text": "Key Vault", "isCorrect": true },
+      { "text": "Storage Blob", "isCorrect": false },
+      { "text": "VMSS", "isCorrect": false },
+      { "text": "AAD", "isCorrect": false }
     ]
   },
   {
-    "text": "En LDAP Injection, quel caractère permet de bypasser un filtre d'authentification ?",
-    "category": "LDAP Injection",
-    "explanation": "Le wildcard * et les parenthèses (* )(uid=*) manipulent la logique du filtre LDAP pour bypasser l'authentification.",
+    "text": "Qu'est-ce qu'un NSG ?",
+    "category": "azure",
+    "explanation": "La bonne réponse est : Network Security Group",
     "options": [
-      { "text": "*)(& ou *)(|(uid=*) pour manipuler le filtre", "isCorrect": true },
-      { "text": "UNION SELECT en LDAP", "isCorrect": false },
-      { "text": "Single quote SQL-style ' OR '1'='1", "isCorrect": false },
-      { "text": "Null byte %00 en HTTP header", "isCorrect": false }
+      { "text": "Network Security Group", "isCorrect": true },
+      { "text": "Name Service Group", "isCorrect": false },
+      { "text": "No Security", "isCorrect": false },
+      { "text": "Access Key", "isCorrect": false }
     ]
   },
   {
-    "text": "En SQL Injection avancée (MySQL), quelle technique extrait des données via erreurs ?",
-    "category": "SQL Injection",
-    "explanation": "Error-based SQLi : UPDATEXML/EXTRACTVALUE force une erreur XML contenant la donnée extraite dans le message d'erreur.",
+    "text": "Quelle unité de sécurité module les accès ?",
+    "category": "azure",
+    "explanation": "La bonne réponse est : RBAC",
     "options": [
-      { "text": "Error-based via UPDATEXML/EXTRACTVALUE", "isCorrect": true },
-      { "text": "Boolean-based sans erreur", "isCorrect": false },
-      { "text": "Prepared statements PDO", "isCorrect": false },
-      { "text": "Second-order injection en NoSQL", "isCorrect": false }
+      { "text": "RBAC", "isCorrect": true },
+      { "text": "S3", "isCorrect": false },
+      { "text": "QPS", "isCorrect": false },
+      { "text": "IPAM", "isCorrect": false }
     ]
   },
   {
-    "text": "En Buffer Overflow, quelle protection DEP/NX empêche l'exécution de shellcode sur la stack ?",
-    "category": "Buffer Overflow",
-    "explanation": "DEP (Data Execution Prevention) / NX bit marque stack/heap non-exécutables. Bypass via ROP chains utilisant des gadgets existants.",
+    "text": "Qu'est-ce qu'un JWT ?",
+    "category": "jwt",
+    "explanation": "La bonne réponse est : Un token signé encodé en base64",
     "options": [
-      { "text": "DEP/NX bit + bypass via ROP chains", "isCorrect": true },
-      { "text": "ASLR désactivé par défaut", "isCorrect": false },
-      { "text": "Stack canary stocké en plaintext", "isCorrect": false },
-      { "text": "Format string sans accès mémoire", "isCorrect": false }
+      { "text": "Un token signé encodé en base64", "isCorrect": true },
+      { "text": "Un hash MD5", "isCorrect": false },
+      { "text": "Un cert X509", "isCorrect": false },
+      { "text": "Un cookie", "isCorrect": false }
     ]
   },
   {
-    "text": "Quelle Race Condition exploite le TOCTOU (Time-of-check to time-of-use) sur des fichiers ?",
-    "category": "Race Conditions",
-    "explanation": "Entre la vérification et l'utilisation d'un fichier, l'attaquant le remplace par un symlink vers des fichiers critiques comme /etc/shadow.",
+    "text": "Quelle partie du JWT contient les données ?",
+    "category": "jwt",
+    "explanation": "La bonne réponse est : Payload",
     "options": [
-      { "text": "TOCTOU symlink swap entre check et use", "isCorrect": true },
-      { "text": "SQL injection temporelle", "isCorrect": false },
-      { "text": "Buffer overflow heap feng shui", "isCorrect": false },
-      { "text": "DNS cache poisoning sans timing", "isCorrect": false }
+      { "text": "Payload", "isCorrect": true },
+      { "text": "Header", "isCorrect": false },
+      { "text": "Signature", "isCorrect": false },
+      { "text": "Nonce", "isCorrect": false }
     ]
   },
   {
-    "text": "Quelle technique Privilege Escalation Windows exploite un service avec binary path writable ?",
-    "category": "Privilege Escalation",
-    "explanation": "Unquoted Service Path : si un service SYSTEM exécute un binaire modifiable, l'attaquant remplace le .exe par un payload SYSTEM.",
+    "text": "Qu'est-ce que la signature JWT protège ?",
+    "category": "jwt",
+    "explanation": "La bonne réponse est : L'intégrité du token",
     "options": [
-      { "text": "Unquoted Service Path ou writable service binary", "isCorrect": true },
-      { "text": "Kerberoasting sur compte sans SPN", "isCorrect": false },
-      { "text": "Phishing credential harvest", "isCorrect": false },
-      { "text": "ARP spoofing local", "isCorrect": false }
+      { "text": "L'intégrité du token", "isCorrect": true },
+      { "text": "La taille du navig", "isCorrect": false },
+      { "text": "Le DNS", "isCorrect": false },
+      { "text": "Le firewall", "isCorrect": false }
     ]
   },
   {
-    "text": "En reverse engineering, quelle section PE contient le code exécutable ?",
-    "category": "Reverse Engineering",
-    "explanation": "La section .text contient le code machine avec flags IMAGE_SCN_MEM_EXECUTE et IMAGE_SCN_CNT_CODE.",
+    "text": "Que permet une injection SQL ?",
+    "category": "sql-injection",
+    "explanation": "La bonne réponse est : Manipuler la requête SQL",
     "options": [
-      { "text": ".text section avec IMAGE_SCN_MEM_EXECUTE", "isCorrect": true },
-      { "text": ".rsrc pour code exécutable principal", "isCorrect": false },
-      { "text": ".reloc sans code", "isCorrect": false },
-      { "text": "PE header DOS stub exécutable", "isCorrect": false }
+      { "text": "Manipuler la requête SQL", "isCorrect": true },
+      { "text": "Désactiver cookies", "isCorrect": false },
+      { "text": "Ralentir CPU", "isCorrect": false },
+      { "text": "Chiffrer disque", "isCorrect": false }
     ]
   },
   {
-    "text": "Quelle technique de malware remplace l'image d'un processus légitime en mémoire ?",
-    "category": "Malwares",
-    "explanation": "Process Hollowing : CreateProcess(SUSPENDED) → NtUnmapViewOfSection → WriteProcessMemory → SetThreadContext → ResumeThread.",
+    "text": "Comment se défendre ?",
+    "category": "sql-injection",
+    "explanation": "La bonne réponse est : Prepared statements",
     "options": [
-      { "text": "Process Hollowing (unmap + inject + resume)", "isCorrect": true },
-      { "text": "DNS tunneling pour C2 uniquement", "isCorrect": false },
-      { "text": "Phishing email macro", "isCorrect": false },
-      { "text": "Brute force RDP", "isCorrect": false }
+      { "text": "Prepared statements", "isCorrect": true },
+      { "text": "Utiliser HTTP", "isCorrect": false },
+      { "text": "Désactiver logs", "isCorrect": false },
+      { "text": "Supprimer regex", "isCorrect": false }
     ]
   },
   {
-    "text": "Quelle caractéristique définit un rootkit kernel-mode vs user-mode ?",
-    "category": "Rootkits",
-    "explanation": "Un rootkit kernel-mode (driver) modifie les structures kernel (SSDT hooking, DKOM) pour masquer processus, fichiers et connexions.",
+    "text": "Qu'est-ce qu'une SQLi boolean-based ?",
+    "category": "sql-injection",
+    "explanation": "La bonne réponse est : Injection dépend d'une condition",
     "options": [
-      { "text": "Hooking SSDT / DKOM via driver kernel", "isCorrect": true },
-      { "text": "Modification du fichier hosts uniquement", "isCorrect": false },
-      { "text": "Proxy PAC browser configuration", "isCorrect": false },
-      { "text": "Chrome extension malveillante", "isCorrect": false }
-    ]
-  },
-  {
-    "text": "En AWS, quel service IAM permet de définir les permissions basées sur les tags (ABAC) ?",
-    "category": "Cloud AWS",
-    "explanation": "ABAC (Attribute-Based Access Control) utilise des conditions IAM aws:ResourceTag/, aws:PrincipalTag/ pour autoriser l'accès dynamiquement.",
-    "options": [
-      { "text": "IAM ABAC avec conditions aws:ResourceTag/", "isCorrect": true },
-      { "text": "S3 bucket ACL public-read uniquement", "isCorrect": false },
-      { "text": "EC2 Security Group 0.0.0.0/0", "isCorrect": false },
-      { "text": "CloudFront sans OAI", "isCorrect": false }
-    ]
-  },
-  {
-    "text": "En Azure, quel mécanisme protège les identités managées contre l'extraction de credentials ?",
-    "category": "Azure",
-    "explanation": "IMDSv2 (Instance Metadata Service v2) exige une requête PUT initiale et limite les hops. Managed Identity obtient des tokens AAD sans secrets stockés.",
-    "options": [
-      { "text": "IMDSv2 (session-based) + Managed Identity AAD tokens", "isCorrect": true },
-      { "text": "Storage Account keys en plaintext sur VM", "isCorrect": false },
-      { "text": "Azure AD password sync vers VM", "isCorrect": false },
-      { "text": "Public blob container pour secrets", "isCorrect": false }
-    ]
-  },
-  {
-    "text": "Sur GCP, quel mécanisme permet à des workloads externes d'accéder aux APIs sans clé statique ?",
-    "category": "GCP",
-    "explanation": "Workload Identity Federation échange des tokens OIDC/SAML contre des credentials GCP temporaires via impersonation de service account.",
-    "options": [
-      { "text": "Workload Identity Federation (OIDC/SAML token exchange)", "isCorrect": true },
-      { "text": "Service account JSON key en variable d'environnement", "isCorrect": false },
-      { "text": "Compute Engine default SA avec roles/owner", "isCorrect": false },
-      { "text": "Cloud Storage public ACL", "isCorrect": false }
-    ]
-  },
-  {
-    "text": "En Docker, quelle misconfiguration permet l'évasion de conteneur via le socket Docker ?",
-    "category": "Docker",
-    "explanation": "Monter docker.sock donne accès API Docker : l'attaquant lance un conteneur privilégié avec montage du filesystem host pour obtenir root.",
-    "options": [
-      { "text": "Docker socket mount → privileged container → host access", "isCorrect": true },
-      { "text": "EXPOSE 8080 sans authentification", "isCorrect": false },
-      { "text": "Multi-stage build sans impact sécurité", "isCorrect": false },
-      { "text": "Alpine base image trop légère", "isCorrect": false }
-    ]
-  },
-  {
-    "text": "En Kubernetes, quelle ressource RBAC excessive permet la privilege escalation ?",
-    "category": "Kubernetes",
-    "explanation": "Un ServiceAccount avec cluster-admin ou permissions create pods + bind clusterroles peut obtenir un accès cluster-admin.",
-    "options": [
-      { "text": "cluster-admin ClusterRoleBinding ou create pods + bind", "isCorrect": true },
-      { "text": "ConfigMap read-only dans namespace dev", "isCorrect": false },
-      { "text": "NetworkPolicy deny-all par défaut", "isCorrect": false },
-      { "text": "Pod Security Standards restricted", "isCorrect": false }
-    ]
-  },
-  {
-    "text": "En SIEM, quelle technique détecte une chaîne d'attaque 'Initial Access → Execution → C2' ?",
-    "category": "SIEM",
-    "explanation": "Multi-stage correlation avec time window, entity tracking (user/host) et MITRE ATT&CK mapping sur la même entité.",
-    "options": [
-      { "text": "Multi-stage correlation avec entity tracking + MITRE mapping", "isCorrect": true },
-      { "text": "Single event threshold count > 1000", "isCorrect": false },
-      { "text": "Log retention policy 30 jours", "isCorrect": false },
-      { "text": "Dashboard Grafana sans alerting", "isCorrect": false }
-    ]
-  },
-  {
-    "text": "Quelle attaque DCSync requiert le droit AD DS-Replication-Get-Changes-All ?",
-    "category": "Active Directory",
-    "explanation": "DCSync simule un DC en demandant la réplication des secrets via DrsGetNCChanges. Requiert Replicating Directory Changes All Extended Rights.",
-    "options": [
-      { "text": "DS-Replication-Get-Changes-All (GUID 1131f6ad-9c07-11d1-f79f-00c04fc2dcd2)", "isCorrect": true },
-      { "text": "SeBackupPrivilege uniquement local", "isCorrect": false },
-      { "text": "GenericAll sur OU Computers", "isCorrect": false },
-      { "text": "WriteDacl sur schema partition", "isCorrect": false }
-    ]
-  },
-  {
-    "text": "En analyse malware, quelle technique d'anti-debug vérifie BeingDebugged dans le PEB ?",
-    "category": "Malwares",
-    "explanation": "Les malwares lisent gs:[0x60] → PEB → BeingDebugged flag ou utilisent NtQueryInformationProcess et timing checks.",
-    "options": [
-      { "text": "PEB BeingDebugged flag via gs:[0x60] on x64", "isCorrect": true },
-      { "text": "HTTP User-Agent check", "isCorrect": false },
-      { "text": "Registry Run key persistence", "isCorrect": false },
-      { "text": "DNS TXT record C2", "isCorrect": false }
-    ]
-  },
-  {
-    "text": "Quelle règle Sigma détecte la création de compte admin local via event Windows 4720 ?",
-    "category": "Sigma",
-    "explanation": "Event ID 4720 (user account created) + filter sur TargetSid ending in -500 (built-in Administrator RID).",
-    "options": [
-      { "text": "Event ID 4720 + TargetSid ending in -500 or admin group add", "isCorrect": true },
-      { "text": "Event ID 4624 logon type 3", "isCorrect": false },
-      { "text": "Event ID 1102 log cleared", "isCorrect": false },
-      { "text": "Event ID 7045 service installed", "isCorrect": false }
-    ]
-  },
-  {
-    "text": "En cloud AWS, comment restreindre S3 access uniquement via VPC Endpoint ?",
-    "category": "Cloud AWS",
-    "explanation": "IAM Condition aws:SourceVpce + VPC Endpoint policy forcent l'accès S3 uniquement via le VPC Endpoint privé.",
-    "options": [
-      { "text": "IAM Condition aws:SourceVpce / aws:SourceVpc + VPC Endpoint", "isCorrect": true },
-      { "text": "S3 bucket policy Allow Principal: *", "isCorrect": false },
-      { "text": "Disable MFA for IAM users", "isCorrect": false },
-      { "text": "Public subnet routing vers IGW", "isCorrect": false }
-    ]
-  },
-  {
-    "text": "En Kubernetes, quelle misconfiguration permet l'exécution de commandes via l'API Server non authentifiée ?",
-    "category": "Kubernetes",
-    "explanation": "Misconfiguration avec --anonymous-auth=true et RBAC binding clusterrole pour system:anonymous permet l'accès sans authentification.",
-    "options": [
-      { "text": "Anonymous auth enabled + RBAC binding to clusterrole", "isCorrect": true },
-      { "text": "Ingress TLS certificate expired", "isCorrect": false },
-      { "text": "Helm chart version mismatch", "isCorrect": false },
-      { "text": "CNI plugin Calico policy typo", "isCorrect": false }
-    ]
-  },
-  {
-    "text": "En cryptanalyse, quelle attaque sur RSA exploite des clés partageant le même modulo N ?",
-    "category": "Cryptography",
-    "explanation": "Common Modulus Attack : avec même N et e1, e2 copremiers, on retrouve m via extended GCD sans factoriser N.",
-    "options": [
-      { "text": "Common Modulus Attack (GCD sur exposants copremiers)", "isCorrect": true },
-      { "text": "Padding Oracle sur RSA-OAEP", "isCorrect": false },
-      { "text": "Birthday attack sur SHA-256", "isCorrect": false },
-      { "text": "Meet-in-the-middle DES", "isCorrect": false }
-    ]
-  },
-  {
-    "text": "Quelle technique de persistence AD abuse la modification de l'attribut AdminSDHolder ?",
-    "category": "Active Directory",
-    "explanation": "GenericAll/WriteMember sur AdminSDHolder permet d'ajouter un compte aux groupes protégés via SDProp toutes les 60 minutes.",
-    "options": [
-      { "text": "AdminSDHolder modification via SDProp protected groups", "isCorrect": true },
-      { "text": "GPO modification SYSVOL sans impact AD", "isCorrect": false },
-      { "text": "DNS zone transfer AXFR", "isCorrect": false },
-      { "text": "LLMNR poisoning sans AD impact", "isCorrect": false }
-    ]
-  },
-  {
-    "text": "En forensics Windows, quel artefact enregistre les binaires exécutés avec hash SHA1 ?",
-    "category": "Forensics",
-    "explanation": "Amcache.hve (C:\\Windows\\appcompat\\Programs\\Amcache.hve) enregistre exécutables avec SHA1, path, compile time et PE metadata.",
-    "options": [
-      { "text": "Amcache.hve (Application Compatibility Cache)", "isCorrect": true },
-      { "text": "pagefile.sys strings only", "isCorrect": false },
-      { "text": "hiberfil.sys sans parsing", "isCorrect": false },
-      { "text": "/etc/passwd on Windows", "isCorrect": false }
-    ]
-  },
-  {
-    "text": "Quelle attaque contre JWT refresh tokens exploite le reuse sans détection ?",
-    "category": "JWT",
-    "explanation": "Refresh Token Reuse Detection : si un token déjà roté est réutilisé, cela indique un vol. Sans cette détection, un token volé donne accès persistant.",
-    "options": [
-      { "text": "Refresh token reuse without invalidation/detection", "isCorrect": true },
-      { "text": "JWT exp claim too long on access token", "isCorrect": false },
-      { "text": "Missing typ header in JWT", "isCorrect": false },
-      { "text": "RS256 key size 2048 bits", "isCorrect": false }
-    ]
-  },
-  {
-    "text": "En Docker/Kubernetes supply chain, quelle attaque insère un malware dans une image compromise ?",
-    "category": "Docker",
-    "explanation": "Supply chain attack : image typosquatting ou compromise du maintainer. Images non vérifiées contiennent cryptominers, backdoors ou exfiltration.",
-    "options": [
-      { "text": "Compromised base image / typosquatting on registry", "isCorrect": true },
-      { "text": "HEALTHCHECK instruction abuse", "isCorrect": false },
-      { "text": "Dockerfile ARG default value", "isCorrect": false },
-      { "text": "Layer caching performance issue", "isCorrect": false }
-    ]
-  },
-  {
-    "text": "Quelle technique de Threat Hunting détecte une anomalie de beaconing C2 ?",
-    "category": "Threat Hunting",
-    "explanation": "Beaconing detection : analyse statistique des intervalles DNS/HTTP (coefficient of variation faible), jitter régulier vers NRD domains.",
-    "options": [
-      { "text": "Statistical beaconing analysis (interval CV, jitter, NRD)", "isCorrect": true },
-      { "text": "Antivirus definition update check", "isCorrect": false },
-      { "text": "Password complexity policy audit", "isCorrect": false },
-      { "text": "SSL certificate expiry monitoring only", "isCorrect": false }
-    ]
-  },
-  {
-    "text": "En analyse de rootkit, quelle technique compare les listes de processus API vs direct walk ?",
-    "category": "Rootkits",
-    "explanation": "Cross-view detection : comparer NtQuerySystemInformation vs parcours EPROCESS linked list. Un rootkit DKOM unlink un processus.",
-    "options": [
-      { "text": "Cross-view detection (API list vs direct EPROCESS walk)", "isCorrect": true },
-      { "text": "Antivirus signature scan only", "isCorrect": false },
-      { "text": "Windows Update verification", "isCorrect": false },
-      { "text": "Firewall rule count comparison", "isCorrect": false }
+      { "text": "Injection dépend d'une condition", "isCorrect": true },
+      { "text": "Un bug navigateur", "isCorrect": false },
+      { "text": "Un type upload", "isCorrect": false },
+      { "text": "Un pivot DNS", "isCorrect": false }
     ]
   }
 ]

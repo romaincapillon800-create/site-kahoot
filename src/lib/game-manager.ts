@@ -40,6 +40,17 @@ const questionCatalog: CatalogQuestion[] = (questionsData as JsonQuestion[]).map
   id: `question-${index + 1}`,
 }));
 
+function getQuestionsForSettings(settings: GameSettings): CatalogQuestion[] {
+  const categories = settings.categories ?? [];
+
+  if (categories.length === 0 || categories.includes("global")) {
+    return questionCatalog;
+  }
+
+  const selectedCategoryIds = new Set(categories);
+  return questionCatalog.filter((question) => selectedCategoryIds.has(question.category));
+}
+
 const activeGames = new Map<string, ActiveGame>();
 
 export function getActiveGame(gameId: string): ActiveGame | undefined {
@@ -124,8 +135,11 @@ export async function createGame(
     attempts++;
   }
 
-  const selectedQuestions = shuffle(questionCatalog)
-    .slice(0, Math.min(settings.questionCount, questionCatalog.length));
+  const availableQuestions = getQuestionsForSettings(settings);
+  const selectedQuestions = shuffle(availableQuestions).slice(
+    0,
+    Math.min(settings.questionCount, availableQuestions.length)
+  );
 
   const gameId = `game-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
@@ -233,9 +247,10 @@ export function updateGameSettings(
   }
 
   if (settings.questionCount !== undefined && settings.questionCount !== previousQuestionCount) {
-    const selectedQuestions = shuffle(questionCatalog).slice(
+    const availableQuestions = getQuestionsForSettings(game.settings);
+    const selectedQuestions = shuffle(availableQuestions).slice(
       0,
-      Math.min(game.settings.questionCount, questionCatalog.length)
+      Math.min(game.settings.questionCount, availableQuestions.length)
     );
     game.questionIds = selectedQuestions.map((question) => question.id);
   }
@@ -490,55 +505,13 @@ export function reconnectPlayer(gameId: string, playerId: string, socketId: stri
 
 export async function loadQuestionsForGame(gameId: string): Promise<void> {
   const game = activeGames.get(gameId);
-  if (!game || game.questionIds.length > 0) return;
+  if (!game) return;
 
-  // Mapping des 12 catégories principales aux catégories spécifiques des questions
-  const categoryMap: Record<string, string[]> = {
-    "authentification": ["Kerberos", "Active Directory", "LDAP Injection"],
-    "systemes": [
-      "Windows Internals",
-      "Linux",
-      "Privilege Escalation",
-    ],
-    "cloud": [
-      "Cloud AWS",
-      "Azure",
-      "GCP",
-    ],
-    "conteneurs": ["Docker", "Kubernetes"],
-    "web": ["OAuth", "JWT", "OWASP"],
-    "attaques-web": ["SQL Injection", "XXE", "SSRF", "CSRF"],
-    "cryptographie": ["Cryptography", "PKI", "TLS"],
-    "malware": ["Malwares", "Rootkits"],
-    "reverse-engineering": ["Reverse Engineering", "YARA"],
-    "detection": ["Forensics", "SIEM", "Logs", "Sigma"],
-    "exploitation": ["RCE", "Buffer Overflow", "Race Conditions"],
-    "frameworks": ["Threat Hunting", "MITRE ATT&CK"],
-  };
-
-  let availableQuestions = questionCatalog;
-  
-  // Filtrer par catégories si spécifiées
-  if (game.settings.categories && game.settings.categories.length > 0) {
-    if (!game.settings.categories.includes("global")) {
-      const selectedCategoryNames: string[] = [];
-      
-      for (const categoryId of game.settings.categories) {
-        const categoryQuestions = categoryMap[categoryId] || [];
-        selectedCategoryNames.push(...categoryQuestions);
-      }
-      
-      if (selectedCategoryNames.length > 0) {
-        availableQuestions = questionCatalog.filter(
-          (q) => selectedCategoryNames.includes(q.category)
-        );
-      }
-    }
-  }
-
+  const availableQuestions = getQuestionsForSettings(game.settings);
   const selectedQuestions = shuffle(availableQuestions).slice(
     0,
     Math.min(game.settings.questionCount, availableQuestions.length)
   );
+
   game.questionIds = selectedQuestions.map((question) => question.id);
 }
