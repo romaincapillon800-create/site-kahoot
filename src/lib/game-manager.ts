@@ -492,15 +492,41 @@ export async function loadQuestionsForGame(gameId: string): Promise<void> {
   const game = activeGames.get(gameId);
   if (!game || game.questionIds.length > 0) return;
 
-  // Mapping des catégories globales aux sous-catégories
+  // Mapping des catégories aux sous-catégories spécifiques
   const categoryMap: Record<string, string[]> = {
-    "reseau-infra": ["Kerberos", "Active Directory", "Windows Internals", "Linux", "Cloud AWS", "Azure", "GCP", "Docker", "Kubernetes"],
-    "web-apis": ["OWASP", "OAuth", "JWT", "XXE", "SSRF", "CSRF", "LDAP Injection", "SQL Injection"],
-    "crypto": ["Cryptography", "PKI", "TLS"],
-    "malware-re": ["Malwares", "Rootkits", "YARA", "Sigma", "Reverse Engineering"],
-    "incident-response": ["Forensics", "SIEM", "Threat Hunting"],
-    "attaques": ["RCE", "Buffer Overflow", "Privilege Escalation", "MITRE ATT&CK", "Race Conditions"],
-    "securite-donnees": ["Cryptography", "PKI"],
+    "kerberos": ["Kerberos"],
+    "active-directory": ["Active Directory"],
+    "windows": ["Windows Internals"],
+    "linux": ["Linux"],
+    "aws": ["Cloud AWS"],
+    "azure": ["Azure"],
+    "gcp": ["GCP"],
+    "docker": ["Docker"],
+    "kubernetes": ["Kubernetes"],
+    "oauth": ["OAuth"],
+    "jwt": ["JWT"],
+    "owasp": ["OWASP"],
+    "sql-injection": ["SQL Injection"],
+    "xxe": ["XXE"],
+    "ssrf": ["SSRF"],
+    "csrf": ["CSRF"],
+    "ldap-injection": ["LDAP Injection"],
+    "crypto": ["Cryptography"],
+    "pki": ["PKI"],
+    "tls": ["TLS"],
+    "malwares": ["Malwares"],
+    "rootkits": ["Rootkits"],
+    "reverse-engineering": ["Reverse Engineering"],
+    "yara": ["YARA"],
+    "sigma": ["Sigma"],
+    "forensics": ["Forensics"],
+    "siem": ["SIEM"],
+    "rce": ["RCE"],
+    "buffer-overflow": ["Buffer Overflow"],
+    "privilege-escalation": ["Privilege Escalation"],
+    "race-conditions": ["Race Conditions"],
+    "mitre-attack": ["MITRE ATT&CK"],
+    "threat-hunting": ["Threat Hunting"],
   };
 
   let availableQuestions = questionCatalog;
