@@ -492,41 +492,28 @@ export async function loadQuestionsForGame(gameId: string): Promise<void> {
   const game = activeGames.get(gameId);
   if (!game || game.questionIds.length > 0) return;
 
-  // Mapping des catégories aux sous-catégories spécifiques
+  // Mapping des 12 catégories principales aux catégories spécifiques des questions
   const categoryMap: Record<string, string[]> = {
-    "kerberos": ["Kerberos"],
-    "active-directory": ["Active Directory"],
-    "windows": ["Windows Internals"],
-    "linux": ["Linux"],
-    "aws": ["Cloud AWS"],
-    "azure": ["Azure"],
-    "gcp": ["GCP"],
-    "docker": ["Docker"],
-    "kubernetes": ["Kubernetes"],
-    "oauth": ["OAuth"],
-    "jwt": ["JWT"],
-    "owasp": ["OWASP"],
-    "sql-injection": ["SQL Injection"],
-    "xxe": ["XXE"],
-    "ssrf": ["SSRF"],
-    "csrf": ["CSRF"],
-    "ldap-injection": ["LDAP Injection"],
-    "crypto": ["Cryptography"],
-    "pki": ["PKI"],
-    "tls": ["TLS"],
-    "malwares": ["Malwares"],
-    "rootkits": ["Rootkits"],
-    "reverse-engineering": ["Reverse Engineering"],
-    "yara": ["YARA"],
-    "sigma": ["Sigma"],
-    "forensics": ["Forensics"],
-    "siem": ["SIEM"],
-    "rce": ["RCE"],
-    "buffer-overflow": ["Buffer Overflow"],
-    "privilege-escalation": ["Privilege Escalation"],
-    "race-conditions": ["Race Conditions"],
-    "mitre-attack": ["MITRE ATT&CK"],
-    "threat-hunting": ["Threat Hunting"],
+    "authentification": ["Kerberos", "Active Directory", "LDAP Injection"],
+    "systemes": [
+      "Windows Internals",
+      "Linux",
+      "Privilege Escalation",
+    ],
+    "cloud": [
+      "Cloud AWS",
+      "Azure",
+      "GCP",
+    ],
+    "conteneurs": ["Docker", "Kubernetes"],
+    "web": ["OAuth", "JWT", "OWASP"],
+    "attaques-web": ["SQL Injection", "XXE", "SSRF", "CSRF"],
+    "cryptographie": ["Cryptography", "PKI", "TLS"],
+    "malware": ["Malwares", "Rootkits"],
+    "reverse-engineering": ["Reverse Engineering", "YARA"],
+    "detection": ["Forensics", "SIEM", "Logs", "Sigma"],
+    "exploitation": ["RCE", "Buffer Overflow", "Race Conditions"],
+    "frameworks": ["Threat Hunting", "MITRE ATT&CK"],
   };
 
   let availableQuestions = questionCatalog;
