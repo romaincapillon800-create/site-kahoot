@@ -64,7 +64,7 @@ export interface GameStatistics {
 export interface GameSettings {
   questionCount: number;
   questionTime: number;
-  category?: string; // "global" ou une catégorie spécifique
+  categories?: string[]; // ["global"] ou un array de catégories spécifiques
 }
 
 export interface ServerToClientEvents {

@@ -54,7 +54,7 @@ export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [localQCount, setLocalQCount] = useState(settings.questionCount);
   const [localQTime, setLocalQTime] = useState(settings.questionTime);
-  const [selectedCategory, setSelectedCategory] = useState<string>("global");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(["global"]);
   const [loading, setLoading] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [leaderboardCountdown, setLeaderboardCountdown] = useState<number | null>(null);
@@ -98,7 +98,7 @@ export default function AdminPage() {
   );
 
   const getSelectedCategoryLabel = () => {
-    if (selectedCategory === "global") return "Toutes les catégories";
+    if (selectedCategories.includes("global")) return "Toutes les catégories";
     
     // Map to find the label for a category ID
     const categoryMap: Record<string, string> = {
@@ -137,7 +137,9 @@ export default function AdminPage() {
       "threat-hunting": "Threat Hunting",
     };
     
-    return categoryMap[selectedCategory] || selectedCategory;
+    if (selectedCategories.length === 0) return "Sélectionner une catégorie";
+    if (selectedCategories.length === 1) return categoryMap[selectedCategories[0]] || selectedCategories[0];
+    return `${selectedCategories.length} catégories sélectionnées`;
   };
 
   const normalizeSettings = (questionCount: number, questionTime: number): GameSettings => ({
@@ -168,7 +170,7 @@ export default function AdminPage() {
 
     const nextSettings: GameSettings = {
       ...normalizeSettings(localQCount, localQTime),
-      category: selectedCategory,
+      categories: selectedCategories.includes("global") ? ["global"] : selectedCategories,
     };
     setLocalQCount(nextSettings.questionCount);
     setLocalQTime(nextSettings.questionTime);
@@ -456,7 +458,7 @@ export default function AdminPage() {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="create-category" className="mb-3 block">Catégorie</Label>
+                        <Label htmlFor="create-category" className="mb-3 block">Catégories</Label>
                         <Button
                           type="button"
                           variant="secondary"
@@ -584,7 +586,7 @@ export default function AdminPage() {
             className="w-full max-w-2xl max-h-96 overflow-y-auto rounded-3xl border border-cyber-border bg-cyber-surface/95 p-6"
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-white">Sélectionner une catégorie</h2>
+              <h2 className="text-xl font-bold text-white">Sélectionner des catégories</h2>
               <button
                 onClick={() => setShowCategoryModal(false)}
                 className="text-gray-400 hover:text-white transition-colors"
@@ -593,8 +595,8 @@ export default function AdminPage() {
               </button>
             </div>
             <CategorySelector
-              value={selectedCategory}
-              onChange={setSelectedCategory}
+              value={selectedCategories}
+              onChange={setSelectedCategories}
               onClose={() => setShowCategoryModal(false)}
             />
           </motion.div>

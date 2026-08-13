@@ -531,13 +531,21 @@ export async function loadQuestionsForGame(gameId: string): Promise<void> {
 
   let availableQuestions = questionCatalog;
   
-  // Filtrer par catégorie si spécifiée
-  if (game.settings.category && game.settings.category !== "global") {
-    const selectedCategories = categoryMap[game.settings.category] || [];
-    if (selectedCategories.length > 0) {
-      availableQuestions = questionCatalog.filter(
-        (q) => selectedCategories.includes(q.category)
-      );
+  // Filtrer par catégories si spécifiées
+  if (game.settings.categories && game.settings.categories.length > 0) {
+    if (!game.settings.categories.includes("global")) {
+      const selectedCategoryNames: string[] = [];
+      
+      for (const categoryId of game.settings.categories) {
+        const categoryQuestions = categoryMap[categoryId] || [];
+        selectedCategoryNames.push(...categoryQuestions);
+      }
+      
+      if (selectedCategoryNames.length > 0) {
+        availableQuestions = questionCatalog.filter(
+          (q) => selectedCategoryNames.includes(q.category)
+        );
+      }
     }
   }
 
