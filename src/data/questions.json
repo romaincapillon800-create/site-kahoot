@@ -295,5 +295,819 @@
       { "text": "Un type upload", "isCorrect": false },
       { "text": "Un pivot DNS", "isCorrect": false }
     ]
+  },
+  {
+    "text": "En LDAP Injection, quel caractère wildcard manipule le filtre ?",
+    "category": "ldap-injection",
+    "explanation": "La bonne réponse est : *",
+    "options": [
+      { "text": "*", "isCorrect": true },
+      { "text": "%", "isCorrect": false },
+      { "text": "_", "isCorrect": false },
+      { "text": "?", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel type de faille en LDAP permet le bypass d'authentification ?",
+    "category": "ldap-injection",
+    "explanation": "La bonne réponse est : Modification du filtre avec * ou )",
+    "options": [
+      { "text": "Modification du filtre avec * ou )", "isCorrect": true },
+      { "text": "XSS", "isCorrect": false },
+      { "text": "CSRF", "isCorrect": false },
+      { "text": "XXE", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "En OAuth 2.0, quel paramètre doit être strictement validé pour éviter une Open Redirect ?",
+    "category": "oauth",
+    "explanation": "La bonne réponse est : redirect_uri",
+    "options": [
+      { "text": "redirect_uri", "isCorrect": true },
+      { "text": "client_id", "isCorrect": false },
+      { "text": "scope", "isCorrect": false },
+      { "text": "state", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel grant OAuth 2.0 est recommandé pour les applications web ?",
+    "category": "oauth",
+    "explanation": "La bonne réponse est : Authorization Code + PKCE",
+    "options": [
+      { "text": "Authorization Code + PKCE", "isCorrect": true },
+      { "text": "Implicit", "isCorrect": false },
+      { "text": "Resource Owner Password", "isCorrect": false },
+      { "text": "Client Credentials", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Sur Windows, qu'est-ce qu'un Primary Token ?",
+    "category": "windows-internals",
+    "explanation": "La bonne réponse est : Token d'accès du processus",
+    "options": [
+      { "text": "Token d'accès du processus", "isCorrect": true },
+      { "text": "Un registre", "isCorrect": false },
+      { "text": "Une clé RSA", "isCorrect": false },
+      { "text": "Un handle de fichier", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel appel système Windows modifie les ACL d'un fichier ?",
+    "category": "windows-internals",
+    "explanation": "La bonne réponse est : SetSecurityInfo",
+    "options": [
+      { "text": "SetSecurityInfo", "isCorrect": true },
+      { "text": "CreateFile", "isCorrect": false },
+      { "text": "ReadFile", "isCorrect": false },
+      { "text": "CloseHandle", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "En Linux, quel bit SUID permet l'exécution avec les droits du propriétaire ?",
+    "category": "linux",
+    "explanation": "La bonne réponse est : 4000 (octal)",
+    "options": [
+      { "text": "4000 (octal)", "isCorrect": true },
+      { "text": "2000", "isCorrect": false },
+      { "text": "1000", "isCorrect": false },
+      { "text": "7000", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel fichier Linux contient les mots de passe hashés ?",
+    "category": "linux",
+    "explanation": "La bonne réponse est : /etc/shadow",
+    "options": [
+      { "text": "/etc/shadow", "isCorrect": true },
+      { "text": "/etc/passwd", "isCorrect": false },
+      { "text": "/etc/sudoers", "isCorrect": false },
+      { "text": "/root/.ssh", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quelle commande Linux bascule les privilèges d'un autre utilisateur ?",
+    "category": "privilege-escalation",
+    "explanation": "La bonne réponse est : sudo",
+    "options": [
+      { "text": "sudo", "isCorrect": true },
+      { "text": "chmod", "isCorrect": false },
+      { "text": "chown", "isCorrect": false },
+      { "text": "su seul", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel fichier configure les permissions sudo sur Linux ?",
+    "category": "privilege-escalation",
+    "explanation": "La bonne réponse est : /etc/sudoers",
+    "options": [
+      { "text": "/etc/sudoers", "isCorrect": true },
+      { "text": "/etc/shadow", "isCorrect": false },
+      { "text": "/etc/groups", "isCorrect": false },
+      { "text": "/root/.bashrc", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Sur GCP, où obtenir les credentials IAM ?",
+    "category": "gcp",
+    "explanation": "La bonne réponse est : Metadata service (169.254.169.254)",
+    "options": [
+      { "text": "Metadata service (169.254.169.254)", "isCorrect": true },
+      { "text": "Fichier de config", "isCorrect": false },
+      { "text": "Environnement", "isCorrect": false },
+      { "text": "Registre Windows", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel service GCP stocke les données en temps réel ?",
+    "category": "gcp",
+    "explanation": "La bonne réponse est : Firestore",
+    "options": [
+      { "text": "Firestore", "isCorrect": true },
+      { "text": "BigQuery", "isCorrect": false },
+      { "text": "Cloud Storage", "isCorrect": false },
+      { "text": "Compute Engine", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quelle vulnerabilité permet l'évasion de conteneur Docker ?",
+    "category": "docker",
+    "explanation": "La bonne réponse est : Montage du docker.sock",
+    "options": [
+      { "text": "Montage du docker.sock", "isCorrect": true },
+      { "text": "EXPOSE port", "isCorrect": false },
+      { "text": "RUN vs CMD", "isCorrect": false },
+      { "text": "Santé check", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel mode Docker est dangereux pour la sécurité ?",
+    "category": "docker",
+    "explanation": "La bonne réponse est : --privileged",
+    "options": [
+      { "text": "--privileged", "isCorrect": true },
+      { "text": "--read-only", "isCorrect": false },
+      { "text": "--rm", "isCorrect": false },
+      { "text": "-v", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "En Kubernetes, quel ClusterRole dangereuse permet tout accès ?",
+    "category": "kubernetes",
+    "explanation": "La bonne réponse est : cluster-admin",
+    "options": [
+      { "text": "cluster-admin", "isCorrect": true },
+      { "text": "view", "isCorrect": false },
+      { "text": "edit", "isCorrect": false },
+      { "text": "read-only", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Comment se défendre contre une attaque Kubernetes RBAC brute ?",
+    "category": "kubernetes",
+    "explanation": "La bonne réponse est : NetworkPolicy + Pod Security Policy",
+    "options": [
+      { "text": "NetworkPolicy + Pod Security Policy", "isCorrect": true },
+      { "text": "Ignorer", "isCorrect": false },
+      { "text": "Désactiver logs", "isCorrect": false },
+      { "text": "Public internet", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quelle faille XSS affecte le client web ?",
+    "category": "web-client",
+    "explanation": "La bonne réponse est : Stored XSS via injection HTML/JS",
+    "options": [
+      { "text": "Stored XSS via injection HTML/JS", "isCorrect": true },
+      { "text": "SQLi", "isCorrect": false },
+      { "text": "CSRF seul", "isCorrect": false },
+      { "text": "Race condition", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Comment protéger un formulaire contre XSS côté client ?",
+    "category": "web-client",
+    "explanation": "La bonne réponse est : Encoder l'output HTML",
+    "options": [
+      { "text": "Encoder l'output HTML", "isCorrect": true },
+      { "text": "Accepter tout", "isCorrect": false },
+      { "text": "Filtrer avec regex", "isCorrect": false },
+      { "text": "Désactiver JavaScript", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel middleware web sécurise les headers HTTP ?",
+    "category": "web-server",
+    "explanation": "La bonne réponse est : Content-Security-Policy (CSP)",
+    "options": [
+      { "text": "Content-Security-Policy (CSP)", "isCorrect": true },
+      { "text": "Cookies", "isCorrect": false },
+      { "text": "Sessions", "isCorrect": false },
+      { "text": "JWT", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Comment mitiger une attaque DoS sur un serveur web ?",
+    "category": "web-server",
+    "explanation": "La bonne réponse est : Rate limiting + WAF",
+    "options": [
+      { "text": "Rate limiting + WAF", "isCorrect": true },
+      { "text": "Pas de protection", "isCorrect": false },
+      { "text": "Logs uniquement", "isCorrect": false },
+      { "text": "Ignoré", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel numéro OWASP concerne les contrôles d'accès cassés ?",
+    "category": "owasp",
+    "explanation": "La bonne réponse est : A01:2021 - Broken Access Control",
+    "options": [
+      { "text": "A01:2021 - Broken Access Control", "isCorrect": true },
+      { "text": "A02", "isCorrect": false },
+      { "text": "A03", "isCorrect": false },
+      { "text": "A10", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel est le risque d'une XXE injection ?",
+    "category": "xxe",
+    "explanation": "La bonne réponse est : Lecture de fichiers locaux",
+    "options": [
+      { "text": "Lecture de fichiers locaux", "isCorrect": true },
+      { "text": "CSS injection", "isCorrect": false },
+      { "text": "HTTP cache", "isCorrect": false },
+      { "text": "DNS leak", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Comment se protéger contre XXE ?",
+    "category": "xxe",
+    "explanation": "La bonne réponse est : Désactiver entities externes",
+    "options": [
+      { "text": "Désactiver entities externes", "isCorrect": true },
+      { "text": "Accepter tout", "isCorrect": false },
+      { "text": "Ignorer", "isCorrect": false },
+      { "text": "Logs seuls", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Qu'est-ce qu'une SSRF attack ?",
+    "category": "ssrf",
+    "explanation": "La bonne réponse est : Le serveur fetch des ressources internes",
+    "options": [
+      { "text": "Le serveur fetch des ressources internes", "isCorrect": true },
+      { "text": "Un XSS", "isCorrect": false },
+      { "text": "Un CSRF", "isCorrect": false },
+      { "text": "Un hash", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Comment mitiger une SSRF ?",
+    "category": "ssrf",
+    "explanation": "La bonne réponse est : Whitelist d'URLs + bloquer metadata",
+    "options": [
+      { "text": "Whitelist d'URLs + bloquer metadata", "isCorrect": true },
+      { "text": "Rien", "isCorrect": false },
+      { "text": "JWT seul", "isCorrect": false },
+      { "text": "Logs", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Qu'est-ce qu'une attaque CSRF ?",
+    "category": "csrf",
+    "explanation": "La bonne réponse est : Forcer l'utilisateur à faire une action",
+    "options": [
+      { "text": "Forcer l'utilisateur à faire une action", "isCorrect": true },
+      { "text": "Vol de cookies", "isCorrect": false },
+      { "text": "XSS", "isCorrect": false },
+      { "text": "Phishing", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel token protège contre CSRF ?",
+    "category": "csrf",
+    "explanation": "La bonne réponse est : CSRF token synchronisé",
+    "options": [
+      { "text": "CSRF token synchronisé", "isCorrect": true },
+      { "text": "JWT", "isCorrect": false },
+      { "text": "Cookie seul", "isCorrect": false },
+      { "text": "Pas de token", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel algo symétrique est sûr pour le chiffrement ?",
+    "category": "cryptography",
+    "explanation": "La bonne réponse est : AES-256 avec mode GCM",
+    "options": [
+      { "text": "AES-256 avec mode GCM", "isCorrect": true },
+      { "text": "DES", "isCorrect": false },
+      { "text": "RC4", "isCorrect": false },
+      { "text": "MD5", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel algo asymétrique est utilisé actuellement ?",
+    "category": "cryptography",
+    "explanation": "La bonne réponse est : RSA-2048+ ou ECC P-256+",
+    "options": [
+      { "text": "RSA-2048+ ou ECC P-256+", "isCorrect": true },
+      { "text": "RSA-512", "isCorrect": false },
+      { "text": "MD5", "isCorrect": false },
+      { "text": "Diffie-Hellman-512", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Qu'est-ce qu'une autorité de certification (CA) ?",
+    "category": "pki",
+    "explanation": "La bonne réponse est : Signe les certificats X509",
+    "options": [
+      { "text": "Signe les certificats X509", "isCorrect": true },
+      { "text": "Génère des clés", "isCorrect": false },
+      { "text": "Hache les données", "isCorrect": false },
+      { "text": "Valide les JWT", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel est le risque d'une CA compromise ?",
+    "category": "pki",
+    "explanation": "La bonne réponse est : Émettre des certificats malveillants",
+    "options": [
+      { "text": "Émettre des certificats malveillants", "isCorrect": true },
+      { "text": "Rien", "isCorrect": false },
+      { "text": "Lenteur", "isCorrect": false },
+      { "text": "Peu important", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel record DNS sécurise les emails ?",
+    "category": "pki",
+    "explanation": "La bonne réponse est : DKIM / SPF / DMARC",
+    "options": [
+      { "text": "DKIM / SPF / DMARC", "isCorrect": true },
+      { "text": "A record", "isCorrect": false },
+      { "text": "CNAME", "isCorrect": false },
+      { "text": "MX seul", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel est le risque d'une vulnérabilité TLS ?",
+    "category": "tls",
+    "explanation": "La bonne réponse est : MITM attack possible",
+    "options": [
+      { "text": "MITM attack possible", "isCorrect": true },
+      { "text": "Rien", "isCorrect": false },
+      { "text": "Lenteur", "isCorrect": false },
+      { "text": "Logs", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel version TLS est sécurisée en 2024 ?",
+    "category": "tls",
+    "explanation": "La bonne réponse est : TLS 1.3+",
+    "options": [
+      { "text": "TLS 1.3+", "isCorrect": true },
+      { "text": "TLS 1.0", "isCorrect": false },
+      { "text": "SSL 3.0", "isCorrect": false },
+      { "text": "TLS 1.1", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Qu'est-ce qu'un rootkit kernel ?",
+    "category": "rootkits",
+    "explanation": "La bonne réponse est : Malware au niveau du kernel",
+    "options": [
+      { "text": "Malware au niveau du kernel", "isCorrect": true },
+      { "text": "Un script", "isCorrect": false },
+      { "text": "Un patch", "isCorrect": false },
+      { "text": "Un driver", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Comment détecter un rootkit ?",
+    "category": "rootkits",
+    "explanation": "La bonne réponse est : Cross-view detection (API vs memory walk)",
+    "options": [
+      { "text": "Cross-view detection (API vs memory walk)", "isCorrect": true },
+      { "text": "Antivirus seul", "isCorrect": false },
+      { "text": "Visuellement", "isCorrect": false },
+      { "text": "Impossible", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel ransomware utilise la chaîne de double extorsion ?",
+    "category": "ransomware",
+    "explanation": "La bonne réponse est : Conti, Lockbit, etc.",
+    "options": [
+      { "text": "Conti, Lockbit, etc.", "isCorrect": true },
+      { "text": "Virus simple", "isCorrect": false },
+      { "text": "Worm", "isCorrect": false },
+      { "text": "Trojan", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Comment se protéger contre ransomware ?",
+    "category": "ransomware",
+    "explanation": "La bonne réponse est : Backups + EDR + ségrégation",
+    "options": [
+      { "text": "Backups + EDR + ségrégation", "isCorrect": true },
+      { "text": "Rien", "isCorrect": false },
+      { "text": "Logs", "isCorrect": false },
+      { "text": "Peu important", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel outil est utilisé pour le reverse engineering ?",
+    "category": "reverse-engineering",
+    "explanation": "La bonne réponse est : IDA Pro, Ghidra, radare2",
+    "options": [
+      { "text": "IDA Pro, Ghidra, radare2", "isCorrect": true },
+      { "text": "Visual Studio", "isCorrect": false },
+      { "text": "VS Code", "isCorrect": false },
+      { "text": "Notepad", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quelle section PE contient le code ?",
+    "category": "reverse-engineering",
+    "explanation": "La bonne réponse est : .text",
+    "options": [
+      { "text": ".text", "isCorrect": true },
+      { "text": ".data", "isCorrect": false },
+      { "text": ".rsrc", "isCorrect": false },
+      { "text": ".reloc", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Qu'est-ce qu'une règle YARA ?",
+    "category": "yara",
+    "explanation": "La bonne réponse est : Signature malware",
+    "options": [
+      { "text": "Signature malware", "isCorrect": true },
+      { "text": "Un antivirus", "isCorrect": false },
+      { "text": "Un filtrage", "isCorrect": false },
+      { "text": "Un hashage", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel modificateur YARA détecte du texte ASCII et wide ?",
+    "category": "yara",
+    "explanation": "La bonne réponse est : wide ascii",
+    "options": [
+      { "text": "wide ascii", "isCorrect": true },
+      { "text": "nocase", "isCorrect": false },
+      { "text": "private", "isCorrect": false },
+      { "text": "all", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel artefact Windows enregistre les binaires exécutés ?",
+    "category": "forensics",
+    "explanation": "La bonne réponse est : Amcache.hve",
+    "options": [
+      { "text": "Amcache.hve", "isCorrect": true },
+      { "text": "Registry", "isCorrect": false },
+      { "text": "Event logs", "isCorrect": false },
+      { "text": "Pagefile", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel fichier Linux enregistre l'historique des commandes ?",
+    "category": "forensics",
+    "explanation": "La bonne réponse est : ~/.bash_history",
+    "options": [
+      { "text": "~/.bash_history", "isCorrect": true },
+      { "text": "/var/log/auth.log", "isCorrect": false },
+      { "text": "/etc/shadow", "isCorrect": false },
+      { "text": "/proc/sys", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel système centralise les logs de sécurité ?",
+    "category": "siem",
+    "explanation": "La bonne réponse est : SIEM (Splunk, ELK, etc.)",
+    "options": [
+      { "text": "SIEM (Splunk, ELK, etc.)", "isCorrect": true },
+      { "text": "Syslog seul", "isCorrect": false },
+      { "text": "Journal", "isCorrect": false },
+      { "text": "Fichiers texte", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Qu'est-ce qu'une corrélation SIEM ?",
+    "category": "siem",
+    "explanation": "La bonne réponse est : Lier plusieurs events pour détecter une attaque",
+    "options": [
+      { "text": "Lier plusieurs events pour détecter une attaque", "isCorrect": true },
+      { "text": "Décompresser les logs", "isCorrect": false },
+      { "text": "Créer un hash", "isCorrect": false },
+      { "text": "Chiffrer", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Où sont stockés les logs Windows ?",
+    "category": "logs",
+    "explanation": "La bonne réponse est : Event Viewer / %SystemRoot%/System32/winevt",
+    "options": [
+      { "text": "Event Viewer / %SystemRoot%/System32/winevt", "isCorrect": true },
+      { "text": "/var/log", "isCorrect": false },
+      { "text": "C:\\Logs", "isCorrect": false },
+      { "text": "Cloud seul", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel event Windows indique une création de compte ?",
+    "category": "logs",
+    "explanation": "La bonne réponse est : Event ID 4720",
+    "options": [
+      { "text": "Event ID 4720", "isCorrect": true },
+      { "text": "Event ID 4688", "isCorrect": false },
+      { "text": "Event ID 4624", "isCorrect": false },
+      { "text": "Event ID 1102", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel format Sigma utilise pour les règles de détection ?",
+    "category": "sigma",
+    "explanation": "La bonne réponse est : YAML",
+    "options": [
+      { "text": "YAML", "isCorrect": true },
+      { "text": "JSON", "isCorrect": false },
+      { "text": "XML", "isCorrect": false },
+      { "text": "CSV", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel backend Sigma convertit en requêtes SIEM ?",
+    "category": "sigma",
+    "explanation": "La bonne réponse est : Splunk, ELK, ArcSight, etc.",
+    "options": [
+      { "text": "Splunk, ELK, ArcSight, etc.", "isCorrect": true },
+      { "text": "Database", "isCorrect": false },
+      { "text": "API REST", "isCorrect": false },
+      { "text": "Fichier CSV", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Qu'est-ce qu'une RCE (Remote Code Execution) ?",
+    "category": "rce",
+    "explanation": "La bonne réponse est : Exécuter du code arbitraire à distance",
+    "options": [
+      { "text": "Exécuter du code arbitraire à distance", "isCorrect": true },
+      { "text": "Un virus", "isCorrect": false },
+      { "text": "Un script", "isCorrect": false },
+      { "text": "Un log", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel vecteur RCE est basé sur la désérialisation ?",
+    "category": "rce",
+    "explanation": "La bonne réponse est : Gadget chains (Commons Collections, etc.)",
+    "options": [
+      { "text": "Gadget chains (Commons Collections, etc.)", "isCorrect": true },
+      { "text": "SQLi", "isCorrect": false },
+      { "text": "XSS", "isCorrect": false },
+      { "text": "CSRF", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Qu'est-ce qu'un Buffer Overflow ?",
+    "category": "buffer-overflow",
+    "explanation": "La bonne réponse est : Écriture au-delà des limites du buffer",
+    "options": [
+      { "text": "Écriture au-delà des limites du buffer", "isCorrect": true },
+      { "text": "Manque de mémoire", "isCorrect": false },
+      { "text": "Erreur de décodage", "isCorrect": false },
+      { "text": "Corruption de DB", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quelle protection mitigue les buffer overflows ?",
+    "category": "buffer-overflow",
+    "explanation": "La bonne réponse est : DEP/NX bit + Stack canaries",
+    "options": [
+      { "text": "DEP/NX bit + Stack canaries", "isCorrect": true },
+      { "text": "Rien", "isCorrect": false },
+      { "text": "Antivirus seul", "isCorrect": false },
+      { "text": "Logs", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Qu'est-ce qu'une TOCTOU race condition ?",
+    "category": "race-conditions",
+    "explanation": "La bonne réponse est : Time Of Check To Time Of Use",
+    "options": [
+      { "text": "Time Of Check To Time Of Use", "isCorrect": true },
+      { "text": "Buffer overflow", "isCorrect": false },
+      { "text": "Format string", "isCorrect": false },
+      { "text": "ASLR bypass", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Comment exploiter une race condition sur fichiers ?",
+    "category": "race-conditions",
+    "explanation": "La bonne réponse est : Symlink swap entre check et use",
+    "options": [
+      { "text": "Symlink swap entre check et use", "isCorrect": true },
+      { "text": "Brute force", "isCorrect": false },
+      { "text": "Phishing", "isCorrect": false },
+      { "text": "Injection", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel framework mappe les techniques d'attaque ?",
+    "category": "mitre-attack",
+    "explanation": "La bonne réponse est : MITRE ATT&CK",
+    "options": [
+      { "text": "MITRE ATT&CK", "isCorrect": true },
+      { "text": "CVSS", "isCorrect": false },
+      { "text": "OWASP", "isCorrect": false },
+      { "text": "CIS", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel niveau MITRE ATT&CK est le plus haut ?",
+    "category": "mitre-attack",
+    "explanation": "La bonne réponse est : Tactic",
+    "options": [
+      { "text": "Tactic", "isCorrect": true },
+      { "text": "Technique", "isCorrect": false },
+      { "text": "Sub-technique", "isCorrect": false },
+      { "text": "Procedure", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Qu'est-ce que la Threat Hunting ?",
+    "category": "threat-hunting",
+    "explanation": "La bonne réponse est : Recherche proactive d'intrusions",
+    "options": [
+      { "text": "Recherche proactive d'intrusions", "isCorrect": true },
+      { "text": "Antivirunus", "isCorrect": false },
+      { "text": "Firewall", "isCorrect": false },
+      { "text": "Patch", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel outil est utilisé pour le threat hunting ?",
+    "category": "threat-hunting",
+    "explanation": "La bonne réponse est : SIEM + EDR + logs",
+    "options": [
+      { "text": "SIEM + EDR + logs", "isCorrect": true },
+      { "text": "Antivirus seul", "isCorrect": false },
+      { "text": "VPN", "isCorrect": false },
+      { "text": "Proxy", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel langage script est vulnérable aux injections ?",
+    "category": "app-script",
+    "explanation": "La bonne réponse est : Bash, PowerShell, Python (si mal configuré)",
+    "options": [
+      { "text": "Bash, PowerShell, Python (si mal configuré)", "isCorrect": true },
+      { "text": "Pas de script", "isCorrect": false },
+      { "text": "Compilé uniquement", "isCorrect": false },
+      { "text": "TypeScript", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Comment exploiter un script shell dangereux ?",
+    "category": "app-script",
+    "explanation": "La bonne réponse est : Injection de commande via input non validé",
+    "options": [
+      { "text": "Injection de commande via input non validé", "isCorrect": true },
+      { "text": "Virus", "isCorrect": false },
+      { "text": "Patch", "isCorrect": false },
+      { "text": "Impossible", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel type de binaire Windows est le plus risqué ?",
+    "category": "app-systeme",
+    "explanation": "La bonne réponse est : Executables non-signés ou signés malveillants",
+    "options": [
+      { "text": "Executables non-signés ou signés malveillants", "isCorrect": true },
+      { "text": "DLL", "isCorrect": false },
+      { "text": "SYS", "isCorrect": false },
+      { "text": "COM", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Comment détecter une modification de binaire système ?",
+    "category": "app-systeme",
+    "explanation": "La bonne réponse est : Vérifier le hash ou la signature",
+    "options": [
+      { "text": "Vérifier le hash ou la signature", "isCorrect": true },
+      { "text": "Visuellement", "isCorrect": false },
+      { "text": "Impossible", "isCorrect": false },
+      { "text": "Logs", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel algo de hash est vulnérable au brute force ?",
+    "category": "cracking",
+    "explanation": "La bonne réponse est : MD5, SHA1",
+    "options": [
+      { "text": "MD5, SHA1", "isCorrect": true },
+      { "text": "SHA-256", "isCorrect": false },
+      { "text": "bcrypt", "isCorrect": false },
+      { "text": "Argon2", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel outil craque les mots de passe hachés ?",
+    "category": "cracking",
+    "explanation": "La bonne réponse est : John the Ripper, Hashcat",
+    "options": [
+      { "text": "John the Ripper, Hashcat", "isCorrect": true },
+      { "text": "Wireshark", "isCorrect": false },
+      { "text": "Nmap", "isCorrect": false },
+      { "text": "Burp Suite", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel algorithme asymétrique est vulnérable en 2024 ?",
+    "category": "cryptanalyse",
+    "explanation": "La bonne réponse est : RSA-512, RSA-1024",
+    "options": [
+      { "text": "RSA-512, RSA-1024", "isCorrect": true },
+      { "text": "RSA-2048", "isCorrect": false },
+      { "text": "ECC P-256", "isCorrect": false },
+      { "text": "ChaCha20", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel mode ECB est dangereux en cryptographie ?",
+    "category": "cryptanalyse",
+    "explanation": "La bonne réponse est : Les blocs identiques sont chiffrés identiquement",
+    "options": [
+      { "text": "Les blocs identiques sont chiffrés identiquement", "isCorrect": true },
+      { "text": "Mode sûr", "isCorrect": false },
+      { "text": "Utilisé en standard", "isCorrect": false },
+      { "text": "Pas important", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel est le risque d'une vulnérabilité dans le code ?",
+    "category": "programmation",
+    "explanation": "La bonne réponse est : Exploitation, crash, data leak",
+    "options": [
+      { "text": "Exploitation, crash, data leak", "isCorrect": true },
+      { "text": "Rien", "isCorrect": false },
+      { "text": "Lenteur", "isCorrect": false },
+      { "text": "Peu important", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quelle méthode sécurise le code contre les injections ?",
+    "category": "programmation",
+    "explanation": "La bonne réponse est : Validation + parameterized queries",
+    "options": [
+      { "text": "Validation + parameterized queries", "isCorrect": true },
+      { "text": "Rien", "isCorrect": false },
+      { "text": "Commentaires", "isCorrect": false },
+      { "text": "Regex simple", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Qu'est-ce qu'un CTF réaliste ?",
+    "category": "realiste",
+    "explanation": "La bonne réponse est : Simulation d'attaque en environnement réel",
+    "options": [
+      { "text": "Simulation d'attaque en environnement réel", "isCorrect": true },
+      { "text": "Jeu", "isCorrect": false },
+      { "text": "Théorie", "isCorrect": false },
+      { "text": "Lecture", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel scénario réaliste teste les défenses ?",
+    "category": "realiste",
+    "explanation": "La bonne réponse est : Red team / Pentest",
+    "options": [
+      { "text": "Red team / Pentest", "isCorrect": true },
+      { "text": "Blue team seul", "isCorrect": false },
+      { "text": "Rien", "isCorrect": false },
+      { "text": "Théorie", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Qu'est-ce que la stéganographie ?",
+    "category": "steganographie",
+    "explanation": "La bonne réponse est : Cacher des données dans d'autres données",
+    "options": [
+      { "text": "Cacher des données dans d'autres données", "isCorrect": true },
+      { "text": "Chiffrement", "isCorrect": false },
+      { "text": "Compression", "isCorrect": false },
+      { "text": "Hashage", "isCorrect": false }
+    ]
+  },
+  {
+    "text": "Quel médium cache bien les données en stéganographie ?",
+    "category": "steganographie",
+    "explanation": "La bonne réponse est : Images (LSB), audio, vidéo",
+    "options": [
+      { "text": "Images (LSB), audio, vidéo", "isCorrect": true },
+      { "text": "Texte plain", "isCorrect": false },
+      { "text": "CSV", "isCorrect": false },
+      { "text": "JSON", "isCorrect": false }
+    ]
   }
 ]

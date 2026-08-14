@@ -16,7 +16,7 @@ const CATEGORY_GROUPS: Record<string, Category[]> = {
     {
       id: "kerberos",
       label: "Kerberos",
-      description: "Tickets Kerberos, TGT, ST, Golden Ticket",
+      description: "Tickets, TGT, ST, Golden Ticket",
       icon: <Shield className="w-5 h-5" />,
     },
     {
@@ -26,18 +26,70 @@ const CATEGORY_GROUPS: Record<string, Category[]> = {
       icon: <Shield className="w-5 h-5" />,
     },
     {
+      id: "ldap-injection",
+      label: "LDAP Injection",
+      description: "Bypass auth, wildcard, exploitation",
+      icon: <AlertTriangle className="w-5 h-5" />,
+    },
+    {
+      id: "oauth",
+      label: "OAuth",
+      description: "Flux OAuth, redirect_uri, consent",
+      icon: <Shield className="w-5 h-5" />,
+    },
+    {
       id: "jwt",
       label: "JWT",
       description: "Signing, alg none, claims, refresh token",
       icon: <Shield className="w-5 h-5" />,
     },
   ],
-  "Réseau": [
+  "App": [
     {
-      id: "reseau",
-      label: "Réseau",
-      description: "TCP/IP, OSI, protocoles, firewalls",
-      icon: <Network className="w-5 h-5" />,
+      id: "app-script",
+      label: "App - Script",
+      description: "Scripts, bash, PowerShell, Python",
+      icon: <Zap className="w-5 h-5" />,
+    },
+    {
+      id: "app-systeme",
+      label: "App - Système",
+      description: "Binaires, executables, processes",
+      icon: <Zap className="w-5 h-5" />,
+    },
+  ],
+  "Systèmes d'exploitation": [
+    {
+      id: "windows-internals",
+      label: "Windows Internals",
+      description: "Tokens, services, UAC, process",
+      icon: <Zap className="w-5 h-5" />,
+    },
+    {
+      id: "linux",
+      label: "Linux",
+      description: "Syscalls, permissions, sudo, SUID",
+      icon: <Zap className="w-5 h-5" />,
+    },
+    {
+      id: "privilege-escalation",
+      label: "Privilege Escalation",
+      description: "Escalade, permissions, bypass",
+      icon: <AlertTriangle className="w-5 h-5" />,
+    },
+  ],
+  "Sécurité": [
+    {
+      id: "cracking",
+      label: "Cracking",
+      description: "Brute force, hash, rainbow tables",
+      icon: <AlertTriangle className="w-5 h-5" />,
+    },
+    {
+      id: "cryptanalyse",
+      label: "Cryptanalyse",
+      description: "Crypto attacks, weak ciphers",
+      icon: <Lock className="w-5 h-5" />,
     },
   ],
   "Cloud": [
@@ -53,6 +105,54 @@ const CATEGORY_GROUPS: Record<string, Category[]> = {
       description: "VM, Key Vault, RBAC, NSG",
       icon: <Cloud className="w-5 h-5" />,
     },
+    {
+      id: "gcp",
+      label: "GCP",
+      description: "IAM, metadata, services, roles",
+      icon: <Cloud className="w-5 h-5" />,
+    },
+  ],
+  "Conteneurs": [
+    {
+      id: "docker",
+      label: "Docker",
+      description: "Images, volumes, isolation, escape",
+      icon: <Cloud className="w-5 h-5" />,
+    },
+    {
+      id: "kubernetes",
+      label: "Kubernetes",
+      description: "Pods, RBAC, secrets, privilege",
+      icon: <Cloud className="w-5 h-5" />,
+    },
+  ],
+  "Réseau": [
+    {
+      id: "reseau",
+      label: "Réseau",
+      description: "TCP/IP, OSI, protocoles, firewalls",
+      icon: <Network className="w-5 h-5" />,
+    },
+  ],
+  "Web": [
+    {
+      id: "web-client",
+      label: "Web - Client",
+      description: "HTML, JS, cookies, CSP, XSS",
+      icon: <Globe className="w-5 h-5" />,
+    },
+    {
+      id: "web-server",
+      label: "Web - Serveur",
+      description: "HTTP, routing, auth, framework",
+      icon: <Globe className="w-5 h-5" />,
+    },
+    {
+      id: "owasp",
+      label: "OWASP",
+      description: "Top 10, désérialisation, validation",
+      icon: <Globe className="w-5 h-5" />,
+    },
   ],
   "Attaques Web": [
     {
@@ -61,13 +161,137 @@ const CATEGORY_GROUPS: Record<string, Category[]> = {
       description: "Union, boolean, blind SQLi, exploitation",
       icon: <AlertTriangle className="w-5 h-5" />,
     },
+    {
+      id: "xxe",
+      label: "XXE",
+      description: "XML, external entity, DoS",
+      icon: <AlertTriangle className="w-5 h-5" />,
+    },
+    {
+      id: "ssrf",
+      label: "SSRF",
+      description: "Fetch interne, metadata, SSRF chain",
+      icon: <AlertTriangle className="w-5 h-5" />,
+    },
+    {
+      id: "csrf",
+      label: "CSRF",
+      description: "Cross-site request forgery, tokens",
+      icon: <AlertTriangle className="w-5 h-5" />,
+    },
+  ],
+  "Cryptographie": [
+    {
+      id: "cryptography",
+      label: "Cryptographie",
+      description: "Hash, RSA, ECC, modes",
+      icon: <Lock className="w-5 h-5" />,
+    },
+    {
+      id: "pki",
+      label: "PKI",
+      description: "Certificats, CAs, chain validation",
+      icon: <Lock className="w-5 h-5" />,
+    },
+    {
+      id: "tls",
+      label: "TLS",
+      description: "Handshake, certs, MITM",
+      icon: <Lock className="w-5 h-5" />,
+    },
   ],
   "Malware": [
     {
       id: "malware",
       label: "Malware",
-      description: "Virus, worms, trojan, botnets, rootkits",
+      description: "Virus, worms, trojan, botnets",
       icon: <Bug className="w-5 h-5" />,
+    },
+    {
+      id: "rootkits",
+      label: "Rootkits",
+      description: "Kernel, user-mode, persistence",
+      icon: <Bug className="w-5 h-5" />,
+    },
+    {
+      id: "ransomware",
+      label: "Ransomware",
+      description: "Encryption, lateral movement, extortion",
+      icon: <Bug className="w-5 h-5" />,
+    },
+  ],
+  "Reverse Engineering": [
+    {
+      id: "reverse-engineering",
+      label: "Reverse Engineering",
+      description: "Analyse binaire, PE, ELF, disassembly",
+      icon: <Bug className="w-5 h-5" />,
+    },
+    {
+      id: "yara",
+      label: "YARA",
+      description: "Règles, signatures, triage",
+      icon: <Bug className="w-5 h-5" />,
+    },
+  ],
+  "Analyse": [
+    {
+      id: "forensics",
+      label: "Forensic",
+      description: "Artefacts, mémoire, disque, timeline",
+      icon: <Zap className="w-5 h-5" />,
+    },
+    {
+      id: "siem",
+      label: "SIEM",
+      description: "Logs, alertes, SOC, correlation",
+      icon: <Zap className="w-5 h-5" />,
+    },
+    {
+      id: "logs",
+      label: "Logs",
+      description: "Windows, Linux, cloud, audit",
+      icon: <Zap className="w-5 h-5" />,
+    },
+    {
+      id: "sigma",
+      label: "Sigma",
+      description: "Règles SIEM, normalisation",
+      icon: <Zap className="w-5 h-5" />,
+    },
+  ],
+  "Exploitation": [
+    {
+      id: "rce",
+      label: "RCE",
+      description: "Remote Code Execution, commands, shells",
+      icon: <AlertTriangle className="w-5 h-5" />,
+    },
+    {
+      id: "buffer-overflow",
+      label: "Buffer Overflow",
+      description: "Stack, heap, exploit primitives",
+      icon: <AlertTriangle className="w-5 h-5" />,
+    },
+    {
+      id: "race-conditions",
+      label: "Race Conditions",
+      description: "TOCTOU, temp race, exploitation",
+      icon: <AlertTriangle className="w-5 h-5" />,
+    },
+  ],
+  "Frameworks": [
+    {
+      id: "mitre-attack",
+      label: "MITRE ATT&CK",
+      description: "Tactics, techniques, matrices",
+      icon: <Shield className="w-5 h-5" />,
+    },
+    {
+      id: "threat-hunting",
+      label: "Threat Hunting",
+      description: "Recherche proactive, hypothèses",
+      icon: <Shield className="w-5 h-5" />,
     },
   ],
 };
