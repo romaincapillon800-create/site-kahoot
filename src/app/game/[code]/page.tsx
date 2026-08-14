@@ -10,6 +10,62 @@ import { Leaderboard } from "@/components/game/leaderboard";
 import { useGameStore } from "@/store/game-store";
 import { submitAnswer, useSocket } from "@/lib/socket-client";
 
+const CATEGORY_MAP: Record<string, string> = {
+  // Authentification
+  "kerberos": "Kerberos",
+  "active-directory": "Active Directory",
+  "ldap-injection": "LDAP Injection",
+  "oauth": "OAuth",
+  "jwt": "JWT",
+  // Systèmes d'exploitation
+  "windows-internals": "Windows Internals",
+  "linux": "Linux",
+  "privilege-escalation": "Privilege Escalation",
+  // Cloud
+  "cloud-aws": "Cloud AWS",
+  "azure": "Azure",
+  "gcp": "GCP",
+  // Conteneurs
+  "docker": "Docker",
+  "kubernetes": "Kubernetes",
+  // Réseau
+  "reseau": "Réseau",
+  // Web
+  "web-client": "Web - Client",
+  "web-server": "Web - Serveur",
+  "owasp": "OWASP",
+  // Attaques Web
+  "sql-injection": "SQL Injection",
+  "xxe": "XXE",
+  "ssrf": "SSRF",
+  "csrf": "CSRF",
+  // Cryptographie
+  "cryptography": "Cryptographie",
+  "pki": "PKI",
+  "tls": "TLS",
+  // Malware
+  "malware": "Malware",
+  "rootkits": "Rootkits",
+  "ransomware": "Ransomware",
+  // Reverse Engineering
+  "reverse-engineering": "Reverse Engineering",
+  "yara": "YARA",
+  // Analyse
+  "forensics": "Forensic",
+  "siem": "SIEM",
+  "logs": "Logs",
+  "sigma": "Sigma",
+  // Exploitation
+  "rce": "RCE",
+  "buffer-overflow": "Buffer Overflow",
+  "race-conditions": "Race Conditions",
+  // Frameworks
+  "mitre-attack": "MITRE ATT&CK",
+  "threat-hunting": "Threat Hunting",
+  // Scénarios
+  "realiste": "Scénarios Réalistes",
+};
+
 export default function GameRoomPage() {
   const router = useRouter();
   const params = useParams();
@@ -157,6 +213,7 @@ export default function GameRoomPage() {
                       <div className="space-y-6">
                         <div className="rounded-3xl border border-cyber-border bg-cyber-surface/80 p-6">
                           <p className="text-sm uppercase tracking-[0.2em] text-gray-400">Question {question.order}/{question.totalQuestions}</p>
+                          <p className="text-xs text-gray-500 mt-2">Catégorie: {CATEGORY_MAP[question.category] || question.category}</p>
                           <h2 className="mt-4 text-2xl font-semibold">{question.text}</h2>
                         </div>
                         <div className="grid gap-4">
@@ -187,6 +244,7 @@ export default function GameRoomPage() {
                       <div className="space-y-6">
                         <div className="rounded-3xl border border-cyber-border bg-cyber-surface/80 p-6 transition-all duration-300\">
                           <p className="text-sm uppercase tracking-[0.2em] text-gray-400">Bonne réponse</p>
+                          {question && <p className="text-xs text-gray-500 mt-2">Catégorie: {CATEGORY_MAP[question.category] || question.category}</p>}
                           <p className="mt-3 text-2xl font-semibold text-white">{reveal.correctOptionText}</p>
                           <p className="mt-3 text-gray-400">{reveal.explanation}</p>
                         </div>

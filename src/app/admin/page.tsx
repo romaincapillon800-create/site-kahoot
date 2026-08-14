@@ -162,6 +162,71 @@ export default function AdminPage() {
     return `${selectedCategories.length} catégories sélectionnées`;
   };
 
+  const getCategoriesDisplayLabel = () => {
+    const categoryMap: Record<string, string> = {
+      // Authentification
+      "kerberos": "Kerberos",
+      "active-directory": "Active Directory",
+      "ldap-injection": "LDAP Injection",
+      "oauth": "OAuth",
+      "jwt": "JWT",
+      // Systèmes d'exploitation
+      "windows-internals": "Windows Internals",
+      "linux": "Linux",
+      "privilege-escalation": "Privilege Escalation",
+      // Cloud
+      "cloud-aws": "Cloud AWS",
+      "azure": "Azure",
+      "gcp": "GCP",
+      // Conteneurs
+      "docker": "Docker",
+      "kubernetes": "Kubernetes",
+      // Réseau
+      "reseau": "Réseau",
+      // Web
+      "web-client": "Web - Client",
+      "web-server": "Web - Serveur",
+      "owasp": "OWASP",
+      // Attaques Web
+      "sql-injection": "SQL Injection",
+      "xxe": "XXE",
+      "ssrf": "SSRF",
+      "csrf": "CSRF",
+      // Cryptographie
+      "cryptography": "Cryptographie",
+      "pki": "PKI",
+      "tls": "TLS",
+      // Malware
+      "malware": "Malware",
+      "rootkits": "Rootkits",
+      "ransomware": "Ransomware",
+      // Reverse Engineering
+      "reverse-engineering": "Reverse Engineering",
+      "yara": "YARA",
+      // Analyse
+      "forensics": "Forensic",
+      "siem": "SIEM",
+      "logs": "Logs",
+      "sigma": "Sigma",
+      // Exploitation
+      "rce": "RCE",
+      "buffer-overflow": "Buffer Overflow",
+      "race-conditions": "Race Conditions",
+      // Frameworks
+      "mitre-attack": "MITRE ATT&CK",
+      "threat-hunting": "Threat Hunting",
+      // Scénarios
+      "realiste": "Scénarios Réalistes",
+    };
+
+    if (!settings.categories) return "Catégories non définies";
+    if (settings.categories.includes("global")) return "Toutes les catégories";
+    
+    const labels = settings.categories.map(cat => categoryMap[cat] || cat);
+    if (labels.length === 1) return labels[0];
+    return labels.join(", ");
+  };
+
   const normalizeSettings = (questionCount: number, questionTime: number): GameSettings => ({
     questionCount: Math.min(100, Math.max(5, Number.isFinite(questionCount) ? questionCount : 10)),
     questionTime: Math.min(60, Math.max(10, Number.isFinite(questionTime) ? questionTime : 20)),
@@ -268,6 +333,7 @@ export default function AdminPage() {
           <p className="text-sm uppercase text-gray-400 tracking-[0.2em]">Départ</p>
           <p className="mt-4 text-6xl font-bold text-white">{countdown ?? 0}s</p>
           <p className="mt-3 text-gray-400">La partie commence bientôt.</p>
+          <p className="mt-3 text-xs text-gray-500">Catégories: {getCategoriesDisplayLabel()}</p>
         </div>
       );
     }
@@ -277,6 +343,7 @@ export default function AdminPage() {
         <div className="rounded-3xl border border-cyber-border bg-cyber-surface/70 p-6">
           <p className="text-sm uppercase text-gray-400 tracking-[0.2em]">Question en cours</p>
           <p className="mt-4 text-2xl font-semibold">{question?.text || "Chargement..."}</p>
+          <p className="mt-2 text-xs text-gray-500">Catégorie: {getCategoriesDisplayLabel()}</p>
           <p className="mt-3 text-sm text-gray-400">Temps restant : {timeRemaining}s</p>
           <Button 
             className="mt-6 w-full" 
@@ -295,6 +362,7 @@ export default function AdminPage() {
           <p className="text-sm uppercase text-gray-400 tracking-[0.2em]">Révélation</p>
           <p className="mt-4 text-xl font-semibold">Réponse correcte</p>
           <p className="mt-2 text-2xl text-white">{reveal?.correctOptionText || "-"}</p>
+          <p className="mt-2 text-xs text-gray-500">Catégorie: {getCategoriesDisplayLabel()}</p>
           <p className="mt-3 text-gray-400">{reveal?.explanation || "Aucune explication disponible."}</p>
 
           <div className="mt-6 rounded-2xl border border-cyber-border bg-cyber-surface/80 p-4 text-center">
