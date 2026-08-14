@@ -269,6 +269,22 @@ export function initSocketServer(httpServer: HTTPServer) {
               timeRemaining: game.settings.questionTime,
             });
           }
+        } else {
+          // All questions answered - show leaderboard
+          const leaderboard = Array.from(game.players.values())
+            .sort((a, b) => {
+              if (b.score !== a.score) return b.score - a.score;
+              if (b.correctCount !== a.correctCount) return b.correctCount - a.correctCount;
+              if (b.maxStreak !== a.maxStreak) return b.maxStreak - a.maxStreak;
+              return a.nickname.localeCompare(b.nickname);
+            })
+            .map((p, index) => ({
+              id: p.id,
+              nickname: p.nickname,
+              score: p.score,
+              rank: index + 1,
+            }));
+          io.to(`game:${game.code}`).emit("game:leaderboard", { entries: leaderboard });
         }
       } catch (error) {
         console.error("Error starting next question:", error);

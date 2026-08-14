@@ -288,10 +288,13 @@ export async function startGameCountdown(
   game.phase = "countdown";
   let seconds = 5;
 
+  // Update game state for consistency
+  game.timeRemaining = seconds;
   onTick(seconds);
 
   game.timer = setInterval(() => {
     seconds--;
+    game.timeRemaining = seconds;
     if (seconds > 0) {
       onTick(seconds);
     } else {
