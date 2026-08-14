@@ -625,8 +625,8 @@ export default function AdminPage() {
               </div>
             </>
           ) : (
-            <div className="grid gap-6 xl:grid-cols-[1.6fr_1fr]">
-              <div className="space-y-6">
+            <div className="grid gap-6 xl:grid-cols-3">
+              <div className="xl:col-span-1 space-y-6">
                 {error && <p className="rounded-3xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-100">{error}</p>}
                 <Card className="p-0 overflow-hidden">
                   <CardHeader>
@@ -635,39 +635,9 @@ export default function AdminPage() {
                   </CardHeader>
                   <CardContent>{lobbyActions}</CardContent>
                 </Card>
-
               </div>
 
-              <div className="space-y-6">
-                <Card className="p-0 overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10">
-                  <CardHeader>
-                    <CardTitle>Demandes en attente</CardTitle>
-                    <CardDescription>Acceptez ou refusez les joueurs qui demandent à rejoindre en cours de partie.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {pendingPlayers.length === 0 ? (
-                      <p className="text-sm text-gray-400">Aucune demande en attente.</p>
-                    ) : (
-                      <ul className="space-y-3">
-                        {pendingPlayers.map((request) => (
-                          <li key={request.id} className="rounded-2xl border border-cyber-border p-4 bg-cyber-surface/80">
-                            <div className="flex items-center justify-between gap-3">
-                              <div>
-                                <p className="font-semibold text-white">{request.nickname}</p>
-                                <p className="text-xs text-gray-400">Demandé à {new Date(request.requestedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Button size="sm" onClick={() => hostAcceptPlayer(request.id)}>Accepter</Button>
-                                <Button size="sm" variant="ghost" onClick={() => hostRejectPlayer(request.id)} className="text-red-300">Refuser</Button>
-                              </div>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </CardContent>
-                </Card>
-
+              <div className="xl:col-span-2 space-y-6">
                 <Card className="p-0 overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10">
                   <CardHeader>
                     <CardTitle>Joueurs connectés</CardTitle>
@@ -740,6 +710,50 @@ export default function AdminPage() {
                     )}
                   </CardContent>
                 </Card>
+
+                {pendingPlayers.length > 0 && (
+                  <Card className="p-0 overflow-hidden border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-transparent transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/20">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
+                        Demandes en attente
+                      </CardTitle>
+                      <CardDescription>{pendingPlayers.length} joueur{pendingPlayers.length > 1 ? "s" : ""} en attente d'approbation</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-2.5">
+                        {pendingPlayers.map((request) => (
+                          <li key={request.id} className="rounded-2xl border border-amber-500/30 p-3 bg-amber-500/5 backdrop-blur-sm">
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate font-semibold text-amber-100">{request.nickname}</p>
+                                <p className="text-xs text-amber-600/70">
+                                  Demandé à {new Date(request.requestedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-1.5 flex-shrink-0">
+                                <Button 
+                                  size="sm" 
+                                  onClick={() => hostAcceptPlayer(request.id)}
+                                  className="bg-green-600 hover:bg-green-700 text-white h-7 px-2 text-xs font-medium transition-all duration-300"
+                                >
+                                  ✓
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  onClick={() => hostRejectPlayer(request.id)} 
+                                  className="bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 h-7 px-2 text-xs font-medium transition-all duration-300"
+                                >
+                                  ✕
+                                </Button>
+                              </div>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             </div>
           )}
