@@ -26,6 +26,7 @@ interface ActiveGame {
   phase: GamePhase;
   settings: GameSettings;
   players: Map<string, PlayerState & { socketId: string | null; streak: number }>;
+  pendingPlayers: Map<string, { id: string; nickname: string; socketId: string; requestedAt: number; accepted: boolean }>;
   questionIds: string[];
   currentQuestionIndex: number;
   timer: NodeJS.Timeout | null;
@@ -149,6 +150,7 @@ export async function createGame(
     phase: "lobby",
     settings,
     players: new Map(),
+    pendingPlayers: new Map(),
     questionIds: selectedQuestions.map((question) => question.id),
     currentQuestionIndex: -1,
     timer: null,
@@ -174,24 +176,120 @@ export async function joinGameAsHost(
   return { gameId: game.id, code: game.code };
 }
 
+export function getPendingPlayers(gameId: string) {
+  const game = activeGames.get(gameId);
+  if (!game) return [];
+
+  return Array.from(game.pendingPlayers.values()).map((request) => ({
+    id: request.id,
+    nickname: request.nickname,
+    socketId: request.socketId,
+    requestedAt: request.requestedAt,
+    accepted: request.accepted,
+  }));
+}
+
+export function removePendingPlayerRequest(gameId: string, requestId: string): boolean {
+  const game = activeGames.get(gameId);
+  if (!game) return false;
+
+  if (!game.pendingPlayers.has(requestId)) return false;
+  game.pendingPlayers.delete(requestId);
+  return true;
+}
+
+export function acceptPendingPlayerRequest(gameId: string, requestId: string): boolean {
+  const game = activeGames.get(gameId);
+  if (!game) return false;
+
+  const pendingRequest = game.pendingPlayers.get(requestId);
+  if (!pendingRequest) return false;
+
+  pendingRequest.accepted = true;
+  return true;
+}
+
+export function rejectPendingPlayerRequest(gameId: string, requestId: string): boolean {
+  return removePendingPlayerRequest(gameId, requestId);
+}
+
+export function flushAcceptedPendingPlayers(gameId: string): Array<{ playerId: string; socketId: string }> {
+  const game = activeGames.get(gameId);
+  if (!game) return [];
+
+  const created: Array<{ playerId: string; socketId: string }> = [];
+  const acceptedRequests = Array.from(game.pendingPlayers.values()).filter((request) => request.accepted);
+
+  for (const request of acceptedRequests) {
+    const duplicateNickname = Array.from(game.players.values()).some(
+      (player) =>
+        player.id !== request.id &&
+        player.nickname.toLowerCase() === request.nickname.toLowerCase() &&
+        player.isConnected
+    );
+
+    if (duplicateNickname) {
+      game.pendingPlayers.delete(request.id);
+      continue;
+    }
+
+    const playerId = `player-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    game.players.set(playerId, {
+      id: playerId,
+      nickname: request.nickname,
+      score: 0,
+      streak: 0,
+      maxStreak: 0,
+      correctCount: 0,
+      isConnected: true,
+      socketId: request.socketId,
+    });
+    created.push({ playerId, socketId: request.socketId });
+    game.pendingPlayers.delete(request.id);
+  }
+
+  return created;
+}
+
 export async function joinGameAsPlayer(
   code: string,
   nickname: string,
   socketId: string
-): Promise<{ playerId: string; gameId: string } | { error: string }> {
+): Promise<{ playerId: string; gameId: string; pendingRequestId?: string } | { error: string; pendingRequestId?: string; queued?: boolean }> {
   const activeGame = getActiveGameByCode(code);
 
   if (!activeGame) {
     return { error: "Partie introuvable. Vérifiez le code." };
   }
 
-  if (activeGame.phase !== "lobby") {
-    return { error: "Cette partie a déjà commencé." };
-  }
-
   const trimmedNick = nickname.trim().slice(0, 20);
   if (trimmedNick.length < 2) {
     return { error: "Le pseudo doit contenir au moins 2 caractères." };
+  }
+
+  if (activeGame.phase !== "lobby") {
+    const existingPending = Array.from(activeGame.pendingPlayers.values()).find(
+      (request) => request.socketId === socketId || request.nickname.toLowerCase() === trimmedNick.toLowerCase()
+    );
+
+    if (existingPending) {
+      return { error: "Une demande d’accès est déjà en attente.", pendingRequestId: existingPending.id, queued: true };
+    }
+
+    const requestId = `pending-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    activeGame.pendingPlayers.set(requestId, {
+      id: requestId,
+      nickname: trimmedNick,
+      socketId,
+      requestedAt: Date.now(),
+      accepted: false,
+    });
+
+    return {
+      error: "Cette partie a déjà commencé. Demandez à un admin de vous accepter.",
+      pendingRequestId: requestId,
+      queued: true,
+    };
   }
 
   const existingPlayerForSocket = Array.from(activeGame.players.values()).find(
@@ -344,6 +442,7 @@ export async function startGameCountdown(
   const game = activeGames.get(gameId);
   if (!game || game.players.size === 0) return false;
 
+  flushAcceptedPendingPlayers(gameId);
   game.phase = "countdown";
   let seconds = 5;
 
@@ -374,6 +473,7 @@ export async function startQuestion(
   const game = activeGames.get(gameId);
   if (!game) return null;
 
+  flushAcceptedPendingPlayers(gameId);
   clearGameTimer(game);
   game.currentQuestionIndex++;
   game.answers.set(game.questionIds[game.currentQuestionIndex], new Map());
@@ -503,6 +603,13 @@ export function getGameState(gameId: string) {
     phase: game.phase,
     code: game.code,
     players: Array.from(game.players.values()).map(toPlayerState),
+    pendingPlayers: Array.from(game.pendingPlayers.values()).map((request) => ({
+      id: request.id,
+      nickname: request.nickname,
+      socketId: request.socketId,
+      requestedAt: request.requestedAt,
+      accepted: request.accepted,
+    })),
     settings: game.settings,
     countdown: game.phase === "countdown" ? game.timeRemaining : undefined,
     timeRemaining: game.timeRemaining,

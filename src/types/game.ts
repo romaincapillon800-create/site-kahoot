@@ -23,6 +23,7 @@ export interface PendingPlayerRequest {
   nickname: string;
   socketId: string;
   requestedAt: number;
+  accepted: boolean;
 }
 
 export interface QuestionOption {
@@ -119,6 +120,8 @@ export interface ClientToServerEvents {
       error?: string;
       playerId?: string;
       gameId?: string;
+      pendingRequestId?: string;
+      queued?: boolean;
     }) => void
   ) => void;
   "player:answer": (data: {
@@ -126,8 +129,8 @@ export interface ClientToServerEvents {
     optionId: string;
   }) => void;
   "player:leave": () => void;
-  "host:accept-player": (data: { requestId: string }) => void;
-  "host:reject-player": (data: { requestId: string }) => void;
+  "host:accept-player": (data: { requestId: string }, callback?: (response: { success: boolean; error?: string }) => void) => void;
+  "host:reject-player": (data: { requestId: string }, callback?: (response: { success: boolean; error?: string }) => void) => void;
   "host:create-game": (
     data: GameSettings,
     callback: (response: {

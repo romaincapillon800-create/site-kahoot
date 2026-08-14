@@ -22,6 +22,10 @@ import {
   finishGame,
   disconnectPlayer,
   leaveGame,
+  acceptPendingPlayerRequest,
+  rejectPendingPlayerRequest,
+  flushAcceptedPendingPlayers,
+  removePendingPlayerRequest,
 } from "./game-manager";
 
 type GameSocket = Socket<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>;
@@ -159,7 +163,17 @@ export function initSocketServer(httpServer: HTTPServer) {
 
         const result = await joinGameAsPlayer(data.code, data.nickname, socket.id);
         if ("error" in result) {
-          callback({ success: false, error: result.error });
+          if (result.queued) {
+            socket.join(`game:${data.code}`);
+            socket.data.gameId = game.id;
+            socket.data.pendingRequestId = result.pendingRequestId;
+          }
+          callback({
+            success: false,
+            error: result.error,
+            pendingRequestId: result.pendingRequestId,
+            queued: result.queued,
+          });
           return;
         }
 
@@ -167,6 +181,7 @@ export function initSocketServer(httpServer: HTTPServer) {
         socketToGameMap.set(socket.id, { gameId: result.gameId, playerId: result.playerId });
         socket.data.gameId = result.gameId;
         socket.data.playerId = result.playerId;
+        socket.data.pendingRequestId = undefined;
 
         callback({
           success: true,
@@ -381,6 +396,89 @@ export function initSocketServer(httpServer: HTTPServer) {
       socket.data.gameId = undefined;
     });
 
+    // Host: Accept/Reject pending player
+    socket.on("host:accept-player", (data, callback) => {
+      const mapping = socketToGameMap.get(socket.id);
+      if (!mapping || !socket.data.isHost) {
+        callback?.({ success: false, error: "Non autorisé" });
+        return;
+      }
+
+      const game = getActiveGame(mapping.gameId);
+      if (!game) {
+        callback?.({ success: false, error: "Partie introuvable" });
+        return;
+      }
+
+      const approved = acceptPendingPlayerRequest(mapping.gameId, data.requestId);
+      if (!approved) {
+        callback?.({ success: false, error: "Demande introuvable" });
+        return;
+      }
+
+      const createdPlayers = flushAcceptedPendingPlayers(mapping.gameId);
+      for (const { playerId, socketId } of createdPlayers) {
+        const targetSocket = io.sockets.sockets.get(socketId);
+        if (targetSocket) {
+          socketToGameMap.set(socketId, { gameId: game.id, playerId });
+          targetSocket.data.gameId = game.id;
+          targetSocket.data.playerId = playerId;
+          targetSocket.data.pendingRequestId = undefined;
+          targetSocket.join(`game:${game.code}`);
+        }
+      }
+
+      if (game.pendingPlayers.has(data.requestId)) {
+        game.pendingPlayers.delete(data.requestId);
+      }
+
+      const gameState = getGameState(mapping.gameId);
+      if (gameState) {
+        io.to(`game:${game.code}`).emit("game:state", gameState);
+      }
+
+      callback?.({ success: true });
+    });
+
+    socket.on("host:reject-player", (data, callback) => {
+      const mapping = socketToGameMap.get(socket.id);
+      if (!mapping || !socket.data.isHost) {
+        callback?.({ success: false, error: "Non autorisé" });
+        return;
+      }
+
+      const game = getActiveGame(mapping.gameId);
+      if (!game) {
+        callback?.({ success: false, error: "Partie introuvable" });
+        return;
+      }
+
+      const request = game.pendingPlayers.get(data.requestId);
+      if (!request) {
+        callback?.({ success: false, error: "Demande introuvable" });
+        return;
+      }
+
+      const removed = rejectPendingPlayerRequest(mapping.gameId, data.requestId);
+      if (!removed) {
+        callback?.({ success: false, error: "Impossible de refuser la demande" });
+        return;
+      }
+
+      const targetSocket = io.sockets.sockets.get(request.socketId);
+      if (targetSocket) {
+        targetSocket.emit("game:error", { message: "Votre demande a été refusée par l’hôte." });
+        targetSocket.leave(`game:${game.code}`);
+      }
+
+      const gameState = getGameState(mapping.gameId);
+      if (gameState) {
+        io.to(`game:${game.code}`).emit("game:state", gameState);
+      }
+
+      callback?.({ success: true });
+    });
+
     // Host: Kick Player
     socket.on("host:kick-player", (data) => {
       const mapping = socketToGameMap.get(socket.id);
@@ -443,6 +541,15 @@ export function initSocketServer(httpServer: HTTPServer) {
             }
           }
         }
+
+        if (socket.data.pendingRequestId && game) {
+          removePendingPlayerRequest(game.id, socket.data.pendingRequestId);
+          const gameState = getGameState(game.id);
+          if (gameState) {
+            io.to(`game:${game.code}`).emit("game:state", gameState);
+          }
+        }
+
         socketToGameMap.delete(socket.id);
       }
 

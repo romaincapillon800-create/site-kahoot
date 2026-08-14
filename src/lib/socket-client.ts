@@ -112,6 +112,9 @@ export function joinGame(
         useGameStore.getState().setGameId(response.gameId ?? null);
         useGameStore.getState().setError(null);
       }
+      if (!response.success && response.pendingRequestId) {
+        useGameStore.getState().setError(response.error || "Cette partie a déjà commencé. Demandez à un admin de vous accepter.");
+      }
       resolve(response);
     });
   });
