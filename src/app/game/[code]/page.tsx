@@ -104,10 +104,25 @@ export default function GameRoomPage() {
     [reveal, playerId]
   );
 
-  const playerRank = useMemo(
-    () => leaderboard.find((entry) => entry.id === playerId)?.rank,
-    [leaderboard, playerId]
-  );
+  const playerRank = useMemo(() => {
+    const rankingSource = leaderboard.length > 0
+      ? leaderboard
+      : [...players]
+          .sort((a, b) => {
+            if (b.score !== a.score) return b.score - a.score;
+            if (b.correctCount !== a.correctCount) return b.correctCount - a.correctCount;
+            if (b.maxStreak !== a.maxStreak) return b.maxStreak - a.maxStreak;
+            return a.nickname.localeCompare(b.nickname);
+          })
+          .map((player, index) => ({
+            id: player.id,
+            nickname: player.nickname,
+            score: player.score,
+            rank: index + 1,
+          }));
+
+    return rankingSource.find((entry) => entry.id === playerId)?.rank ?? null;
+  }, [leaderboard, players, playerId]);
 
   const handleOptionSelect = (optionId: string) => {
     if (!question || hasAnswered) return;

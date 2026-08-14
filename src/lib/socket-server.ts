@@ -360,9 +360,34 @@ export function initSocketServer(httpServer: HTTPServer) {
       const kickedSocketId = kickedPlayer?.socketId ?? null;
 
       if (kickPlayer(mapping.gameId, data.playerId)) {
+        for (const [questionId, answers] of game.answers.entries()) {
+          answers.delete(data.playerId);
+          if (answers.size === 0) {
+            game.answers.delete(questionId);
+          }
+        }
+
         const gameState = getGameState(mapping.gameId);
         if (gameState) {
           io.to(`game:${game.code}`).emit("game:state", gameState);
+        }
+
+        const leaderboard = gameState?.leaderboard ?? Array.from(game.players.values())
+          .sort((a, b) => {
+            if (b.score !== a.score) return b.score - a.score;
+            if (b.correctCount !== a.correctCount) return b.correctCount - a.correctCount;
+            if (b.maxStreak !== a.maxStreak) return b.maxStreak - a.maxStreak;
+            return a.nickname.localeCompare(b.nickname);
+          })
+          .map((player, index) => ({
+            id: player.id,
+            nickname: player.nickname,
+            score: player.score,
+            rank: index + 1,
+          }));
+
+        if (leaderboard && leaderboard.length > 0) {
+          io.to(`game:${game.code}`).emit("game:leaderboard", { entries: leaderboard });
         }
 
         if (kickedSocketId) {
