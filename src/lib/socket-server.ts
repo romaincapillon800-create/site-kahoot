@@ -356,11 +356,22 @@ export function initSocketServer(httpServer: HTTPServer) {
       const game = getActiveGame(mapping.gameId);
       if (!game) return;
 
+      const kickedPlayer = game.players.get(data.playerId);
+      const kickedSocketId = kickedPlayer?.socketId ?? null;
+
       if (kickPlayer(mapping.gameId, data.playerId)) {
         const gameState = getGameState(mapping.gameId);
         if (gameState) {
           io.to(`game:${game.code}`).emit("game:state", gameState);
-          io.to(data.playerId).emit("game:kicked");
+        }
+
+        if (kickedSocketId) {
+          const kickedSocket = io.sockets.sockets.get(kickedSocketId);
+          if (kickedSocket) {
+            kickedSocket.leave(`game:${game.code}`);
+            kickedSocket.emit("game:kicked");
+          }
+          socketToGameMap.delete(kickedSocketId);
         }
       }
     });
