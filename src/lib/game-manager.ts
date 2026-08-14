@@ -359,7 +359,7 @@ export function kickPlayer(gameId: string, playerId: string): boolean {
   const game = activeGames.get(gameId);
   if (!game) return false;
 
-  if (game.phase !== "leaderboard") {
+  if (game.phase === "leaderboard") {
     return false;
   }
 

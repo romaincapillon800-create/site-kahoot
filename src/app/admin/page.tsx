@@ -690,16 +690,21 @@ export default function AdminPage() {
                                       <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-white">
                                         {player.isConnected ? "✓" : "✗"}
                                       </span>
-                                      {phase === "leaderboard" && (
-                                        <Button
-                                          variant="ghost"
-                                          size="sm"
-                                          onClick={() => hostKickPlayer(player.id)}
-                                          className="h-7 w-7 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-300"
-                                        >
-                                          <X className="w-3.5 h-3.5" aria-hidden="true" />
-                                        </Button>
-                                      )}
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => hostKickPlayer(player.id)}
+                                        disabled={phase === "leaderboard"}
+                                        className={cn(
+                                          "h-7 w-7 p-0 transition-all duration-300",
+                                          phase === "leaderboard"
+                                            ? "cursor-not-allowed opacity-40 text-red-400/40 hover:text-red-400/40 hover:bg-transparent"
+                                            : "text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                                        )}
+                                        aria-label={phase === "leaderboard" ? "Le kick est désactivé pendant le classement" : `Expulser ${player.nickname}`}
+                                      >
+                                        <X className="w-3.5 h-3.5" aria-hidden="true" />
+                                      </Button>
                                     </div>
                                   </div>
                                 </li>

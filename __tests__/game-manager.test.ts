@@ -40,7 +40,7 @@ describe("category filtering", () => {
     }
   });
 
-  it("rejects a kick outside the leaderboard phase", async () => {
+  it("allows a kick outside the leaderboard phase", async () => {
     const { gameId, code } = await createGame(
       {
         questionCount: 5,
@@ -57,11 +57,11 @@ describe("category filtering", () => {
     assert.equal(before?.players.some((player) => player.nickname === "Alice"), true);
 
     const wasKicked = kickPlayer(gameId, (joinResult as { playerId: string }).playerId);
-    assert.equal(wasKicked, false);
+    assert.equal(wasKicked, true);
 
     const after = getGameState(gameId);
-    assert.equal(after?.players.some((player) => player.nickname === "Alice"), true);
-    assert.equal(after?.leaderboard.some((entry) => entry.nickname === "Alice"), true);
+    assert.equal(after?.players.some((player) => player.nickname === "Alice"), false);
+    assert.equal(after?.leaderboard.some((entry) => entry.nickname === "Alice"), false);
   });
 
   it("allows a refreshed player to reconnect with the same nickname without being kicked", async () => {
@@ -178,7 +178,7 @@ describe("category filtering", () => {
     assert.equal(getGameState(gameId)?.leaderboard.some((entry) => entry.nickname === "Alice"), false);
   });
 
-  it("blocks kicks outside leaderboard phase", async () => {
+  it("blocks kicks while the leaderboard is visible", async () => {
     const { gameId, code } = await createGame(
       {
         questionCount: 5,
@@ -193,7 +193,7 @@ describe("category filtering", () => {
 
     const game = getActiveGame(gameId);
     assert.ok(game);
-    game!.phase = "reveal";
+    game!.phase = "leaderboard";
 
     const playerId = (joinResult as { playerId: string }).playerId;
     const wasKicked = kickPlayer(gameId, playerId);
@@ -202,7 +202,7 @@ describe("category filtering", () => {
     assert.equal(getActiveGame(gameId)?.players.has(playerId), true);
   });
 
-  it("allows kicking only when the leaderboard is visible", async () => {
+  it("allows kicking while a game is in progress outside the leaderboard", async () => {
     const { gameId, code } = await createGame(
       {
         questionCount: 5,
@@ -217,7 +217,7 @@ describe("category filtering", () => {
 
     const game = getActiveGame(gameId);
     assert.ok(game);
-    game!.phase = "leaderboard";
+    game!.phase = "question";
 
     const playerId = (joinResult as { playerId: string }).playerId;
     const wasKicked = kickPlayer(gameId, playerId);
