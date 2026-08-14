@@ -345,7 +345,15 @@ export function kickPlayer(gameId: string, playerId: string): boolean {
   const game = activeGames.get(gameId);
   if (!game) return false;
 
-  if (!game.players.has(playerId)) return false;
+  const player = game.players.get(playerId);
+  if (!player) return false;
+
+  // During reveal/leaderboard, just mark as disconnected instead of removing
+  if (game.phase === "reveal" || game.phase === "leaderboard") {
+    player.isConnected = false;
+    player.socketId = null;
+    return true;
+  }
 
   game.players.delete(playerId);
   return true;
@@ -355,7 +363,15 @@ export function leaveGame(gameId: string, playerId: string): boolean {
   const game = activeGames.get(gameId);
   if (!game) return false;
 
-  if (!game.players.has(playerId)) return false;
+  const player = game.players.get(playerId);
+  if (!player) return false;
+
+  // During reveal/leaderboard, just mark as disconnected instead of removing
+  if (game.phase === "reveal" || game.phase === "leaderboard") {
+    player.isConnected = false;
+    player.socketId = null;
+    return true;
+  }
 
   game.players.delete(playerId);
 
@@ -454,6 +470,18 @@ export async function startQuestion(
 ): Promise<QuestionState | null> {
   const game = activeGames.get(gameId);
   if (!game) return null;
+
+  // Clean up disconnected players from previous phase
+  const disconnectedPlayerIds = Array.from(game.players.entries())
+    .filter(([_, player]) => !player.isConnected)
+    .map(([id, _]) => id);
+  
+  for (const playerId of disconnectedPlayerIds) {
+    game.players.delete(playerId);
+    for (const [_, answers] of game.answers.entries()) {
+      answers.delete(playerId);
+    }
+  }
 
   flushAcceptedPendingPlayers(gameId);
   clearGameTimer(game);
@@ -603,6 +631,15 @@ export function getGameState(gameId: string) {
 export async function finishGame(gameId: string) {
   const game = activeGames.get(gameId);
   if (!game) return null;
+
+  // Clean up disconnected players before finishing
+  const disconnectedPlayerIds = Array.from(game.players.entries())
+    .filter(([_, player]) => !player.isConnected)
+    .map(([id, _]) => id);
+  
+  for (const playerId of disconnectedPlayerIds) {
+    game.players.delete(playerId);
+  }
 
   clearGameTimer(game);
   game.phase = "finished";
