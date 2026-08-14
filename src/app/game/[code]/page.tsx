@@ -99,19 +99,6 @@ export default function GameRoomPage() {
     }
   }, [question?.id, phase]);
 
-  useEffect(() => {
-    if (!playerId) return;
-
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      event.preventDefault();
-      event.returnValue = "";
-      return "";
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [playerId]);
-
   const playerResult = useMemo(
     () => reveal?.playerResults.find((result) => result.playerId === playerId) ?? null,
     [reveal, playerId]

@@ -435,8 +435,8 @@ export function initSocketServer(httpServer: HTTPServer) {
               io.to(`game:${game.code}`).emit("game:state", gameState);
             }
           } else if (mapping.playerId) {
-            // Player disconnected: keep their slot, mark as offline, and allow reconnection.
-            disconnectPlayer(socket.id);
+            // Refresh / reload should behave like leaving the game.
+            leaveGame(mapping.gameId, mapping.playerId);
             const gameState = getGameState(mapping.gameId);
             if (gameState) {
               io.to(`game:${game.code}`).emit("game:state", gameState);
