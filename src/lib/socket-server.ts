@@ -353,10 +353,12 @@ export function initSocketServer(httpServer: HTTPServer) {
       const mapping = socketToGameMap.get(socket.id);
       if (!mapping || !socket.data.isHost) return;
 
+      const game = getActiveGame(mapping.gameId);
+      if (!game) return;
+
       if (kickPlayer(mapping.gameId, data.playerId)) {
         const gameState = getGameState(mapping.gameId);
-        const game = getActiveGame(mapping.gameId);
-        if (gameState && game) {
+        if (gameState) {
           io.to(`game:${game.code}`).emit("game:state", gameState);
           io.to(data.playerId).emit("game:kicked");
         }
