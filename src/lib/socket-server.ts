@@ -188,9 +188,16 @@ export function initSocketServer(httpServer: HTTPServer) {
                   io.to(`game:${game.code}`).emit("game:timer-tick", { timeRemaining });
                 },
                 async () => {
-                  const reveal = await revealQuestion(mapping.gameId);
-                  if (reveal) {
-                    io.to(`game:${game.code}`).emit("game:question-reveal", reveal);
+                  try {
+                    const reveal = await revealQuestion(mapping.gameId);
+                    if (reveal) {
+                      io.to(`game:${game.code}`).emit("game:question-reveal", reveal);
+                    }
+                  } catch (error) {
+                    console.error("Error in reveal question:", error);
+                    io.to(`game:${game.code}`).emit("game:error", {
+                      message: "Erreur lors de la révélation de la réponse",
+                    });
                   }
                 }
               );
@@ -243,9 +250,16 @@ export function initSocketServer(httpServer: HTTPServer) {
               io.to(`game:${game.code}`).emit("game:timer-tick", { timeRemaining });
             },
             async () => {
-              const reveal = await revealQuestion(mapping.gameId);
-              if (reveal) {
-                io.to(`game:${game.code}`).emit("game:question-reveal", reveal);
+              try {
+                const reveal = await revealQuestion(mapping.gameId);
+                if (reveal) {
+                  io.to(`game:${game.code}`).emit("game:question-reveal", reveal);
+                }
+              } catch (error) {
+                console.error("Error in reveal question:", error);
+                io.to(`game:${game.code}`).emit("game:error", {
+                  message: "Erreur lors de la révélation de la réponse",
+                });
               }
             }
           );
@@ -267,9 +281,11 @@ export function initSocketServer(httpServer: HTTPServer) {
       if (!mapping || !socket.data.isHost) return;
 
       try {
-        const result = await finishGame(mapping.gameId);
         const game = getActiveGame(mapping.gameId);
-        if (result && game) {
+        if (!game) return;
+
+        const result = await finishGame(mapping.gameId);
+        if (result) {
           io.to(`game:${game.code}`).emit("game:finished", result);
           io.to(`game:${game.code}`).disconnectSockets();
         }

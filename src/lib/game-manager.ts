@@ -290,12 +290,13 @@ export async function startGameCountdown(
 
   onTick(seconds);
 
-  const interval = setInterval(() => {
+  game.timer = setInterval(() => {
     seconds--;
     if (seconds > 0) {
       onTick(seconds);
     } else {
-      clearInterval(interval);
+      clearInterval(game.timer!);
+      game.timer = null;
       onComplete();
     }
   }, 1000);
@@ -329,7 +330,11 @@ export async function startQuestion(
 
     if (game.timeRemaining <= 0) {
       clearGameTimer(game);
-      await onComplete();
+      try {
+        await onComplete();
+      } catch (error) {
+        console.error("Error in question complete callback:", error);
+      }
     }
   }, 1000);
 
