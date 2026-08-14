@@ -235,7 +235,8 @@ export function initSocketServer(httpServer: HTTPServer) {
                       const updatedGame = getActiveGame(mapping.gameId);
                       if (updatedGame) {
                         setTimeout(() => {
-                          const leaderboard = buildLeaderboardEntries(updatedGame.players.values());
+                          const connectedPlayers = Array.from(updatedGame.players.values()).filter((p) => p.isConnected);
+                          const leaderboard = buildLeaderboardEntries(connectedPlayers);
                           io.to(`game:${game.code}`).emit("game:leaderboard", { entries: leaderboard });
                         }, 10000);
                       }
@@ -306,7 +307,8 @@ export function initSocketServer(httpServer: HTTPServer) {
                   const updatedGame = getActiveGame(mapping.gameId);
                   if (updatedGame) {
                     setTimeout(() => {
-                      const leaderboard = buildLeaderboardEntries(updatedGame.players.values());
+                      const connectedPlayers = Array.from(updatedGame.players.values()).filter((p) => p.isConnected);
+                      const leaderboard = buildLeaderboardEntries(connectedPlayers);
                       io.to(`game:${game.code}`).emit("game:leaderboard", { entries: leaderboard });
                     }, 10000);
                   }

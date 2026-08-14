@@ -109,6 +109,7 @@ function buildQuestionState(questionId: string, index: number, totalQuestions: n
 
 function getLeaderboard(game: ActiveGame): LeaderboardEntry[] {
   return Array.from(game.players.values())
+    .filter((p) => p.isConnected)
     .sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
       if (b.correctCount !== a.correctCount) return b.correctCount - a.correctCount;
@@ -556,6 +557,9 @@ export async function revealQuestion(gameId: string): Promise<RevealState | null
   const playerResults: RevealState["playerResults"] = [];
 
   for (const [playerId, player] of game.players) {
+    // Only include connected players in results
+    if (!player.isConnected) continue;
+
     const answer = questionAnswers.get(playerId);
     let isCorrect = false;
     let pointsEarned = 0;
@@ -612,7 +616,9 @@ export function getGameState(gameId: string) {
   return {
     phase: game.phase,
     code: game.code,
-    players: Array.from(game.players.values()).map(toPlayerState),
+    players: Array.from(game.players.values())
+      .filter((p) => p.isConnected)
+      .map(toPlayerState),
     pendingPlayers: Array.from(game.pendingPlayers.values()).map((request) => ({
       id: request.id,
       nickname: request.nickname,
