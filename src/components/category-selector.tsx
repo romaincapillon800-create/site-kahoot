@@ -267,6 +267,14 @@ const CATEGORY_GROUPS: Record<string, Category[]> = {
       icon: <Shield className="w-5 h-5" />,
     },
   ],
+  "Scénarios": [
+    {
+      id: "realiste",
+      label: "Scénarios Réalistes",
+      description: "Red team, blue team, simulations",
+      icon: <AlertTriangle className="w-5 h-5" />,
+    },
+  ],
 };
 
 export function CategorySelector({

@@ -102,19 +102,59 @@ export default function AdminPage() {
     
     // Map to find the label for a category ID
     const categoryMap: Record<string, string> = {
+      // Authentification
+      "kerberos": "Kerberos",
+      "active-directory": "Active Directory",
+      "ldap-injection": "LDAP Injection",
+      "oauth": "OAuth",
+      "jwt": "JWT",
+      // Systèmes d'exploitation
+      "windows-internals": "Windows Internals",
+      "linux": "Linux",
+      "privilege-escalation": "Privilege Escalation",
+      // Cloud
+      "cloud-aws": "Cloud AWS",
+      "azure": "Azure",
+      "gcp": "GCP",
+      // Conteneurs
+      "docker": "Docker",
+      "kubernetes": "Kubernetes",
+      // Réseau
+      "reseau": "Réseau",
+      // Web
       "web-client": "Web - Client",
       "web-server": "Web - Serveur",
-      "reseau": "Réseau",
-      "app-systeme": "App - Système",
-      "app-script": "App - Script",
-      "cloud": "Cloud",
-      "cryptanalyse": "Cryptanalyse",
-      "cracking": "Cracking",
-      "forensic": "Forensic",
-      "programmation": "Programmation",
-      "realiste": "Réaliste",
+      "owasp": "OWASP",
+      // Attaques Web
+      "sql-injection": "SQL Injection",
+      "xxe": "XXE",
+      "ssrf": "SSRF",
+      "csrf": "CSRF",
+      // Cryptographie
+      "cryptography": "Cryptographie",
+      "pki": "PKI",
+      "tls": "TLS",
+      // Malware
       "malware": "Malware",
-      "steganographie": "Stéganographie",
+      "rootkits": "Rootkits",
+      "ransomware": "Ransomware",
+      // Reverse Engineering
+      "reverse-engineering": "Reverse Engineering",
+      "yara": "YARA",
+      // Analyse
+      "forensics": "Forensic",
+      "siem": "SIEM",
+      "logs": "Logs",
+      "sigma": "Sigma",
+      // Exploitation
+      "rce": "RCE",
+      "buffer-overflow": "Buffer Overflow",
+      "race-conditions": "Race Conditions",
+      // Frameworks
+      "mitre-attack": "MITRE ATT&CK",
+      "threat-hunting": "Threat Hunting",
+      // Scénarios
+      "realiste": "Scénarios Réalistes",
     };
     
     if (selectedCategories.length === 0) return "Sélectionner une catégorie";
