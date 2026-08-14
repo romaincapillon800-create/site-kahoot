@@ -271,6 +271,16 @@ export function kickPlayer(gameId: string, playerId: string): boolean {
   return true;
 }
 
+export function leaveGame(gameId: string, playerId: string): boolean {
+  const game = activeGames.get(gameId);
+  if (!game) return false;
+
+  if (!game.players.has(playerId)) return false;
+
+  game.players.delete(playerId);
+  return true;
+}
+
 export function updateGameSettings(
   gameId: string,
   settings: Partial<GameSettings>

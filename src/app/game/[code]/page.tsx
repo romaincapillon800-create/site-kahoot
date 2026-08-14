@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Leaderboard } from "@/components/game/leaderboard";
 import { useGameStore } from "@/store/game-store";
-import { submitAnswer, useSocket } from "@/lib/socket-client";
+import { leaveGame, submitAnswer, useSocket } from "@/lib/socket-client";
 
 const CATEGORY_MAP: Record<string, string> = {
   // Short names for badges
@@ -144,7 +144,17 @@ export default function GameRoomPage() {
               <h1 className="text-4xl font-bold tracking-tight text-white">{roomCode}</h1>
               <p className="mt-3 text-gray-400">Rejoignez la partie avec un pseudo depuis la page d’accueil.</p>
             </div>
-            <Button variant="secondary" size="sm" onClick={() => router.push("/")}>Retour à l’accueil</Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                leaveGame();
+                useGameStore.getState().reset();
+                router.push("/");
+              }}
+            >
+              Retour à l’accueil
+            </Button>
           </div>
 
           {error && (

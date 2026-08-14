@@ -117,6 +117,7 @@ export interface ClientToServerEvents {
     questionId: string;
     optionId: string;
   }) => void;
+  "player:leave": () => void;
   "host:create-game": (
     data: GameSettings,
     callback: (response: {

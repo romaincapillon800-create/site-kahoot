@@ -10,6 +10,43 @@ import { useGameStore } from "@/store/game-store";
 
 type GameSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
+type SavedPlayerSession = {
+  code: string;
+  nickname: string;
+};
+
+const PLAYER_SESSION_KEY = "cyberlearn-player-session";
+
+function savePlayerSession(code: string, nickname: string) {
+  if (typeof window !== "undefined") {
+    window.sessionStorage.setItem(
+      PLAYER_SESSION_KEY,
+      JSON.stringify({ code: code.toUpperCase(), nickname })
+    );
+  }
+}
+
+function readPlayerSession(): SavedPlayerSession | null {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const raw = window.sessionStorage.getItem(PLAYER_SESSION_KEY);
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw) as Partial<SavedPlayerSession>;
+    if (!parsed.code || !parsed.nickname) return null;
+    return { code: parsed.code, nickname: parsed.nickname };
+  } catch {
+    return null;
+  }
+}
+
+function clearPlayerSession() {
+  if (typeof window !== "undefined") {
+    window.sessionStorage.removeItem(PLAYER_SESSION_KEY);
+  }
+}
+
 let socketInstance: GameSocket | null = null;
 
 export function getSocket(): GameSocket {
@@ -35,7 +72,22 @@ export function useSocket() {
       socket.connect();
     }
 
-    const handleConnect = () => store.setConnected(true);
+    const handleConnect = () => {
+      store.setConnected(true);
+
+      const savedSession = readPlayerSession();
+      if (!savedSession) return;
+
+      socket.emit("player:join", { code: savedSession.code, nickname: savedSession.nickname }, (response) => {
+        if (response.success && response.playerId) {
+          useGameStore.getState().setPlayerId(response.playerId);
+          useGameStore.getState().setGameId(response.gameId ?? null);
+          useGameStore.getState().setError(null);
+        } else {
+          clearPlayerSession();
+        }
+      });
+    };
     const handleDisconnect = () => store.setConnected(false);
     const handleAdminLoginResult = ({ success, message }: { success: boolean; message?: string }) => {
       store.setAdminLoggedIn(success);
@@ -58,6 +110,7 @@ export function useSocket() {
     const handleFinished = (data: Parameters<typeof store.setFinished>[0]) => store.setFinished(data);
     const handleError = ({ message }: { message: string }) => store.setError(message);
     const handleKicked = () => {
+      clearPlayerSession();
       store.setError("Vous avez été exclu de la partie.");
       store.reset();
     };
@@ -108,6 +161,7 @@ export function joinGame(
 
     socket.emit("player:join", { code: code.toUpperCase(), nickname }, (response) => {
       if (response.success && response.playerId) {
+        savePlayerSession(code, nickname);
         useGameStore.getState().setPlayerId(response.playerId);
         useGameStore.getState().setGameId(response.gameId ?? null);
         useGameStore.getState().setError(null);
@@ -203,6 +257,14 @@ export function hostNextQuestion() {
 
 export function hostEndGame() {
   getSocket().emit("host:end-game");
+}
+
+export function leaveGame() {
+  clearPlayerSession();
+  const socket = getSocket();
+  if (socket.connected) {
+    socket.emit("player:leave");
+  }
 }
 
 export function hostKickPlayer(playerId: string) {

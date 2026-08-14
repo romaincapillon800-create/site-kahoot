@@ -21,6 +21,7 @@ import {
   getGameState,
   finishGame,
   disconnectPlayer,
+  leaveGame,
 } from "./game-manager";
 
 type GameSocket = Socket<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>;
@@ -357,6 +358,30 @@ export function initSocketServer(httpServer: HTTPServer) {
       } catch (error) {
         console.error("Error finishing game:", error);
       }
+    });
+
+    // Player: Leave Game
+    socket.on("player:leave", () => {
+      const mapping = socketToGameMap.get(socket.id);
+      if (!mapping || !mapping.playerId) return;
+
+      const game = getActiveGame(mapping.gameId);
+      if (!game) {
+        socketToGameMap.delete(socket.id);
+        return;
+      }
+
+      if (leaveGame(mapping.gameId, mapping.playerId)) {
+        const gameState = getGameState(mapping.gameId);
+        if (gameState) {
+          io.to(`game:${game.code}`).emit("game:state", gameState);
+        }
+      }
+
+      socketToGameMap.delete(socket.id);
+      socket.data.playerId = undefined;
+      socket.data.gameId = undefined;
+      socket.leave(`game:${game.code}`);
     });
 
     // Host: Kick Player

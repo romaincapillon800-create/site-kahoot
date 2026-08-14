@@ -9,6 +9,7 @@ import {
   getQuestionState,
   joinGameAsPlayer,
   kickPlayer,
+  leaveGame,
   loadQuestionsForGame,
 } from "../src/lib/game-manager";
 
@@ -106,5 +107,24 @@ describe("category filtering", () => {
     assert.equal((secondJoin as { playerId: string }).playerId, disconnected.playerId);
     assert.equal(getActiveGame(gameId)?.players.size, 1);
     assert.equal(getActiveGame(gameId)?.players.get(disconnected.playerId)?.nickname, "Bob");
+  });
+
+  it("removes a player when they explicitly leave during the leaderboard and keeps the game stable", async () => {
+    const { gameId, code } = await createGame(
+      {
+        questionCount: 5,
+        questionTime: 20,
+        categories: ["global"],
+      },
+      "host-test"
+    );
+
+    const joinResult = await joinGameAsPlayer(code, "Charlie", "socket-leave-ranking-1");
+    assert.ok(!("error" in joinResult));
+
+    const wasLeft = leaveGame(gameId, (joinResult as { playerId: string }).playerId);
+    assert.equal(wasLeft, true);
+    assert.equal(getActiveGame(gameId)?.players.has((joinResult as { playerId: string }).playerId), false);
+    assert.equal(getGameState(gameId)?.players.some((player) => player.nickname === "Charlie"), false);
   });
 });
