@@ -185,8 +185,8 @@ export async function joinGameAsPlayer(
     return { error: "Partie introuvable. Vérifiez le code." };
   }
 
-  if (activeGame.phase === "finished") {
-    return { error: "Cette partie est terminée." };
+  if (activeGame.phase !== "lobby") {
+    return { error: "Cette partie a déjà commencé." };
   }
 
   const trimmedNick = nickname.trim().slice(0, 20);

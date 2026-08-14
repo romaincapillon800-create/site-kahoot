@@ -212,6 +212,14 @@ export function leaveGame() {
   }
 }
 
+export function hostAcceptPlayer(requestId: string) {
+  getSocket().emit("host:accept-player", { requestId });
+}
+
+export function hostRejectPlayer(requestId: string) {
+  getSocket().emit("host:reject-player", { requestId });
+}
+
 export function hostKickPlayer(playerId: string) {
   getSocket().emit("host:kick-player", { playerId });
 }

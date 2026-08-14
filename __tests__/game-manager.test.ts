@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import {
+  acceptPendingPlayerRequest,
   createGame,
   disconnectPlayer,
   getActiveGame,
@@ -11,6 +12,7 @@ import {
   kickPlayer,
   leaveGame,
   loadQuestionsForGame,
+  rejectPendingPlayerRequest,
 } from "../src/lib/game-manager";
 
 describe("category filtering", () => {
@@ -132,5 +134,50 @@ describe("category filtering", () => {
     assert.notEqual((rejoin as { playerId: string }).playerId, playerId);
     assert.equal(getActiveGame(gameId)?.players.get((rejoin as { playerId: string }).playerId)?.nickname, "Charlie");
     assert.equal(getActiveGame(gameId)?.players.get((rejoin as { playerId: string }).playerId)?.score, 0);
+  });
+
+  it("refuses joining a game once the leaderboard is visible", async () => {
+    const { gameId, code } = await createGame(
+      {
+        questionCount: 5,
+        questionTime: 20,
+        categories: ["global"],
+      },
+      "host-test"
+    );
+
+    const firstJoin = await joinGameAsPlayer(code, "Daniel", "socket-join-blocked-1");
+    assert.ok(!("error" in firstJoin));
+
+    const game = getActiveGame(gameId);
+    assert.ok(game);
+    game!.phase = "leaderboard";
+
+    const blockedJoin = await joinGameAsPlayer(code, "Eve", "socket-join-blocked-2");
+    assert.ok("error" in blockedJoin);
+    assert.equal(blockedJoin.error, "Cette partie a déjà commencé.");
+  });
+
+  it("queues a requested join during an active game and lets the host accept it for the next question", async () => {
+    const { gameId, code } = await createGame(
+      {
+        questionCount: 5,
+        questionTime: 20,
+        categories: ["global"],
+      },
+      "host-test"
+    );
+
+    const pendingJoin = await joinGameAsPlayer(code, "Frank", "socket-pending-1");
+    assert.ok(!("error" in pendingJoin));
+    assert.ok("pendingRequestId" in pendingJoin);
+    assert.equal(getActiveGame(gameId)?.pendingPlayers.size, 1);
+
+    const accepted = acceptPendingPlayerRequest(gameId, pendingJoin.pendingRequestId);
+    assert.equal(accepted, true);
+    assert.equal(getActiveGame(gameId)?.pendingPlayers.get(pendingJoin.pendingRequestId)?.accepted, true);
+
+    const rejected = rejectPendingPlayerRequest(gameId, "missing-request");
+    assert.equal(rejected, false);
   });
 });
