@@ -153,6 +153,31 @@ describe("category filtering", () => {
     assert.equal(leaderboard.some((entry) => entry.nickname === "Bob"), false);
   });
 
+  it("removes a player from the game and leaderboard when they leave during leaderboard phase", async () => {
+    const { gameId, code } = await createGame(
+      {
+        questionCount: 5,
+        questionTime: 20,
+        categories: ["global"],
+      },
+      "host-test"
+    );
+
+    const joinResult = await joinGameAsPlayer(code, "Alice", "socket-leaderboard-leave-1");
+    assert.ok(!("error" in joinResult));
+
+    const game = getActiveGame(gameId);
+    assert.ok(game);
+    game!.phase = "leaderboard";
+
+    const playerId = (joinResult as { playerId: string }).playerId;
+    const wasLeft = leaveGame(gameId, playerId);
+
+    assert.equal(wasLeft, true);
+    assert.equal(getActiveGame(gameId)?.players.has(playerId), false);
+    assert.equal(getGameState(gameId)?.leaderboard.some((entry) => entry.nickname === "Alice"), false);
+  });
+
   it("refuses joining a game once the leaderboard is visible", async () => {
     const { gameId, code } = await createGame(
       {

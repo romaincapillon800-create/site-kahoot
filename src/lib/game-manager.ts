@@ -362,8 +362,9 @@ export function kickPlayer(gameId: string, playerId: string): boolean {
   const player = game.players.get(playerId);
   if (!player) return false;
 
-  // During reveal/leaderboard, just mark as disconnected instead of removing
-  if (game.phase === "reveal" || game.phase === "leaderboard") {
+  // During reveal, keep the player as disconnected so they can reconnect.
+  // During leaderboard, remove them fully because the ranking is already visible.
+  if (game.phase === "reveal") {
     player.isConnected = false;
     player.socketId = null;
     return true;
@@ -380,8 +381,9 @@ export function leaveGame(gameId: string, playerId: string): boolean {
   const player = game.players.get(playerId);
   if (!player) return false;
 
-  // During reveal/leaderboard, just mark as disconnected instead of removing
-  if (game.phase === "reveal" || game.phase === "leaderboard") {
+  // During reveal, keep the player as disconnected so they can reconnect.
+  // During leaderboard, remove them fully because the ranking is already visible.
+  if (game.phase === "reveal") {
     player.isConnected = false;
     player.socketId = null;
     return true;
