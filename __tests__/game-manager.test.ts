@@ -109,7 +109,7 @@ describe("category filtering", () => {
     assert.equal(getActiveGame(gameId)?.players.get(disconnected.playerId)?.nickname, "Bob");
   });
 
-  it("removes a player when they explicitly leave during the leaderboard and keeps the game stable", async () => {
+  it("keeps a player score and slot when they leave and come back with the same pseudo", async () => {
     const { gameId, code } = await createGame(
       {
         questionCount: 5,
@@ -119,12 +119,19 @@ describe("category filtering", () => {
       "host-test"
     );
 
-    const joinResult = await joinGameAsPlayer(code, "Charlie", "socket-leave-ranking-1");
-    assert.ok(!("error" in joinResult));
+    const firstJoin = await joinGameAsPlayer(code, "Charlie", "socket-leave-ranking-1");
+    assert.ok(!("error" in firstJoin));
+    const playerId = (firstJoin as { playerId: string }).playerId;
 
-    const wasLeft = leaveGame(gameId, (joinResult as { playerId: string }).playerId);
+    const wasLeft = leaveGame(gameId, playerId);
     assert.equal(wasLeft, true);
-    assert.equal(getActiveGame(gameId)?.players.has((joinResult as { playerId: string }).playerId), false);
-    assert.equal(getGameState(gameId)?.players.some((player) => player.nickname === "Charlie"), false);
+    assert.equal(getActiveGame(gameId)?.players.get(playerId)?.isConnected, false);
+    assert.equal(getActiveGame(gameId)?.players.size, 1);
+
+    const rejoin = await joinGameAsPlayer(code, "Charlie", "socket-leave-ranking-2");
+    assert.ok(!("error" in rejoin));
+    assert.equal((rejoin as { playerId: string }).playerId, playerId);
+    assert.equal(getActiveGame(gameId)?.players.get(playerId)?.socketId, "socket-leave-ranking-2");
+    assert.equal(getActiveGame(gameId)?.players.get(playerId)?.score, 0);
   });
 });

@@ -275,9 +275,11 @@ export function leaveGame(gameId: string, playerId: string): boolean {
   const game = activeGames.get(gameId);
   if (!game) return false;
 
-  if (!game.players.has(playerId)) return false;
+  const player = game.players.get(playerId);
+  if (!player) return false;
 
-  game.players.delete(playerId);
+  player.isConnected = false;
+  player.socketId = null;
   return true;
 }
 
