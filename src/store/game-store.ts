@@ -9,7 +9,6 @@ import type {
   LeaderboardEntry,
   GameSettings,
   GameStatistics,
-  PendingPlayerRequest,
 } from "@/types/game";
 
 interface GameStore {
@@ -21,7 +20,6 @@ interface GameStore {
   phase: GamePhase;
   code: string;
   players: PlayerState[];
-  pendingPlayers: PendingPlayerRequest[];
   settings: GameSettings;
   countdown: number | null;
   question: QuestionState | null;
@@ -40,7 +38,6 @@ interface GameStore {
     phase: GamePhase;
     code: string;
     players: PlayerState[];
-    pendingPlayers?: PendingPlayerRequest[];
     settings: GameSettings;
     countdown?: number;
     question?: QuestionState;
@@ -72,7 +69,6 @@ const initialState = {
   phase: "lobby" as GamePhase,
   code: "",
   players: [] as PlayerState[],
-  pendingPlayers: [] as PendingPlayerRequest[],
   settings: { questionCount: 10, questionTime: 20 },
   countdown: null as number | null,
   question: null as QuestionState | null,
@@ -97,7 +93,6 @@ export const useGameStore = create<GameStore>((set) => ({
       phase: state.phase,
       code: state.code,
       players: state.players,
-      pendingPlayers: state.pendingPlayers ?? [],
       settings: state.settings,
       countdown: state.phase === "countdown" ? (state.countdown ?? null) : null,
       question: state.phase === "question" ? (state.question ?? null) : null,

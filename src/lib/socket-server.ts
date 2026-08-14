@@ -163,11 +163,6 @@ export function initSocketServer(httpServer: HTTPServer) {
 
         const result = await joinGameAsPlayer(data.code, data.nickname, socket.id);
         if ("error" in result) {
-          if (result.queued) {
-            socket.join(`game:${data.code}`);
-            socket.data.gameId = game.id;
-            socket.data.pendingRequestId = result.pendingRequestId;
-          }
           callback({
             success: false,
             error: result.error,

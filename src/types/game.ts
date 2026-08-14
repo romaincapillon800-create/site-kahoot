@@ -18,14 +18,6 @@ export interface PlayerState {
   isConnected: boolean;
 }
 
-export interface PendingPlayerRequest {
-  id: string;
-  nickname: string;
-  socketId: string;
-  requestedAt: number;
-  accepted: boolean;
-}
-
 export interface QuestionOption {
   id: string;
   text: string;
@@ -81,7 +73,6 @@ export interface ServerToClientEvents {
     phase: GamePhase;
     code: string;
     players: PlayerState[];
-    pendingPlayers?: PendingPlayerRequest[];
     settings: GameSettings;
     countdown?: number;
     question?: QuestionState;
@@ -129,8 +120,6 @@ export interface ClientToServerEvents {
     optionId: string;
   }) => void;
   "player:leave": () => void;
-  "host:accept-player": (data: { requestId: string }, callback?: (response: { success: boolean; error?: string }) => void) => void;
-  "host:reject-player": (data: { requestId: string }, callback?: (response: { success: boolean; error?: string }) => void) => void;
   "host:create-game": (
     data: GameSettings,
     callback: (response: {

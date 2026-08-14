@@ -16,10 +16,8 @@ import type { GameSettings } from "@/types/game";
 import {
   adminLogin,
   createGame,
-  hostAcceptPlayer,
   hostJoinGame,
   hostNextQuestion,
-  hostRejectPlayer,
   hostStartGame,
   hostUpdateSettings,
   hostEndGame,
@@ -41,7 +39,6 @@ export default function AdminPage() {
   const phase = useGameStore((state) => state.phase);
   const code = useGameStore((state) => state.code);
   const players = useGameStore((state) => state.players);
-  const pendingPlayers = useGameStore((state) => state.pendingPlayers);
   const settings = useGameStore((state) => state.settings);
   const countdown = useGameStore((state) => state.countdown);
   const question = useGameStore((state) => state.question);
@@ -710,50 +707,6 @@ export default function AdminPage() {
                     )}
                   </CardContent>
                 </Card>
-
-                {pendingPlayers.length > 0 && (
-                  <Card className="p-0 overflow-hidden border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-transparent transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/20">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
-                        Demandes en attente
-                      </CardTitle>
-                      <CardDescription>{pendingPlayers.length} joueur{pendingPlayers.length > 1 ? "s" : ""} en attente d'approbation</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-2.5">
-                        {pendingPlayers.map((request) => (
-                          <li key={request.id} className="rounded-2xl border border-amber-500/30 p-3 bg-amber-500/5 backdrop-blur-sm">
-                            <div className="flex items-center justify-between gap-3">
-                              <div className="min-w-0 flex-1">
-                                <p className="truncate font-semibold text-amber-100">{request.nickname}</p>
-                                <p className="text-xs text-amber-600/70">
-                                  Demandé à {new Date(request.requestedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                                </p>
-                              </div>
-                              <div className="flex items-center gap-1.5 flex-shrink-0">
-                                <Button 
-                                  size="sm" 
-                                  onClick={() => hostAcceptPlayer(request.id)}
-                                  className="bg-green-600 hover:bg-green-700 text-white h-7 px-2 text-xs font-medium transition-all duration-300"
-                                >
-                                  ✓
-                                </Button>
-                                <Button 
-                                  size="sm" 
-                                  onClick={() => hostRejectPlayer(request.id)} 
-                                  className="bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 h-7 px-2 text-xs font-medium transition-all duration-300"
-                                >
-                                  ✕
-                                </Button>
-                              </div>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                )}
               </div>
             </div>
           )}

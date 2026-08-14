@@ -268,27 +268,9 @@ export async function joinGameAsPlayer(
   }
 
   if (activeGame.phase !== "lobby") {
-    const existingPending = Array.from(activeGame.pendingPlayers.values()).find(
-      (request) => request.socketId === socketId || request.nickname.toLowerCase() === trimmedNick.toLowerCase()
-    );
-
-    if (existingPending) {
-      return { error: "Une demande d’accès est déjà en attente.", pendingRequestId: existingPending.id, queued: true };
-    }
-
-    const requestId = `pending-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-    activeGame.pendingPlayers.set(requestId, {
-      id: requestId,
-      nickname: trimmedNick,
-      socketId,
-      requestedAt: Date.now(),
-      accepted: false,
-    });
-
+    activeGame.pendingPlayers.clear();
     return {
-      error: "Cette partie a déjà commencé. Demandez à un admin de vous accepter.",
-      pendingRequestId: requestId,
-      queued: true,
+      error: "Cette partie a déjà commencé. Vous ne pouvez plus rejoindre pendant la partie.",
     };
   }
 

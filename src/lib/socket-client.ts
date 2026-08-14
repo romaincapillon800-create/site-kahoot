@@ -112,8 +112,8 @@ export function joinGame(
         useGameStore.getState().setGameId(response.gameId ?? null);
         useGameStore.getState().setError(null);
       }
-      if (!response.success && response.pendingRequestId) {
-        useGameStore.getState().setError(response.error || "Cette partie a déjà commencé. Demandez à un admin de vous accepter.");
+      if (!response.success) {
+        useGameStore.getState().setError(response.error || "Cette partie a déjà commencé. Vous ne pouvez plus rejoindre pendant la partie.");
       }
       resolve(response);
     });
@@ -213,14 +213,6 @@ export function leaveGame() {
   if (socket.connected) {
     socket.emit("player:leave");
   }
-}
-
-export function hostAcceptPlayer(requestId: string) {
-  getSocket().emit("host:accept-player", { requestId });
-}
-
-export function hostRejectPlayer(requestId: string) {
-  getSocket().emit("host:reject-player", { requestId });
 }
 
 export function hostKickPlayer(playerId: string) {

@@ -155,10 +155,10 @@ describe("category filtering", () => {
 
     const blockedJoin = await joinGameAsPlayer(code, "Eve", "socket-join-blocked-2");
     assert.ok("error" in blockedJoin);
-    assert.equal(blockedJoin.error, "Cette partie a déjà commencé. Demandez à un admin de vous accepter.");
+    assert.equal(blockedJoin.error, "Cette partie a déjà commencé. Vous ne pouvez plus rejoindre pendant la partie.");
   });
 
-  it("queues a requested join during an active game and lets the host accept it for the next question", async () => {
+  it("blocks a join during an active game without creating a pending request", async () => {
     const { gameId, code } = await createGame(
       {
         questionCount: 5,
@@ -172,15 +172,14 @@ describe("category filtering", () => {
     assert.ok(game);
     game!.phase = "question";
 
-    const pendingJoin = await joinGameAsPlayer(code, "Frank", "socket-pending-1");
-    assert.ok("error" in pendingJoin);
-    assert.equal(pendingJoin.queued, true);
-    assert.ok(pendingJoin.pendingRequestId);
-    assert.equal(getActiveGame(gameId)?.pendingPlayers.size, 1);
+    const blockedJoin = await joinGameAsPlayer(code, "Frank", "socket-pending-1");
+    assert.ok("error" in blockedJoin);
+    assert.equal(blockedJoin.error, "Cette partie a déjà commencé. Vous ne pouvez plus rejoindre pendant la partie.");
+    assert.equal(blockedJoin.queued, undefined);
+    assert.equal(getActiveGame(gameId)?.pendingPlayers.size, 0);
 
-    const accepted = acceptPendingPlayerRequest(gameId, pendingJoin.pendingRequestId!);
-    assert.equal(accepted, true);
-    assert.equal(getActiveGame(gameId)?.pendingPlayers.get(pendingJoin.pendingRequestId!)?.accepted, true);
+    const accepted = acceptPendingPlayerRequest(gameId, "missing-request");
+    assert.equal(accepted, false);
 
     const rejected = rejectPendingPlayerRequest(gameId, "missing-request");
     assert.equal(rejected, false);
