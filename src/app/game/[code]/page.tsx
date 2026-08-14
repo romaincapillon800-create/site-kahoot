@@ -51,6 +51,8 @@ const CATEGORY_MAP: Record<string, string> = {
   "mitre-attack": "MITRE",
   "threat-hunting": "TH",
   "realiste": "Réaliste",
+  "app-script": "Script",
+  "app-systeme": "Système",
 };
 
 export default function GameRoomPage() {
@@ -236,17 +238,8 @@ export default function GameRoomPage() {
                     {phase === "reveal" && reveal && (
                       <div className="space-y-6">
                         <div className="rounded-3xl border border-cyber-border bg-cyber-surface/80 p-6 transition-all duration-300\">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <p className="text-sm uppercase tracking-[0.2em] text-gray-400">Bonne réponse</p>
-                              <p className="mt-3 text-2xl font-semibold text-white">{reveal.correctOptionText}</p>
-                            </div>
-                            {question && (
-                              <span className="ml-4 inline-flex items-center rounded-full bg-emerald-500/20 px-2 py-1 text-xs font-medium text-emerald-300 border border-emerald-500/30 whitespace-nowrap">
-                                {CATEGORY_MAP[question.category] || question.category}
-                              </span>
-                            )}
-                          </div>
+                          <p className="text-sm uppercase tracking-[0.2em] text-gray-400">Bonne réponse</p>
+                          <p className="mt-3 text-2xl font-semibold text-white">{reveal.correctOptionText}</p>
                           <p className="mt-3 text-gray-400">{reveal.explanation}</p>
                         </div>
                         <div className="grid gap-4 rounded-3xl border border-cyber-border bg-cyber-surface/80 p-6">

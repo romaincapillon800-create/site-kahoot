@@ -267,6 +267,20 @@ const CATEGORY_GROUPS: Record<string, Category[]> = {
       icon: <Shield className="w-5 h-5" />,
     },
   ],
+  "Applications": [
+    {
+      id: "app-script",
+      label: "Scripting",
+      description: "Bash, PowerShell, Python, injection",
+      icon: <Zap className="w-5 h-5" />,
+    },
+    {
+      id: "app-systeme",
+      label: "Système",
+      description: "DLL, exe, hash, signature numérique",
+      icon: <Lock className="w-5 h-5" />,
+    },
+  ],
   "Scénarios": [
     {
       id: "realiste",

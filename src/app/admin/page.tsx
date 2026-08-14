@@ -153,6 +153,9 @@ export default function AdminPage() {
       // Frameworks
       "mitre-attack": "MITRE ATT&CK",
       "threat-hunting": "Threat Hunting",
+      // Applications
+      "app-script": "Scripting",
+      "app-systeme": "Système",
       // Scénarios
       "realiste": "Scénarios Réalistes",
     };
@@ -203,6 +206,8 @@ export default function AdminPage() {
       "mitre-attack": "MITRE",
       "threat-hunting": "TH",
       "realiste": "Réaliste",
+      "app-script": "Script",
+      "app-systeme": "Système",
     };
 
     if (!settings.categories) return null;
