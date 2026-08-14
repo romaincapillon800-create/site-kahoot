@@ -205,6 +205,36 @@ export async function joinGameAsPlayer(
     return { playerId: existingPlayerForSocket.id, gameId: activeGame.id };
   }
 
+  const disconnectedPlayer = Array.from(activeGame.players.values()).find((player) => !player.isConnected);
+
+  if (disconnectedPlayer) {
+    const duplicateNickname = Array.from(activeGame.players.values()).some(
+      (player) =>
+        player.id !== disconnectedPlayer.id &&
+        player.nickname.toLowerCase() === trimmedNick.toLowerCase() &&
+        player.isConnected
+    );
+
+    if (!duplicateNickname) {
+      disconnectedPlayer.nickname = trimmedNick;
+      disconnectedPlayer.isConnected = true;
+      disconnectedPlayer.socketId = socketId;
+      return { playerId: disconnectedPlayer.id, gameId: activeGame.id };
+    }
+  }
+
+  const disconnectedPlayerWithSameNickname = Array.from(activeGame.players.values()).find(
+    (player) =>
+      player.nickname.toLowerCase() === trimmedNick.toLowerCase() &&
+      !player.isConnected
+  );
+
+  if (disconnectedPlayerWithSameNickname) {
+    disconnectedPlayerWithSameNickname.isConnected = true;
+    disconnectedPlayerWithSameNickname.socketId = socketId;
+    return { playerId: disconnectedPlayerWithSameNickname.id, gameId: activeGame.id };
+  }
+
   for (const p of activeGame.players.values()) {
     if (p.nickname.toLowerCase() === trimmedNick.toLowerCase()) {
       return { error: "Ce pseudo est déjà pris." };

@@ -403,11 +403,17 @@ export function initSocketServer(httpServer: HTTPServer) {
         const game = getActiveGame(mapping.gameId);
         if (game) {
           if (socket.data.isHost) {
-            // Host disconnected - end game
-            await finishGame(mapping.gameId);
-            io.to(`game:${game.code}`).disconnectSockets();
+            // A host refresh/reconnect should not instantly kill an active game.
+            // Keep the game running until it is explicitly finished by the host.
+            if (game.hostSocketId === socket.id) {
+              game.hostSocketId = null;
+            }
+            const gameState = getGameState(mapping.gameId);
+            if (gameState) {
+              io.to(`game:${game.code}`).emit("game:state", gameState);
+            }
           } else if (mapping.playerId) {
-            // Player disconnected
+            // Player disconnected: keep their slot, mark as offline, and allow reconnection.
             disconnectPlayer(socket.id);
             const gameState = getGameState(mapping.gameId);
             if (gameState) {
