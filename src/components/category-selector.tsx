@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Shield, Globe, Lock, Bug, Cloud, AlertTriangle, Zap, Check, Network } from "lucide-react";
+import { Shield, Globe, Lock, Bug, Cloud, AlertTriangle, Zap, Check, Network, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Category {
@@ -44,20 +45,6 @@ const CATEGORY_GROUPS: Record<string, Category[]> = {
       icon: <Shield className="w-5 h-5" />,
     },
   ],
-  "App": [
-    {
-      id: "app-script",
-      label: "App - Script",
-      description: "Scripts, bash, PowerShell, Python",
-      icon: <Zap className="w-5 h-5" />,
-    },
-    {
-      id: "app-systeme",
-      label: "App - Système",
-      description: "Binaires, executables, processes",
-      icon: <Zap className="w-5 h-5" />,
-    },
-  ],
   "Systèmes d'exploitation": [
     {
       id: "windows-internals",
@@ -76,20 +63,6 @@ const CATEGORY_GROUPS: Record<string, Category[]> = {
       label: "Privilege Escalation",
       description: "Escalade, permissions, bypass",
       icon: <AlertTriangle className="w-5 h-5" />,
-    },
-  ],
-  "Sécurité": [
-    {
-      id: "cracking",
-      label: "Cracking",
-      description: "Brute force, hash, rainbow tables",
-      icon: <AlertTriangle className="w-5 h-5" />,
-    },
-    {
-      id: "cryptanalyse",
-      label: "Cryptanalyse",
-      description: "Crypto attacks, weak ciphers",
-      icon: <Lock className="w-5 h-5" />,
     },
   ],
   "Cloud": [
@@ -305,6 +278,8 @@ export function CategorySelector({
   onChange: (value: string[]) => void;
   onClose: () => void;
 }) {
+  const [searchQuery, setSearchQuery] = useState("");
+
   const toggleCategory = (categoryId: string) => {
     if (categoryId === "global") {
       onChange(["global"]);
@@ -320,8 +295,43 @@ export function CategorySelector({
     }
   };
 
+  // Filtrer les catégories en fonction de la recherche
+  const filteredGroups = Object.entries(CATEGORY_GROUPS).reduce((acc, [groupName, categories]) => {
+    const filtered = categories.filter(
+      (cat) =>
+        cat.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        cat.description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    if (filtered.length > 0) {
+      acc[groupName] = filtered;
+    }
+    return acc;
+  }, {} as Record<string, Category[]>);
+
   return (
     <div className="space-y-6">
+      {/* Search Bar */}
+      <div className="relative sticky top-0 z-10">
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Rechercher une catégorie..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-12 pr-4 py-3 rounded-xl bg-cyber-surface/50 border border-cyber-border hover:border-white/30 focus:border-white text-white placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/20"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
+        </div>
+      </div>
+
       {/* Global Option */}
       <motion.button
         initial={{ opacity: 0, y: 10 }}
@@ -344,7 +354,7 @@ export function CategorySelector({
             </div>
             <div>
               <p className="font-semibold text-white">Toutes les catégories</p>
-              <p className="text-sm text-gray-400">50 questions variées</p>
+              <p className="text-sm text-gray-400">Mélange de questions</p>
             </div>
           </div>
           {value.includes("global") && (
@@ -360,64 +370,89 @@ export function CategorySelector({
       </motion.button>
 
       {/* Category Groups */}
-      {Object.entries(CATEGORY_GROUPS).map((group, groupIdx) => (
-        <div key={group[0]}>
-          <p className="px-2 mb-3 text-xs uppercase tracking-[0.2em] text-gray-500 font-semibold">
-            {group[0]}
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {group[1].map((category, catIdx) => (
-              <motion.button
-                key={category.id}
+      <AnimatePresence mode="wait">
+        {Object.entries(filteredGroups).length > 0 ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="space-y-6"
+          >
+            {Object.entries(filteredGroups).map((group, groupIdx) => (
+              <motion.div
+                key={group[0]}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: (groupIdx * 3 + catIdx) * 0.03 }}
-                onClick={() => toggleCategory(category.id)}
-                className={cn(
-                  "rounded-xl border transition-all duration-300 p-4 text-left group relative overflow-hidden",
-                  value.includes(category.id)
-                    ? "border-white bg-white/10 shadow-lg shadow-white/20"
-                    : "border-cyber-border hover:border-white/30 bg-cyber-surface/30 hover:bg-cyber-surface/50"
-                )}
+                transition={{ delay: groupIdx * 0.05 }}
               >
-                <div className="flex items-start gap-3 justify-between">
-                  <div className="flex items-start gap-3 flex-1">
-                    <div
+                <p className="px-2 mb-3 text-xs uppercase tracking-[0.2em] text-gray-500 font-semibold">
+                  {group[0]}
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {group[1].map((category, catIdx) => (
+                    <motion.button
+                      key={category.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: (groupIdx * 3 + catIdx) * 0.02 }}
+                      onClick={() => toggleCategory(category.id)}
                       className={cn(
-                        "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300",
+                        "rounded-xl border transition-all duration-300 p-4 text-left group relative overflow-hidden hover:scale-105 active:scale-95",
                         value.includes(category.id)
-                          ? "bg-white/20 text-white"
-                          : "bg-white/5 text-gray-400 group-hover:bg-white/10"
+                          ? "border-white bg-white/10 shadow-lg shadow-white/20"
+                          : "border-cyber-border hover:border-white/30 bg-cyber-surface/30 hover:bg-cyber-surface/50"
                       )}
                     >
-                      {category.icon}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-white text-sm">{category.label}</p>
-                      <p className="text-xs text-gray-400 mt-1 line-clamp-2">
-                        {category.description}
-                      </p>
-                    </div>
-                  </div>
-                  <AnimatePresence>
-                    {value.includes(category.id) && (
-                      <motion.div
-                        initial={{ scale: 0, rotate: -180 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        exit={{ scale: 0, rotate: 180 }}
-                        transition={{ type: "spring", damping: 12 }}
-                        className="flex-shrink-0"
-                      >
-                        <Check className="w-5 h-5 text-white" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                      <div className="flex items-start gap-3 justify-between">
+                        <div className="flex items-start gap-3 flex-1">
+                          <div
+                            className={cn(
+                              "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300",
+                              value.includes(category.id)
+                                ? "bg-white/20 text-white"
+                                : "bg-white/5 text-gray-400 group-hover:bg-white/10"
+                            )}
+                          >
+                            {category.icon}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-white text-sm">{category.label}</p>
+                            <p className="text-xs text-gray-400 mt-1 line-clamp-2">
+                              {category.description}
+                            </p>
+                          </div>
+                        </div>
+                        <AnimatePresence>
+                          {value.includes(category.id) && (
+                            <motion.div
+                              initial={{ scale: 0, rotate: -180 }}
+                              animate={{ scale: 1, rotate: 0 }}
+                              exit={{ scale: 0, rotate: 180 }}
+                              transition={{ type: "spring", damping: 12 }}
+                              className="flex-shrink-0"
+                            >
+                              <Check className="w-5 h-5 text-white" />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    </motion.button>
+                  ))}
                 </div>
-              </motion.button>
+              </motion.div>
             ))}
-          </div>
-        </div>
-      ))}
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-8"
+          >
+            <Search className="w-12 h-12 text-gray-500 mx-auto mb-3 opacity-50" />
+            <p className="text-gray-400">Aucune catégorie trouvée</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
