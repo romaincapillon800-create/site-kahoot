@@ -25,6 +25,22 @@ import {
 
 type GameSocket = Socket<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>;
 
+function buildLeaderboardEntries(players: Iterable<{ id: string; nickname: string; score: number; correctCount: number; maxStreak: number }>) {
+  return Array.from(players)
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      if (b.correctCount !== a.correctCount) return b.correctCount - a.correctCount;
+      if (b.maxStreak !== a.maxStreak) return b.maxStreak - a.maxStreak;
+      return a.nickname.localeCompare(b.nickname);
+    })
+    .map((p, index) => ({
+      id: p.id,
+      nickname: p.nickname,
+      score: p.score,
+      rank: index + 1,
+    }));
+}
+
 const adminSessions = new Map<string, { email: string; timestamp: number }>();
 const socketToGameMap = new Map<string, { gameId: string; playerId?: string }>();
 
@@ -193,23 +209,13 @@ export function initSocketServer(httpServer: HTTPServer) {
                     if (reveal) {
                       io.to(`game:${game.code}`).emit("game:question-reveal", reveal);
                       
-                      // Send leaderboard after reveal
+                      // Show the correct answer first, then the leaderboard after 5 seconds.
                       const updatedGame = getActiveGame(mapping.gameId);
                       if (updatedGame) {
-                        const leaderboard = Array.from(updatedGame.players.values())
-                          .sort((a, b) => {
-                            if (b.score !== a.score) return b.score - a.score;
-                            if (b.correctCount !== a.correctCount) return b.correctCount - a.correctCount;
-                            if (b.maxStreak !== a.maxStreak) return b.maxStreak - a.maxStreak;
-                            return a.nickname.localeCompare(b.nickname);
-                          })
-                          .map((p, index) => ({
-                            id: p.id,
-                            nickname: p.nickname,
-                            score: p.score,
-                            rank: index + 1,
-                          }));
-                        io.to(`game:${game.code}`).emit("game:leaderboard", { entries: leaderboard });
+                        setTimeout(() => {
+                          const leaderboard = buildLeaderboardEntries(updatedGame.players.values());
+                          io.to(`game:${game.code}`).emit("game:leaderboard", { entries: leaderboard });
+                        }, 5000);
                       }
                     }
                   } catch (error) {
@@ -274,23 +280,13 @@ export function initSocketServer(httpServer: HTTPServer) {
                 if (reveal) {
                   io.to(`game:${game.code}`).emit("game:question-reveal", reveal);
                   
-                  // Send leaderboard after reveal
+                  // Show the correct answer first, then the leaderboard after 5 seconds.
                   const updatedGame = getActiveGame(mapping.gameId);
                   if (updatedGame) {
-                    const leaderboard = Array.from(updatedGame.players.values())
-                      .sort((a, b) => {
-                        if (b.score !== a.score) return b.score - a.score;
-                        if (b.correctCount !== a.correctCount) return b.correctCount - a.correctCount;
-                        if (b.maxStreak !== a.maxStreak) return b.maxStreak - a.maxStreak;
-                        return a.nickname.localeCompare(b.nickname);
-                      })
-                      .map((p, index) => ({
-                        id: p.id,
-                        nickname: p.nickname,
-                        score: p.score,
-                        rank: index + 1,
-                      }));
-                    io.to(`game:${game.code}`).emit("game:leaderboard", { entries: leaderboard });
+                    setTimeout(() => {
+                      const leaderboard = buildLeaderboardEntries(updatedGame.players.values());
+                      io.to(`game:${game.code}`).emit("game:leaderboard", { entries: leaderboard });
+                    }, 5000);
                   }
                 }
               } catch (error) {
