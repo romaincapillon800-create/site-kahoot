@@ -13,6 +13,7 @@ import { Leaderboard } from "@/components/game/leaderboard";
 import { CategorySelector } from "@/components/category-selector";
 import { useGameStore } from "@/store/game-store";
 import type { GameSettings } from "@/types/game";
+import { cn } from "@/lib/utils";
 import {
   adminLogin,
   createGame,
