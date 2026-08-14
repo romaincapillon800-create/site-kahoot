@@ -194,6 +194,17 @@ export async function joinGameAsPlayer(
     return { error: "Le pseudo doit contenir au moins 2 caractères." };
   }
 
+  const existingPlayerForSocket = Array.from(activeGame.players.values()).find(
+    (player) => player.socketId === socketId
+  );
+
+  if (existingPlayerForSocket) {
+    existingPlayerForSocket.nickname = trimmedNick;
+    existingPlayerForSocket.isConnected = true;
+    existingPlayerForSocket.socketId = socketId;
+    return { playerId: existingPlayerForSocket.id, gameId: activeGame.id };
+  }
+
   for (const p of activeGame.players.values()) {
     if (p.nickname.toLowerCase() === trimmedNick.toLowerCase()) {
       return { error: "Ce pseudo est déjà pris." };

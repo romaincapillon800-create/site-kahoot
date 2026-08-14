@@ -140,6 +140,22 @@ export function initSocketServer(httpServer: HTTPServer) {
           return;
         }
 
+        const existingMapping = socketToGameMap.get(socket.id);
+        if (existingMapping && existingMapping.gameId === game.id) {
+          const existingPlayerId = existingMapping.playerId;
+          if (existingPlayerId) {
+            socket.join(`game:${data.code}`);
+            socket.data.gameId = existingMapping.gameId;
+            socket.data.playerId = existingPlayerId;
+            callback({ success: true, playerId: existingPlayerId, gameId: existingMapping.gameId });
+            const gameState = getGameState(existingMapping.gameId);
+            if (gameState) {
+              io.to(`game:${data.code}`).emit("game:state", gameState);
+            }
+            return;
+          }
+        }
+
         const result = await joinGameAsPlayer(data.code, data.nickname, socket.id);
         if ("error" in result) {
           callback({ success: false, error: result.error });
@@ -157,7 +173,6 @@ export function initSocketServer(httpServer: HTTPServer) {
           gameId: result.gameId,
         });
 
-        // Broadcast updated state
         const gameState = getGameState(result.gameId);
         if (gameState) {
           io.to(`game:${data.code}`).emit("game:state", gameState);
@@ -209,13 +224,13 @@ export function initSocketServer(httpServer: HTTPServer) {
                     if (reveal) {
                       io.to(`game:${game.code}`).emit("game:question-reveal", reveal);
                       
-                      // Show the correct answer first, then the leaderboard after 5 seconds.
+                      // Show the correct answer first, then the leaderboard after 10 seconds.
                       const updatedGame = getActiveGame(mapping.gameId);
                       if (updatedGame) {
                         setTimeout(() => {
                           const leaderboard = buildLeaderboardEntries(updatedGame.players.values());
                           io.to(`game:${game.code}`).emit("game:leaderboard", { entries: leaderboard });
-                        }, 5000);
+                        }, 10000);
                       }
                     }
                   } catch (error) {
@@ -280,13 +295,13 @@ export function initSocketServer(httpServer: HTTPServer) {
                 if (reveal) {
                   io.to(`game:${game.code}`).emit("game:question-reveal", reveal);
                   
-                  // Show the correct answer first, then the leaderboard after 5 seconds.
+                  // Show the correct answer first, then the leaderboard after 10 seconds.
                   const updatedGame = getActiveGame(mapping.gameId);
                   if (updatedGame) {
                     setTimeout(() => {
                       const leaderboard = buildLeaderboardEntries(updatedGame.players.values());
                       io.to(`game:${game.code}`).emit("game:leaderboard", { entries: leaderboard });
-                    }, 5000);
+                    }, 10000);
                   }
                 }
               } catch (error) {
