@@ -40,7 +40,7 @@ describe("category filtering", () => {
     }
   });
 
-  it("removes a kicked player from the game state and leaderboard", async () => {
+  it("rejects a kick outside the leaderboard phase", async () => {
     const { gameId, code } = await createGame(
       {
         questionCount: 5,
@@ -57,11 +57,11 @@ describe("category filtering", () => {
     assert.equal(before?.players.some((player) => player.nickname === "Alice"), true);
 
     const wasKicked = kickPlayer(gameId, (joinResult as { playerId: string }).playerId);
-    assert.equal(wasKicked, true);
+    assert.equal(wasKicked, false);
 
     const after = getGameState(gameId);
-    assert.equal(after?.players.some((player) => player.nickname === "Alice"), false);
-    assert.equal(after?.leaderboard.some((entry) => entry.nickname === "Alice"), false);
+    assert.equal(after?.players.some((player) => player.nickname === "Alice"), true);
+    assert.equal(after?.leaderboard.some((entry) => entry.nickname === "Alice"), true);
   });
 
   it("allows a refreshed player to reconnect with the same nickname without being kicked", async () => {
@@ -178,7 +178,7 @@ describe("category filtering", () => {
     assert.equal(getGameState(gameId)?.leaderboard.some((entry) => entry.nickname === "Alice"), false);
   });
 
-  it("removes a kicked player immediately even during reveal phase", async () => {
+  it("blocks kicks outside leaderboard phase", async () => {
     const { gameId, code } = await createGame(
       {
         questionCount: 5,
@@ -198,9 +198,32 @@ describe("category filtering", () => {
     const playerId = (joinResult as { playerId: string }).playerId;
     const wasKicked = kickPlayer(gameId, playerId);
 
+    assert.equal(wasKicked, false);
+    assert.equal(getActiveGame(gameId)?.players.has(playerId), true);
+  });
+
+  it("allows kicking only when the leaderboard is visible", async () => {
+    const { gameId, code } = await createGame(
+      {
+        questionCount: 5,
+        questionTime: 20,
+        categories: ["global"],
+      },
+      "host-test"
+    );
+
+    const joinResult = await joinGameAsPlayer(code, "Charlie", "socket-kick-leaderboard-1");
+    assert.ok(!("error" in joinResult));
+
+    const game = getActiveGame(gameId);
+    assert.ok(game);
+    game!.phase = "leaderboard";
+
+    const playerId = (joinResult as { playerId: string }).playerId;
+    const wasKicked = kickPlayer(gameId, playerId);
+
     assert.equal(wasKicked, true);
     assert.equal(getActiveGame(gameId)?.players.has(playerId), false);
-    assert.equal(getGameState(gameId)?.players.some((player) => player.id === playerId), false);
   });
 
   it("refuses joining a game once the leaderboard is visible", async () => {

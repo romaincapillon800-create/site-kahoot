@@ -359,11 +359,13 @@ export function kickPlayer(gameId: string, playerId: string): boolean {
   const game = activeGames.get(gameId);
   if (!game) return false;
 
+  if (game.phase !== "leaderboard") {
+    return false;
+  }
+
   const player = game.players.get(playerId);
   if (!player) return false;
 
-  // An admin kick should always remove the player from the game state,
-  // even during reveal/leaderboard, so they disappear immediately from the host list.
   game.players.delete(playerId);
 
   for (const [questionId, answers] of game.answers.entries()) {

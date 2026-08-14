@@ -690,14 +690,16 @@ export default function AdminPage() {
                                       <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-white">
                                         {player.isConnected ? "✓" : "✗"}
                                       </span>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => hostKickPlayer(player.id)}
-                                        className="h-7 w-7 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-300"
-                                      >
-                                        <X className="w-3.5 h-3.5" aria-hidden="true" />
-                                      </Button>
+                                      {phase === "leaderboard" && (
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={() => hostKickPlayer(player.id)}
+                                          className="h-7 w-7 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-300"
+                                        >
+                                          <X className="w-3.5 h-3.5" aria-hidden="true" />
+                                        </Button>
+                                      )}
                                     </div>
                                   </div>
                                 </li>
