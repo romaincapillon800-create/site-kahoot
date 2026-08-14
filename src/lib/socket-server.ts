@@ -351,6 +351,7 @@ export function initSocketServer(httpServer: HTTPServer) {
       const game = getActiveGame(mapping.gameId);
       if (game) {
         if (leaveGame(mapping.gameId, mapping.playerId)) {
+          io.to(`game:${game.code}`).emit("game:player-left", { playerId: mapping.playerId });
           const gameState = getGameState(mapping.gameId);
           if (gameState) {
             io.to(`game:${game.code}`).emit("game:state", gameState);
@@ -383,6 +384,7 @@ export function initSocketServer(httpServer: HTTPServer) {
           }
         }
 
+        io.to(`game:${game.code}`).emit("game:player-left", { playerId: data.playerId });
         const gameState = getGameState(mapping.gameId);
         if (gameState) {
           io.to(`game:${game.code}`).emit("game:state", gameState);
@@ -420,6 +422,7 @@ export function initSocketServer(httpServer: HTTPServer) {
           } else if (mapping.playerId) {
             // Refresh / reload should behave like leaving the game.
             leaveGame(mapping.gameId, mapping.playerId);
+            io.to(`game:${game.code}`).emit("game:player-left", { playerId: mapping.playerId });
             const gameState = getGameState(mapping.gameId);
             if (gameState) {
               io.to(`game:${game.code}`).emit("game:state", gameState);
