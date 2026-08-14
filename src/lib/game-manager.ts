@@ -83,6 +83,7 @@ function toPlayerState(player: PlayerState & { socketId: string | null; streak: 
     maxStreak: player.maxStreak,
     correctCount: player.correctCount,
     isConnected: player.isConnected,
+    device: player.device,
   };
 }
 
@@ -257,6 +258,7 @@ export function flushAcceptedPendingPlayers(gameId: string): Array<{ playerId: s
       correctCount: 0,
       isConnected: true,
       socketId: request.socketId,
+      device: "pc",
     });
     created.push({ playerId, socketId: request.socketId });
     game.pendingPlayers.delete(request.id);
@@ -268,7 +270,8 @@ export function flushAcceptedPendingPlayers(gameId: string): Array<{ playerId: s
 export async function joinGameAsPlayer(
   code: string,
   nickname: string,
-  socketId: string
+  socketId: string,
+  device: "pc" | "mobile" = "pc"
 ): Promise<{ playerId: string; gameId: string; pendingRequestId?: string } | { error: string; pendingRequestId?: string; queued?: boolean }> {
   const activeGame = getActiveGameByCode(code);
 
@@ -296,6 +299,7 @@ export async function joinGameAsPlayer(
     existingPlayerForSocket.nickname = trimmedNick;
     existingPlayerForSocket.isConnected = true;
     existingPlayerForSocket.socketId = socketId;
+    existingPlayerForSocket.device = device;
     return { playerId: existingPlayerForSocket.id, gameId: activeGame.id };
   }
 
@@ -313,6 +317,7 @@ export async function joinGameAsPlayer(
       disconnectedPlayer.nickname = trimmedNick;
       disconnectedPlayer.isConnected = true;
       disconnectedPlayer.socketId = socketId;
+      disconnectedPlayer.device = device;
       return { playerId: disconnectedPlayer.id, gameId: activeGame.id };
     }
   }
@@ -326,6 +331,7 @@ export async function joinGameAsPlayer(
   if (disconnectedPlayerWithSameNickname) {
     disconnectedPlayerWithSameNickname.isConnected = true;
     disconnectedPlayerWithSameNickname.socketId = socketId;
+    disconnectedPlayerWithSameNickname.device = device;
     return { playerId: disconnectedPlayerWithSameNickname.id, gameId: activeGame.id };
   }
 
@@ -350,6 +356,7 @@ export async function joinGameAsPlayer(
     correctCount: 0,
     isConnected: true,
     socketId,
+    device,
   });
 
   return { playerId, gameId: activeGame.id };

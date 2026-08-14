@@ -16,6 +16,7 @@ export interface PlayerState {
   maxStreak: number;
   correctCount: number;
   isConnected: boolean;
+  device: "pc" | "mobile";
 }
 
 export interface QuestionOption {
@@ -105,7 +106,7 @@ export interface ClientToServerEvents {
     callback: (response: { success: boolean; message?: string }) => void
   ) => void;
   "player:join": (
-    data: { code: string; nickname: string },
+    data: { code: string; nickname: string; device?: "pc" | "mobile" },
     callback: (response: {
       success: boolean;
       error?: string;

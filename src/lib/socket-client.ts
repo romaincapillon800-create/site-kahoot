@@ -7,6 +7,7 @@ import type {
   ClientToServerEvents,
 } from "@/types/game";
 import { useGameStore } from "@/store/game-store";
+import { detectDevice } from "./utils";
 
 type GameSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -106,7 +107,9 @@ export function joinGame(
     const socket = getSocket();
     if (!socket.connected) socket.connect();
 
-    socket.emit("player:join", { code: code.toUpperCase(), nickname }, (response) => {
+    const device = detectDevice();
+
+    socket.emit("player:join", { code: code.toUpperCase(), nickname, device }, (response) => {
       if (response.success && response.playerId) {
         useGameStore.getState().setPlayerId(response.playerId);
         useGameStore.getState().setGameId(response.gameId ?? null);

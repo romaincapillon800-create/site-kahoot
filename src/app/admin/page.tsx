@@ -60,7 +60,6 @@ export default function AdminPage() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [leaderboardCountdown, setLeaderboardCountdown] = useState<number | null>(null);
   const [playerSearchFilter, setPlayerSearchFilter] = useState("");
-  const [deviceByPlayer, setDeviceByPlayer] = useState<Record<string, "pc" | "mobile">>({});
   const [showCategoryModal, setShowCategoryModal] = useState(false);
 
   useEffect(() => {
@@ -660,8 +659,6 @@ export default function AdminPage() {
                             <li className="text-sm text-gray-400 text-center py-4">Aucun joueur ne correspond à votre recherche.</li>
                           ) : (
                             filteredPlayers.map((player) => {
-                              const selectedDevice = deviceByPlayer[player.id] ?? "pc";
-
                               return (
                                 <li key={player.id} className="rounded-2xl border border-cyber-border bg-cyber-surface/80 p-3 transition-all duration-300 hover:bg-cyber-surface hover:border-white/50 hover:shadow-lg hover:shadow-white/10">
                                   <div className="flex items-center justify-between gap-3">
@@ -672,21 +669,9 @@ export default function AdminPage() {
                                     <div className="flex items-center gap-1.5 flex-shrink-0">
                                       <div className="flex items-center gap-1.5 rounded-full border border-cyber-border bg-black/20 px-2 py-1">
                                         <MonitorSmartphone className="h-3 w-3 text-gray-300" aria-hidden="true" />
-                                        <select
-                                          aria-label={`Appareil de ${player.nickname}`}
-                                          value={selectedDevice}
-                                          onChange={(event) => {
-                                            const nextDevice = event.target.value as "pc" | "mobile";
-                                            setDeviceByPlayer((current) => ({
-                                              ...current,
-                                              [player.id]: nextDevice,
-                                            }));
-                                          }}
-                                          className="bg-transparent text-[10px] text-white outline-none"
-                                        >
-                                          <option value="pc" className="bg-black text-white">PC</option>
-                                          <option value="mobile" className="bg-black text-white">Téléphone</option>
-                                        </select>
+                                        <span className="text-[10px] text-white">
+                                          {player.device === "mobile" ? "Téléphone" : "PC"}
+                                        </span>
                                       </div>
                                       <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-white">
                                         {player.isConnected ? "✓" : "✗"}

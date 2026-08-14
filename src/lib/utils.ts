@@ -14,6 +14,42 @@ export function generateGameCode(length = 6): string {
   return code;
 }
 
+export function detectDevice(): "pc" | "mobile" {
+  if (typeof window === "undefined") {
+    return "pc";
+  }
+
+  const userAgent = navigator.userAgent.toLowerCase();
+  
+  // Détection basée sur les patterns connus des appareils mobiles
+  const mobilePatterns = [
+    /android/,
+    /webos/,
+    /iphone/,
+    /ipad/,
+    /ipod/,
+    /blackberry/,
+    /windows phone/,
+    /opera mini/,
+    /iemobile/,
+  ];
+
+  const isMobileUA = mobilePatterns.some((pattern) => pattern.test(userAgent));
+  
+  // Vérification supplémentaire : media query pour les appareils tactiles
+  const hasTouch = typeof window !== "undefined" && (
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0 ||
+    (navigator as any).msMaxTouchPoints > 0
+  );
+
+  // Vérification du viewport : si très petit, probablement mobile
+  const isMobileViewport = typeof window !== "undefined" && window.innerWidth < 768;
+
+  return (isMobileUA || (hasTouch && isMobileViewport)) ? "mobile" : "pc";
+}
+
+
 export function formatScore(score: number): string {
   return score.toLocaleString("fr-FR");
 }

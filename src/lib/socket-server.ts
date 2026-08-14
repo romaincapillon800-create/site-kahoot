@@ -144,7 +144,7 @@ export function initSocketServer(httpServer: HTTPServer) {
           }
         }
 
-        const result = await joinGameAsPlayer(data.code, data.nickname, socket.id);
+        const result = await joinGameAsPlayer(data.code, data.nickname, socket.id, data.device ?? "pc");
         if ("error" in result) {
           callback({
             success: false,
