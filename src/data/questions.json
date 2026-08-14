@@ -275,14 +275,14 @@
     ]
   },
   {
-    "text": "Comment se défendre ?",
+    "text": "Quelle mesure est la plus efficace pour empêcher une injection SQL ?",
     "category": "sql-injection",
-    "explanation": "La bonne réponse est : Prepared statements",
+    "explanation": "La bonne réponse est : Utiliser des prepared statements et des requêtes paramétrées",
     "options": [
-      { "text": "Prepared statements", "isCorrect": true },
-      { "text": "Utiliser HTTP", "isCorrect": false },
-      { "text": "Désactiver logs", "isCorrect": false },
-      { "text": "Supprimer regex", "isCorrect": false }
+      { "text": "Utiliser des prepared statements et des requêtes paramétrées", "isCorrect": true },
+      { "text": "Utiliser uniquement HTTP", "isCorrect": false },
+      { "text": "Désactiver les logs", "isCorrect": false },
+      { "text": "Supprimer les regex", "isCorrect": false }
     ]
   },
   {
