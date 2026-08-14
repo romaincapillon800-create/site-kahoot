@@ -174,8 +174,33 @@ describe("category filtering", () => {
     const wasLeft = leaveGame(gameId, playerId);
 
     assert.equal(wasLeft, true);
-    assert.equal(getActiveGame(gameId)?.players.has(playerId), false);
+    assert.equal(getActiveGame(gameId)?.players.get(playerId)?.isConnected, false);
     assert.equal(getGameState(gameId)?.leaderboard.some((entry) => entry.nickname === "Alice"), false);
+  });
+
+  it("removes a kicked player immediately even during reveal phase", async () => {
+    const { gameId, code } = await createGame(
+      {
+        questionCount: 5,
+        questionTime: 20,
+        categories: ["global"],
+      },
+      "host-test"
+    );
+
+    const joinResult = await joinGameAsPlayer(code, "Bob", "socket-kick-reveal-1");
+    assert.ok(!("error" in joinResult));
+
+    const game = getActiveGame(gameId);
+    assert.ok(game);
+    game!.phase = "reveal";
+
+    const playerId = (joinResult as { playerId: string }).playerId;
+    const wasKicked = kickPlayer(gameId, playerId);
+
+    assert.equal(wasKicked, true);
+    assert.equal(getActiveGame(gameId)?.players.has(playerId), false);
+    assert.equal(getGameState(gameId)?.players.some((player) => player.id === playerId), false);
   });
 
   it("refuses joining a game once the leaderboard is visible", async () => {

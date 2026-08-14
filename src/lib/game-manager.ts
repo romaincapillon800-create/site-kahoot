@@ -362,15 +362,17 @@ export function kickPlayer(gameId: string, playerId: string): boolean {
   const player = game.players.get(playerId);
   if (!player) return false;
 
-  // During reveal, keep the player as disconnected so they can reconnect.
-  // During leaderboard, remove them fully because the ranking is already visible.
-  if (game.phase === "reveal") {
-    player.isConnected = false;
-    player.socketId = null;
-    return true;
+  // An admin kick should always remove the player from the game state,
+  // even during reveal/leaderboard, so they disappear immediately from the host list.
+  game.players.delete(playerId);
+
+  for (const [questionId, answers] of game.answers.entries()) {
+    answers.delete(playerId);
+    if (answers.size === 0) {
+      game.answers.delete(questionId);
+    }
   }
 
-  game.players.delete(playerId);
   return true;
 }
 
@@ -381,9 +383,9 @@ export function leaveGame(gameId: string, playerId: string): boolean {
   const player = game.players.get(playerId);
   if (!player) return false;
 
-  // During reveal, keep the player as disconnected so they can reconnect.
-  // During leaderboard, remove them fully because the ranking is already visible.
-  if (game.phase === "reveal") {
+  // Player-initiated leave: during reveal/leaderboard keep them disconnected so they can reconnect,
+  // but they should not be visible in the connected players list anymore.
+  if (game.phase === "reveal" || game.phase === "leaderboard") {
     player.isConnected = false;
     player.socketId = null;
     return true;
