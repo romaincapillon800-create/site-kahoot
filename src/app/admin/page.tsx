@@ -624,23 +624,28 @@ export default function AdminPage() {
               </div>
             </>
           ) : (
-            <div className="grid gap-6 xl:grid-cols-[1.2fr_1.8fr]">
-              <div className="space-y-6">
-                {error && <p className="rounded-3xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-100">{error}</p>}
-                <Card className="mx-auto w-full max-w-[560px] p-0 overflow-hidden">
-                  <CardHeader>
-                    <CardTitle>Tableau de bord hôte</CardTitle>
-                    <CardDescription>Code : {code}</CardDescription>
-                  </CardHeader>
-                  <CardContent>{lobbyActions}</CardContent>
+            <div className="grid gap-6 xl:grid-cols-[1.75fr_0.9fr] xl:items-start">
+              <div className="space-y-4">
+                <div className="px-1">
+                  <h2 className="text-[2.1rem] font-bold tracking-tight text-white">Tableau de bord hôte</h2>
+                  <p className="mt-2 text-base text-gray-400">Code : {code}</p>
+                </div>
+
+                <Card className="w-full overflow-hidden border border-cyan-500/30 bg-[#07152e]/80 shadow-[0_0_0_1px_rgba(96,165,250,0.18)]">
+                  <CardContent className="flex min-h-[620px] items-center justify-center p-0">
+                    <div className="flex h-full min-h-[620px] w-full flex-col items-center justify-center text-center">
+                      <p className="text-sm uppercase tracking-[0.35em] text-gray-400">ÉTAT DE LA PARTIE</p>
+                      <p className="mt-8 text-4xl font-semibold text-white">Classement</p>
+                    </div>
+                  </CardContent>
                 </Card>
               </div>
 
-              <div className="space-y-6">
-                <Card className="mx-auto w-full max-w-[880px] p-0 overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10">
-                  <CardHeader className="pb-3">
-                    <CardTitle>Joueurs connectés</CardTitle>
-                    <CardDescription>Voir les pseudos, scores et présence.</CardDescription>
+              <div className="space-y-4">
+                <Card className="w-full overflow-hidden border border-cyan-500/30 bg-[#07152e]/80 shadow-[0_0_0_1px_rgba(96,165,250,0.18)]">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-[1.7rem] font-bold tracking-tight text-white">Joueurs connectés</CardTitle>
+                    <CardDescription className="text-sm text-gray-400">Voir les pseudos, scores et présence.</CardDescription>
                   </CardHeader>
                   <CardContent className="pt-0 pb-4">
                     {connectedPlayers.length === 0 ? (
@@ -652,9 +657,9 @@ export default function AdminPage() {
                           placeholder="Rechercher un joueur..."
                           value={playerSearchFilter}
                           onChange={(e) => setPlayerSearchFilter(e.target.value)}
-                          className="rounded-2xl border border-cyber-border bg-cyber-surface/80 px-4 py-2 text-sm text-white placeholder-gray-500 transition-all duration-300 focus:border-white/50 focus:bg-cyber-surface focus:shadow-lg focus:shadow-white/20"
+                          className="rounded-2xl border border-cyan-500/30 bg-[#07152e]/70 px-3 py-2 text-sm text-white placeholder-gray-500 transition-all duration-300 focus:border-cyan-400/60"
                         />
-                        <ul className="space-y-2.5 max-h-[22rem] overflow-y-auto pr-2">
+                        <ul className="space-y-2.5 max-h-[30rem] overflow-y-auto pr-1">
                           {filteredPlayers.length === 0 ? (
                             <li className="text-sm text-gray-400 text-center py-4">Aucun joueur ne correspond à votre recherche.</li>
                           ) : (
@@ -662,15 +667,15 @@ export default function AdminPage() {
                               const selectedDevice = deviceByPlayer[player.id] ?? "pc";
 
                               return (
-                                <li key={player.id} className="rounded-2xl border border-cyber-border bg-cyber-surface/80 p-3 transition-all duration-300 hover:bg-cyber-surface hover:border-white/50 hover:shadow-lg hover:shadow-white/10">
+                                <li key={player.id} className="rounded-2xl border border-cyan-500/30 bg-[#0b1c31]/80 p-3 transition-all duration-300 hover:border-cyan-400/60">
                                   <div className="flex items-center justify-between gap-3">
                                     <div className="min-w-0 flex-1">
-                                      <p className="truncate text-sm font-semibold">{player.nickname}</p>
+                                      <p className="truncate text-sm font-semibold text-white">{player.nickname}</p>
                                       <p className="text-xs text-gray-500">{player.score} pts</p>
                                     </div>
-                                    <div className="flex items-center gap-1.5 flex-shrink-0">
-                                      <div className="flex items-center gap-1.5 rounded-full border border-cyber-border bg-black/20 px-2 py-1">
-                                        <MonitorSmartphone className="h-3 w-3 text-gray-300" aria-hidden="true" />
+                                    <div className="flex items-center gap-2 flex-shrink-0">
+                                      <div className="flex items-center gap-1 rounded-full border border-cyan-500/30 bg-black/20 px-2 py-1">
+                                        <MonitorSmartphone className="h-3.5 w-3.5 text-gray-300" aria-hidden="true" />
                                         <select
                                           aria-label={`Appareil de ${player.nickname}`}
                                           value={selectedDevice}
@@ -687,14 +692,14 @@ export default function AdminPage() {
                                           <option value="mobile" className="bg-black text-white">Téléphone</option>
                                         </select>
                                       </div>
-                                      <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-white">
+                                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-cyan-500/20 text-[10px] text-cyan-200">
                                         {player.isConnected ? "✓" : "✗"}
                                       </span>
                                       <Button
                                         variant="ghost"
                                         size="sm"
                                         onClick={() => hostKickPlayer(player.id)}
-                                        className="h-7 w-7 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-300"
+                                        className="h-7 w-7 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10"
                                       >
                                         <X className="w-3.5 h-3.5" aria-hidden="true" />
                                       </Button>
