@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { MessageCircleMore } from "lucide-react";
 import "./globals.css";
 import { DevtoolsProtection } from "@/components/devtools-protection";
 
@@ -38,6 +39,17 @@ export default function RootLayout({
       >
         <DevtoolsProtection />
         {children}
+
+        <a
+          href="https://discord.gg/cyberlearn"
+          target="_blank"
+          rel="noreferrer"
+          className="fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/70 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-white/10 backdrop-blur-sm transition-all duration-300 hover:border-white/40 hover:bg-black/85"
+          aria-label="Rejoindre le Discord CyberLearn"
+        >
+          <MessageCircleMore className="h-4 w-4" aria-hidden="true" />
+          Discord
+        </a>
       </body>
     </html>
   );

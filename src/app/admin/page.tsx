@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowRight, Lock, Play, Settings2, Shield, Users, X } from "lucide-react";
+import { ArrowRight, Lock, MonitorSmartphone, Play, Settings2, Shield, Users, X } from "lucide-react";
 import { AnimatedBackground } from "@/components/ui/animated-background";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -59,6 +59,7 @@ export default function AdminPage() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [leaderboardCountdown, setLeaderboardCountdown] = useState<number | null>(null);
   const [playerSearchFilter, setPlayerSearchFilter] = useState("");
+  const [deviceByPlayer, setDeviceByPlayer] = useState<Record<string, "pc" | "mobile">>({});
   const [showCategoryModal, setShowCategoryModal] = useState(false);
 
   useEffect(() => {
@@ -655,29 +656,51 @@ export default function AdminPage() {
                         {filteredPlayers.length === 0 ? (
                           <li className="text-sm text-gray-400 text-center py-4">Aucun joueur ne correspond à votre recherche.</li>
                         ) : (
-                          filteredPlayers.map((player) => (
-                            <li key={player.id} className="rounded-2xl border border-cyber-border p-4 bg-cyber-surface/80 transition-all duration-300 hover:bg-cyber-surface hover:border-white/50 hover:shadow-lg hover:shadow-white/10">
-                              <div className="flex items-center justify-between gap-4">
-                                <div>
-                                  <p className="truncate text-sm font-semibold">{player.nickname}</p>
-                                  <p className="text-xs text-gray-500">{player.score} pts</p>
+                          filteredPlayers.map((player) => {
+                            const selectedDevice = deviceByPlayer[player.id] ?? "pc";
+
+                            return (
+                              <li key={player.id} className="rounded-2xl border border-cyber-border p-4 bg-cyber-surface/80 transition-all duration-300 hover:bg-cyber-surface hover:border-white/50 hover:shadow-lg hover:shadow-white/10">
+                                <div className="flex items-center justify-between gap-4">
+                                  <div className="min-w-0 flex-1">
+                                    <p className="truncate text-sm font-semibold">{player.nickname}</p>
+                                    <p className="text-xs text-gray-500">{player.score} pts</p>
+                                  </div>
+                                  <div className="flex items-center gap-2 flex-shrink-0">
+                                    <div className="flex items-center gap-2 rounded-full border border-cyber-border bg-black/20 px-2 py-1.5">
+                                      <MonitorSmartphone className="h-3.5 w-3.5 text-gray-300" aria-hidden="true" />
+                                      <select
+                                        aria-label={`Appareil de ${player.nickname}`}
+                                        value={selectedDevice}
+                                        onChange={(event) => {
+                                          const nextDevice = event.target.value as "pc" | "mobile";
+                                          setDeviceByPlayer((current) => ({
+                                            ...current,
+                                            [player.id]: nextDevice,
+                                          }));
+                                        }}
+                                        className="bg-transparent text-xs text-white outline-none"
+                                      >
+                                        <option value="pc" className="bg-black text-white">PC</option>
+                                        <option value="mobile" className="bg-black text-white">Téléphone</option>
+                                      </select>
+                                    </div>
+                                    <span className="rounded-full bg-white/10 px-2 py-1 text-xs text-white">
+                                      {player.isConnected ? "✓" : "✗"}
+                                    </span>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => hostKickPlayer(player.id)}
+                                      className="h-8 w-8 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-300"
+                                    >
+                                      <X className="w-4 h-4" aria-hidden="true" />
+                                    </Button>
+                                  </div>
                                 </div>
-                                <div className="flex items-center gap-2 flex-shrink-0">
-                                  <span className="rounded-full bg-white/10 px-2 py-1 text-xs text-white">
-                                    {player.isConnected ? "✓" : "✗"}
-                                  </span>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => hostKickPlayer(player.id)}
-                                    className="h-8 w-8 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-300"
-                                  >
-                                    <X className="w-4 h-4" aria-hidden="true" />
-                                  </Button>
-                                </div>
-                              </div>
-                            </li>
-                          ))
+                              </li>
+                            );
+                          })
                         )}
                       </ul>
                     </div>
