@@ -10,6 +10,7 @@ import {
   getActiveGame,
   getActiveGameByCode,
   createGame,
+  getLeaderboardEntries,
   joinGameAsHost,
   joinGameAsPlayer,
   kickPlayer,
@@ -26,21 +27,7 @@ import {
 
 type GameSocket = Socket<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>;
 
-function buildLeaderboardEntries(players: Iterable<{ id: string; nickname: string; score: number; correctCount: number; maxStreak: number }>) {
-  return Array.from(players)
-    .sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score;
-      if (b.correctCount !== a.correctCount) return b.correctCount - a.correctCount;
-      if (b.maxStreak !== a.maxStreak) return b.maxStreak - a.maxStreak;
-      return a.nickname.localeCompare(b.nickname);
-    })
-    .map((p, index) => ({
-      id: p.id,
-      nickname: p.nickname,
-      score: p.score,
-      rank: index + 1,
-    }));
-}
+const buildLeaderboardEntries = getLeaderboardEntries;
 
 const adminSessions = new Map<string, { email: string; timestamp: number }>();
 const socketToGameMap = new Map<string, { gameId: string; playerId?: string }>();
@@ -226,7 +213,7 @@ export function initSocketServer(httpServer: HTTPServer) {
                   io.to(`game:${game.code}`).emit("game:timer-tick", { timeRemaining });
                 },
                 async () => {
-                  try {
+                  try {sinon quand qlq quitte ça retire pas la personnes du classement c tt mais de la liste des connecter mais pas le classement 
                     const reveal = await revealQuestion(mapping.gameId);
                     if (reveal) {
                       io.to(`game:${game.code}`).emit("game:question-reveal", reveal);

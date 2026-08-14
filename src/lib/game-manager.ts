@@ -107,9 +107,18 @@ function buildQuestionState(questionId: string, index: number, totalQuestions: n
   };
 }
 
-function getLeaderboard(game: ActiveGame): LeaderboardEntry[] {
-  return Array.from(game.players.values())
-    .filter((p) => p.isConnected)
+export function getLeaderboardEntries(
+  players: Iterable<{
+    id: string;
+    nickname: string;
+    score: number;
+    correctCount: number;
+    maxStreak: number;
+    isConnected?: boolean;
+  }>
+): LeaderboardEntry[] {
+  return Array.from(players)
+    .filter((p) => p.isConnected !== false)
     .sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
       if (b.correctCount !== a.correctCount) return b.correctCount - a.correctCount;
@@ -122,6 +131,10 @@ function getLeaderboard(game: ActiveGame): LeaderboardEntry[] {
       score: p.score,
       rank: index + 1,
     }));
+}
+
+function getLeaderboard(game: ActiveGame): LeaderboardEntry[] {
+  return getLeaderboardEntries(game.players.values());
 }
 
 export async function createGame(

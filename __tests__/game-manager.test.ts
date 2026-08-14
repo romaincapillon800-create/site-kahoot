@@ -7,6 +7,7 @@ import {
   disconnectPlayer,
   getActiveGame,
   getGameState,
+  getLeaderboardEntries,
   getQuestionState,
   joinGameAsPlayer,
   kickPlayer,
@@ -134,6 +135,22 @@ describe("category filtering", () => {
     assert.notEqual((rejoin as { playerId: string }).playerId, playerId);
     assert.equal(getActiveGame(gameId)?.players.get((rejoin as { playerId: string }).playerId)?.nickname, "Charlie");
     assert.equal(getActiveGame(gameId)?.players.get((rejoin as { playerId: string }).playerId)?.score, 0);
+  });
+
+  it("keeps disconnected players out of leaderboard entries", () => {
+    const players = [
+      { id: "1", nickname: "Alice", score: 100, correctCount: 2, maxStreak: 2, isConnected: true },
+      { id: "2", nickname: "Bob", score: 80, correctCount: 1, maxStreak: 1, isConnected: false },
+      { id: "3", nickname: "Charlie", score: 60, correctCount: 1, maxStreak: 1, isConnected: true },
+    ];
+
+    const leaderboard = getLeaderboardEntries(players);
+
+    assert.deepEqual(
+      leaderboard.map((entry) => entry.nickname),
+      ["Alice", "Charlie"]
+    );
+    assert.equal(leaderboard.some((entry) => entry.nickname === "Bob"), false);
   });
 
   it("refuses joining a game once the leaderboard is visible", async () => {
