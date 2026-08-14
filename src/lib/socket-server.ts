@@ -192,6 +192,25 @@ export function initSocketServer(httpServer: HTTPServer) {
                     const reveal = await revealQuestion(mapping.gameId);
                     if (reveal) {
                       io.to(`game:${game.code}`).emit("game:question-reveal", reveal);
+                      
+                      // Send leaderboard after reveal
+                      const updatedGame = getActiveGame(mapping.gameId);
+                      if (updatedGame) {
+                        const leaderboard = Array.from(updatedGame.players.values())
+                          .sort((a, b) => {
+                            if (b.score !== a.score) return b.score - a.score;
+                            if (b.correctCount !== a.correctCount) return b.correctCount - a.correctCount;
+                            if (b.maxStreak !== a.maxStreak) return b.maxStreak - a.maxStreak;
+                            return a.nickname.localeCompare(b.nickname);
+                          })
+                          .map((p, index) => ({
+                            id: p.id,
+                            nickname: p.nickname,
+                            score: p.score,
+                            rank: index + 1,
+                          }));
+                        io.to(`game:${game.code}`).emit("game:leaderboard", { entries: leaderboard });
+                      }
                     }
                   } catch (error) {
                     console.error("Error in reveal question:", error);
@@ -254,6 +273,25 @@ export function initSocketServer(httpServer: HTTPServer) {
                 const reveal = await revealQuestion(mapping.gameId);
                 if (reveal) {
                   io.to(`game:${game.code}`).emit("game:question-reveal", reveal);
+                  
+                  // Send leaderboard after reveal
+                  const updatedGame = getActiveGame(mapping.gameId);
+                  if (updatedGame) {
+                    const leaderboard = Array.from(updatedGame.players.values())
+                      .sort((a, b) => {
+                        if (b.score !== a.score) return b.score - a.score;
+                        if (b.correctCount !== a.correctCount) return b.correctCount - a.correctCount;
+                        if (b.maxStreak !== a.maxStreak) return b.maxStreak - a.maxStreak;
+                        return a.nickname.localeCompare(b.nickname);
+                      })
+                      .map((p, index) => ({
+                        id: p.id,
+                        nickname: p.nickname,
+                        score: p.score,
+                        rank: index + 1,
+                      }));
+                    io.to(`game:${game.code}`).emit("game:leaderboard", { entries: leaderboard });
+                  }
                 }
               } catch (error) {
                 console.error("Error in reveal question:", error);
