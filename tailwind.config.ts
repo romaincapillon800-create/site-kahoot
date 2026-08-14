@@ -48,7 +48,7 @@ const config: Config = {
       },
       backgroundImage: {
         "cyber-gradient":
-          "linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #1a1a1a 100%)",
+          "linear-gradient(135deg, #0a0a0a 0%, #121212 45%, #1d1d1d 100%)",
         "neon-gradient":
           "linear-gradient(135deg, #ffffff 0%, #cccccc 50%, #999999 100%)",
       },

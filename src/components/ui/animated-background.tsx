@@ -37,7 +37,7 @@ export function AnimatedBackground() {
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse at center, transparent 0%, #000000 70%)",
+            "radial-gradient(ellipse at center, transparent 0%, rgba(10,10,10,0.9) 68%, rgba(0,0,0,0.96) 100%)",
         }}
       />
     </div>
