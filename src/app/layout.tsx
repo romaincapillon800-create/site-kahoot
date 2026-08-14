@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { MessageSquareText } from "lucide-react";
 import "./globals.css";
 import { DevtoolsProtection } from "@/components/devtools-protection";
 
@@ -44,10 +43,9 @@ export default function RootLayout({
           href="https://discord.gg/cyberlearn"
           target="_blank"
           rel="noreferrer"
-          className="fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white text-black px-4 py-2 text-sm font-semibold shadow-lg shadow-white/10 transition-all duration-300 hover:scale-[1.02] hover:bg-gray-100"
+          className="fixed bottom-5 right-5 z-50 rounded-full border border-white/10 bg-black/90 px-4 py-2 text-sm font-medium text-white shadow-[0_0_18px_rgba(255,255,255,0.18)] transition-all duration-300 hover:scale-[1.02] hover:bg-black"
           aria-label="Rejoindre le Discord CyberLearn"
         >
-          <MessageSquareText className="h-4 w-4" aria-hidden="true" />
           Discord
         </a>
       </body>
