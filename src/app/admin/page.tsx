@@ -354,19 +354,21 @@ export default function AdminPage() {
 
     if (phase === "question") {
       return (
-        <div className="rounded-3xl border border-cyber-border bg-cyber-surface/70 p-6">
-          <div className="flex items-start justify-between">
+        <div className="rounded-3xl border border-cyber-border bg-cyber-surface/70 p-7">
+          <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
               <p className="text-sm uppercase text-gray-400 tracking-[0.2em]">Question en cours</p>
-              <p className="mt-4 text-2xl font-semibold">{question?.text || "Chargement..."}</p>
+              <p className="mt-5 text-[2rem] leading-[1.15] font-semibold text-white">
+                {question?.text || "Chargement..."}
+              </p>
             </div>
-            <div className="ml-4">
+            <div className="ml-2 shrink-0">
               {getCategoriesBadges()}
             </div>
           </div>
-          <p className="mt-3 text-sm text-gray-400">Temps restant : {timeRemaining}s</p>
+          <p className="mt-4 text-base text-gray-400">Temps restant : {timeRemaining}s</p>
           <Button 
-            className="mt-6 w-full" 
+            className="mt-7 w-full" 
             variant="danger" 
             onClick={() => hostEndGame()}
           >
@@ -622,10 +624,10 @@ export default function AdminPage() {
               </div>
             </>
           ) : (
-            <div className="grid gap-6 xl:grid-cols-[0.9fr_1.7fr]">
+            <div className="grid gap-6 xl:grid-cols-[1.2fr_1.8fr]">
               <div className="space-y-6">
                 {error && <p className="rounded-3xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-100">{error}</p>}
-                <Card className="mx-auto w-full max-w-[440px] p-0 overflow-hidden">
+                <Card className="mx-auto w-full max-w-[560px] p-0 overflow-hidden">
                   <CardHeader>
                     <CardTitle>Tableau de bord hôte</CardTitle>
                     <CardDescription>Code : {code}</CardDescription>
@@ -635,7 +637,7 @@ export default function AdminPage() {
               </div>
 
               <div className="space-y-6">
-                <Card className="mx-auto w-full max-w-[860px] p-0 overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10">
+                <Card className="mx-auto w-full max-w-[880px] p-0 overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10">
                   <CardHeader className="pb-3">
                     <CardTitle>Joueurs connectés</CardTitle>
                     <CardDescription>Voir les pseudos, scores et présence.</CardDescription>
