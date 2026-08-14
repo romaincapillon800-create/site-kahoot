@@ -162,69 +162,75 @@ export default function AdminPage() {
     return `${selectedCategories.length} catégories sélectionnées`;
   };
 
-  const getCategoriesDisplayLabel = () => {
+  const getCategoriesBadges = () => {
     const categoryMap: Record<string, string> = {
-      // Authentification
       "kerberos": "Kerberos",
-      "active-directory": "Active Directory",
-      "ldap-injection": "LDAP Injection",
+      "active-directory": "AD",
+      "ldap-injection": "LDAP",
       "oauth": "OAuth",
       "jwt": "JWT",
-      // Systèmes d'exploitation
-      "windows-internals": "Windows Internals",
+      "windows-internals": "Windows",
       "linux": "Linux",
-      "privilege-escalation": "Privilege Escalation",
-      // Cloud
-      "cloud-aws": "Cloud AWS",
+      "privilege-escalation": "Priv Esc",
+      "cloud-aws": "AWS",
       "azure": "Azure",
       "gcp": "GCP",
-      // Conteneurs
       "docker": "Docker",
-      "kubernetes": "Kubernetes",
-      // Réseau
+      "kubernetes": "K8s",
       "reseau": "Réseau",
-      // Web
-      "web-client": "Web - Client",
-      "web-server": "Web - Serveur",
+      "web-client": "Web-C",
+      "web-server": "Web-S",
       "owasp": "OWASP",
-      // Attaques Web
-      "sql-injection": "SQL Injection",
+      "sql-injection": "SQL Inj",
       "xxe": "XXE",
       "ssrf": "SSRF",
       "csrf": "CSRF",
-      // Cryptographie
-      "cryptography": "Cryptographie",
+      "cryptography": "Crypto",
       "pki": "PKI",
       "tls": "TLS",
-      // Malware
       "malware": "Malware",
       "rootkits": "Rootkits",
       "ransomware": "Ransomware",
-      // Reverse Engineering
-      "reverse-engineering": "Reverse Engineering",
+      "reverse-engineering": "RE",
       "yara": "YARA",
-      // Analyse
-      "forensics": "Forensic",
+      "forensics": "Forensics",
       "siem": "SIEM",
       "logs": "Logs",
       "sigma": "Sigma",
-      // Exploitation
       "rce": "RCE",
-      "buffer-overflow": "Buffer Overflow",
-      "race-conditions": "Race Conditions",
-      // Frameworks
-      "mitre-attack": "MITRE ATT&CK",
-      "threat-hunting": "Threat Hunting",
-      // Scénarios
-      "realiste": "Scénarios Réalistes",
+      "buffer-overflow": "BOF",
+      "race-conditions": "Race",
+      "mitre-attack": "MITRE",
+      "threat-hunting": "TH",
+      "realiste": "Réaliste",
     };
 
-    if (!settings.categories) return "Catégories non définies";
-    if (settings.categories.includes("global")) return "Toutes les catégories";
+    if (!settings.categories) return null;
+    if (settings.categories.includes("global")) {
+      return (
+        <span className="inline-flex items-center rounded-full bg-emerald-500/20 px-2 py-1 text-xs font-medium text-emerald-300 border border-emerald-500/30">
+          Toutes
+        </span>
+      );
+    }
     
-    const labels = settings.categories.map(cat => categoryMap[cat] || cat);
-    if (labels.length === 1) return labels[0];
-    return labels.join(", ");
+    return (
+      <div className="flex flex-wrap gap-1">
+        {settings.categories.slice(0, 2).map((cat) => (
+          <span
+            key={cat}
+            className="inline-flex items-center rounded-full bg-blue-500/20 px-2 py-1 text-xs font-medium text-blue-300 border border-blue-500/30"
+          >
+            {categoryMap[cat] || cat}
+          </span>
+        ))}
+        {settings.categories.length > 2 && (
+          <span className="inline-flex items-center rounded-full bg-blue-500/20 px-2 py-1 text-xs font-medium text-blue-300 border border-blue-500/30">
+            +{settings.categories.length - 2}
+          </span>
+        )}
+      </div>
+    );
   };
 
   const normalizeSettings = (questionCount: number, questionTime: number): GameSettings => ({
@@ -333,7 +339,9 @@ export default function AdminPage() {
           <p className="text-sm uppercase text-gray-400 tracking-[0.2em]">Départ</p>
           <p className="mt-4 text-6xl font-bold text-white">{countdown ?? 0}s</p>
           <p className="mt-3 text-gray-400">La partie commence bientôt.</p>
-          <p className="mt-3 text-xs text-gray-500">Catégories: {getCategoriesDisplayLabel()}</p>
+          <div className="mt-3 flex justify-center">
+            {getCategoriesBadges()}
+          </div>
         </div>
       );
     }
@@ -341,9 +349,15 @@ export default function AdminPage() {
     if (phase === "question") {
       return (
         <div className="rounded-3xl border border-cyber-border bg-cyber-surface/70 p-6">
-          <p className="text-sm uppercase text-gray-400 tracking-[0.2em]">Question en cours</p>
-          <p className="mt-4 text-2xl font-semibold">{question?.text || "Chargement..."}</p>
-          <p className="mt-2 text-xs text-gray-500">Catégorie: {getCategoriesDisplayLabel()}</p>
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <p className="text-sm uppercase text-gray-400 tracking-[0.2em]">Question en cours</p>
+              <p className="mt-4 text-2xl font-semibold">{question?.text || "Chargement..."}</p>
+            </div>
+            <div className="ml-4">
+              {getCategoriesBadges()}
+            </div>
+          </div>
           <p className="mt-3 text-sm text-gray-400">Temps restant : {timeRemaining}s</p>
           <Button 
             className="mt-6 w-full" 
@@ -360,9 +374,15 @@ export default function AdminPage() {
       return (
         <div className="rounded-3xl border border-cyber-border bg-cyber-surface/70 p-6">
           <p className="text-sm uppercase text-gray-400 tracking-[0.2em]">Révélation</p>
-          <p className="mt-4 text-xl font-semibold">Réponse correcte</p>
-          <p className="mt-2 text-2xl text-white">{reveal?.correctOptionText || "-"}</p>
-          <p className="mt-2 text-xs text-gray-500">Catégorie: {getCategoriesDisplayLabel()}</p>
+          <div className="flex items-start justify-between mt-4">
+            <div className="flex-1">
+              <p className="text-xl font-semibold">Réponse correcte</p>
+              <p className="mt-2 text-2xl text-white">{reveal?.correctOptionText || "-"}</p>
+            </div>
+            <div className="ml-4">
+              {getCategoriesBadges()}
+            </div>
+          </div>
           <p className="mt-3 text-gray-400">{reveal?.explanation || "Aucune explication disponible."}</p>
 
           <div className="mt-6 rounded-2xl border border-cyber-border bg-cyber-surface/80 p-4 text-center">

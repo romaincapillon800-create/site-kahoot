@@ -11,59 +11,46 @@ import { useGameStore } from "@/store/game-store";
 import { submitAnswer, useSocket } from "@/lib/socket-client";
 
 const CATEGORY_MAP: Record<string, string> = {
-  // Authentification
+  // Short names for badges
   "kerberos": "Kerberos",
-  "active-directory": "Active Directory",
-  "ldap-injection": "LDAP Injection",
+  "active-directory": "AD",
+  "ldap-injection": "LDAP",
   "oauth": "OAuth",
   "jwt": "JWT",
-  // Systèmes d'exploitation
-  "windows-internals": "Windows Internals",
+  "windows-internals": "Windows",
   "linux": "Linux",
-  "privilege-escalation": "Privilege Escalation",
-  // Cloud
-  "cloud-aws": "Cloud AWS",
+  "privilege-escalation": "Priv Esc",
+  "cloud-aws": "AWS",
   "azure": "Azure",
   "gcp": "GCP",
-  // Conteneurs
   "docker": "Docker",
-  "kubernetes": "Kubernetes",
-  // Réseau
+  "kubernetes": "K8s",
   "reseau": "Réseau",
-  // Web
-  "web-client": "Web - Client",
-  "web-server": "Web - Serveur",
+  "web-client": "Web-C",
+  "web-server": "Web-S",
   "owasp": "OWASP",
-  // Attaques Web
-  "sql-injection": "SQL Injection",
+  "sql-injection": "SQL Inj",
   "xxe": "XXE",
   "ssrf": "SSRF",
   "csrf": "CSRF",
-  // Cryptographie
-  "cryptography": "Cryptographie",
+  "cryptography": "Crypto",
   "pki": "PKI",
   "tls": "TLS",
-  // Malware
   "malware": "Malware",
   "rootkits": "Rootkits",
   "ransomware": "Ransomware",
-  // Reverse Engineering
-  "reverse-engineering": "Reverse Engineering",
+  "reverse-engineering": "RE",
   "yara": "YARA",
-  // Analyse
-  "forensics": "Forensic",
+  "forensics": "Forensics",
   "siem": "SIEM",
   "logs": "Logs",
   "sigma": "Sigma",
-  // Exploitation
   "rce": "RCE",
-  "buffer-overflow": "Buffer Overflow",
-  "race-conditions": "Race Conditions",
-  // Frameworks
-  "mitre-attack": "MITRE ATT&CK",
-  "threat-hunting": "Threat Hunting",
-  // Scénarios
-  "realiste": "Scénarios Réalistes",
+  "buffer-overflow": "BOF",
+  "race-conditions": "Race",
+  "mitre-attack": "MITRE",
+  "threat-hunting": "TH",
+  "realiste": "Réaliste",
 };
 
 export default function GameRoomPage() {
@@ -212,9 +199,15 @@ export default function GameRoomPage() {
                     {phase === "question" && question && (
                       <div className="space-y-6">
                         <div className="rounded-3xl border border-cyber-border bg-cyber-surface/80 p-6">
-                          <p className="text-sm uppercase tracking-[0.2em] text-gray-400">Question {question.order}/{question.totalQuestions}</p>
-                          <p className="text-xs text-gray-500 mt-2">Catégorie: {CATEGORY_MAP[question.category] || question.category}</p>
-                          <h2 className="mt-4 text-2xl font-semibold">{question.text}</h2>
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <p className="text-sm uppercase tracking-[0.2em] text-gray-400">Question {question.order}/{question.totalQuestions}</p>
+                              <h2 className="mt-4 text-2xl font-semibold">{question.text}</h2>
+                            </div>
+                            <span className="ml-4 inline-flex items-center rounded-full bg-blue-500/20 px-2 py-1 text-xs font-medium text-blue-300 border border-blue-500/30 whitespace-nowrap">
+                              {CATEGORY_MAP[question.category] || question.category}
+                            </span>
+                          </div>
                         </div>
                         <div className="grid gap-4">
                           {question.options.map((option) => {
@@ -243,9 +236,17 @@ export default function GameRoomPage() {
                     {phase === "reveal" && reveal && (
                       <div className="space-y-6">
                         <div className="rounded-3xl border border-cyber-border bg-cyber-surface/80 p-6 transition-all duration-300\">
-                          <p className="text-sm uppercase tracking-[0.2em] text-gray-400">Bonne réponse</p>
-                          {question && <p className="text-xs text-gray-500 mt-2">Catégorie: {CATEGORY_MAP[question.category] || question.category}</p>}
-                          <p className="mt-3 text-2xl font-semibold text-white">{reveal.correctOptionText}</p>
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <p className="text-sm uppercase tracking-[0.2em] text-gray-400">Bonne réponse</p>
+                              <p className="mt-3 text-2xl font-semibold text-white">{reveal.correctOptionText}</p>
+                            </div>
+                            {question && (
+                              <span className="ml-4 inline-flex items-center rounded-full bg-emerald-500/20 px-2 py-1 text-xs font-medium text-emerald-300 border border-emerald-500/30 whitespace-nowrap">
+                                {CATEGORY_MAP[question.category] || question.category}
+                              </span>
+                            )}
+                          </div>
                           <p className="mt-3 text-gray-400">{reveal.explanation}</p>
                         </div>
                         <div className="grid gap-4 rounded-3xl border border-cyber-border bg-cyber-surface/80 p-6">
