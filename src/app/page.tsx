@@ -47,9 +47,11 @@ export default function HomePage() {
         {/* Header */}
         <header className="w-full px-6 py-6 flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-neon-gradient flex items-center justify-center shadow-neon">
-              <BookOpen className="w-5 h-5 text-white" aria-hidden="true" />
-            </div>
+            <img
+              src="/cyberlearn.png"
+              alt="CyberLearn"
+              className="h-10 w-10 rounded-xl object-cover shadow-neon"
+            />
             <span className="text-xl font-bold tracking-tight">
               Cyber<span className="neon-text">Learn</span>
             </span>
