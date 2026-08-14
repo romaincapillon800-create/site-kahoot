@@ -213,11 +213,11 @@ export function initSocketServer(httpServer: HTTPServer) {
                   io.to(`game:${game.code}`).emit("game:timer-tick", { timeRemaining });
                 },
                 async () => {
-                  try {sinon quand qlq quitte ça retire pas la personnes du classement c tt mais de la liste des connecter mais pas le classement 
+                  try {
                     const reveal = await revealQuestion(mapping.gameId);
                     if (reveal) {
                       io.to(`game:${game.code}`).emit("game:question-reveal", reveal);
-                      
+
                       // Show the correct answer first, then the leaderboard after 10 seconds.
                       const updatedGame = getActiveGame(mapping.gameId);
                       if (updatedGame) {
