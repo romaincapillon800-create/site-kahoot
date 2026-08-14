@@ -275,11 +275,17 @@ export function leaveGame(gameId: string, playerId: string): boolean {
   const game = activeGames.get(gameId);
   if (!game) return false;
 
-  const player = game.players.get(playerId);
-  if (!player) return false;
+  if (!game.players.has(playerId)) return false;
 
-  player.isConnected = false;
-  player.socketId = null;
+  game.players.delete(playerId);
+
+  for (const [questionId, answers] of game.answers.entries()) {
+    answers.delete(playerId);
+    if (answers.size === 0) {
+      game.answers.delete(questionId);
+    }
+  }
+
   return true;
 }
 

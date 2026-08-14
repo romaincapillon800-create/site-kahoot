@@ -373,14 +373,12 @@ export function initSocketServer(httpServer: HTTPServer) {
             io.to(`game:${game.code}`).emit("game:state", gameState);
           }
         }
+        socket.leave(`game:${game.code}`);
       }
 
       socketToGameMap.delete(socket.id);
       socket.data.playerId = undefined;
       socket.data.gameId = undefined;
-      if (game) {
-        socket.leave(`game:${game.code}`);
-      }
     });
 
     // Host: Kick Player

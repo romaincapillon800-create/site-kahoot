@@ -109,7 +109,7 @@ describe("category filtering", () => {
     assert.equal(getActiveGame(gameId)?.players.get(disconnected.playerId)?.nickname, "Bob");
   });
 
-  it("keeps a player score and slot when they leave and come back with the same pseudo", async () => {
+  it("removes a player when they explicitly leave and allows a fresh join with the same pseudo", async () => {
     const { gameId, code } = await createGame(
       {
         questionCount: 5,
@@ -125,13 +125,12 @@ describe("category filtering", () => {
 
     const wasLeft = leaveGame(gameId, playerId);
     assert.equal(wasLeft, true);
-    assert.equal(getActiveGame(gameId)?.players.get(playerId)?.isConnected, false);
-    assert.equal(getActiveGame(gameId)?.players.size, 1);
+    assert.equal(getActiveGame(gameId)?.players.has(playerId), false);
 
     const rejoin = await joinGameAsPlayer(code, "Charlie", "socket-leave-ranking-2");
     assert.ok(!("error" in rejoin));
-    assert.equal((rejoin as { playerId: string }).playerId, playerId);
-    assert.equal(getActiveGame(gameId)?.players.get(playerId)?.socketId, "socket-leave-ranking-2");
-    assert.equal(getActiveGame(gameId)?.players.get(playerId)?.score, 0);
+    assert.notEqual((rejoin as { playerId: string }).playerId, playerId);
+    assert.equal(getActiveGame(gameId)?.players.get((rejoin as { playerId: string }).playerId)?.nickname, "Charlie");
+    assert.equal(getActiveGame(gameId)?.players.get((rejoin as { playerId: string }).playerId)?.score, 0);
   });
 });
