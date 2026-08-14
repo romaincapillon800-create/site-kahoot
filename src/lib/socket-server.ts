@@ -372,24 +372,6 @@ export function initSocketServer(httpServer: HTTPServer) {
           io.to(`game:${game.code}`).emit("game:state", gameState);
         }
 
-        const leaderboard = gameState?.leaderboard ?? Array.from(game.players.values())
-          .sort((a, b) => {
-            if (b.score !== a.score) return b.score - a.score;
-            if (b.correctCount !== a.correctCount) return b.correctCount - a.correctCount;
-            if (b.maxStreak !== a.maxStreak) return b.maxStreak - a.maxStreak;
-            return a.nickname.localeCompare(b.nickname);
-          })
-          .map((player, index) => ({
-            id: player.id,
-            nickname: player.nickname,
-            score: player.score,
-            rank: index + 1,
-          }));
-
-        if (leaderboard && leaderboard.length > 0) {
-          io.to(`game:${game.code}`).emit("game:leaderboard", { entries: leaderboard });
-        }
-
         if (kickedSocketId) {
           const kickedSocket = io.sockets.sockets.get(kickedSocketId);
           if (kickedSocket) {

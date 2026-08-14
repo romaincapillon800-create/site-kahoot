@@ -88,21 +88,7 @@ export const useGameStore = create<GameStore>((set) => ({
   setGameId: (gameId) => set({ gameId }),
   setIsHost: (isHost) => set({ isHost }),
 
-  setGameState: (state) => {
-    const sortedPlayers = [...state.players].sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score;
-      if (b.correctCount !== a.correctCount) return b.correctCount - a.correctCount;
-      if (b.maxStreak !== a.maxStreak) return b.maxStreak - a.maxStreak;
-      return a.nickname.localeCompare(b.nickname);
-    });
-
-    const fallbackLeaderboard = sortedPlayers.map((player, index) => ({
-      id: player.id,
-      nickname: player.nickname,
-      score: player.score,
-      rank: index + 1,
-    }));
-
+  setGameState: (state) =>
     set({
       phase: state.phase,
       code: state.code,
@@ -119,10 +105,9 @@ export const useGameStore = create<GameStore>((set) => ({
       reveal: state.phase === "reveal" ? (state.reveal ?? null) : null,
       leaderboard:
         state.phase === "leaderboard" || state.phase === "finished"
-          ? state.leaderboard ?? fallbackLeaderboard
-          : fallbackLeaderboard,
-    });
-  },
+          ? state.leaderboard ?? []
+          : [],
+    }),
 
   addPlayer: (player) =>
     set((s) => ({
