@@ -622,10 +622,10 @@ export default function AdminPage() {
               </div>
             </>
           ) : (
-            <div className="grid gap-6 xl:grid-cols-[1.1fr_1.9fr]">
+            <div className="grid gap-6 xl:grid-cols-[0.9fr_1.7fr]">
               <div className="space-y-6">
                 {error && <p className="rounded-3xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-100">{error}</p>}
-                <Card className="p-0 overflow-hidden">
+                <Card className="mx-auto w-full max-w-[440px] p-0 overflow-hidden">
                   <CardHeader>
                     <CardTitle>Tableau de bord hôte</CardTitle>
                     <CardDescription>Code : {code}</CardDescription>
@@ -635,7 +635,7 @@ export default function AdminPage() {
               </div>
 
               <div className="space-y-6">
-                <Card className="p-0 overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10">
+                <Card className="mx-auto w-full max-w-[860px] p-0 overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10">
                   <CardHeader className="pb-3">
                     <CardTitle>Joueurs connectés</CardTitle>
                     <CardDescription>Voir les pseudos, scores et présence.</CardDescription>
